@@ -274,7 +274,7 @@ app.controller('NavBarCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
 
   $scope.aboutClick = function()
   {
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
     //alert($scope.ctrlTranslations['global.version'] + ': ' + appVersion)
   }
 
@@ -344,16 +344,16 @@ app.controller('NavBarCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
       {
         var data = JSON.parse(msgData.msg)
 
-        var indexTENT = data.findIndex(function(e){return e.code.toLowerCase() == 'tent'})
+        var indexGemlink = data.findIndex(function(e){return e.code.toLowerCase() == 'glink'})
         var indexVDL = data.findIndex(function(e){return e.code.toLowerCase() == 'vdl'})
         var indexZEC = data.findIndex(function(e){return e.code.toLowerCase() == 'zec'})
         var indexZER = data.findIndex(function(e){return e.code.toLowerCase() == 'zer'})
         var indexCurrency = data.findIndex(function(e){return e.code.toLowerCase() == settings.currency.toLowerCase()})
 
-        if(serverData != undefined && serverData.coinname == "TENT")
+        if(serverData != undefined && serverData.coinname == "Gemlink")
         {
-          $scope.detail.pricechange = data[indexTENT].pricechange
-          $scope.detail.price = data[indexTENT].price / data[indexCurrency].price
+          $scope.detail.pricechange = data[indexGemlink].pricechange
+          $scope.detail.price = data[indexGemlink].price / data[indexCurrency].price
         }
         if(serverData != undefined && serverData.coinname == "Vidulum")
         {

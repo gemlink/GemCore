@@ -64,17 +64,17 @@ function getLanguageChecksumLoc(){
 function getWalletHome() {
   var dataFolder = process.env[(process.platform == 'win32') ? 'APPDATA' : 'HOME']
   if (process.platform == 'win32') {
-    dataFolder += "\\tentcore"
+    dataFolder += "\\gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'linux') {
-    dataFolder += "/.tentcore"
+    dataFolder += "/.gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'darwin') {
-    dataFolder += "/Library/Application Support/tentcore"
+    dataFolder += "/Library/Application Support/gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
@@ -149,7 +149,7 @@ app.controller('SplashCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   var confData
   var hideSplash = false
   var isStart = false
-  $scope.detail.log = 'TENTCore'
+  $scope.detail.log = 'GemCore'
   $timeout(function(){
     $scope.detail.hidedata = false
   },1000)

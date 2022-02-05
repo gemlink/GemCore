@@ -13,7 +13,7 @@ app.controller('OverviewCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
   $scope.visible = false
   $scope.startingText = 'Good morning!'
   $scope.detail = {}
-  $scope.detail.sticker = "XSG"
+  $scope.detail.sticker = "GLINK"
   $scope.detail.transactionschart = false
   $scope.detail.transactionTime = 1
   $scope.rawData = {}
@@ -295,7 +295,7 @@ app.controller('OverviewCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
 
   electron.ipcRenderer.on('child-execute-timer', function(event, msgData){
     writeLog('execute screen summary timer')
-    if(msgData.msg[1].cointype == 'snowgem')
+    if(msgData.msg[1].cointype == 'gemcore')
     {
       setTimeout(getDataTimerFunction, 3000)
     }
@@ -463,7 +463,7 @@ app.controller('OverviewCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
     $timeout(function(){
       if($scope.detail.hideprice == true)
       {
-        if(serverData != undefined && (serverData.coinname == "TENT" || serverData.coinname == "Vidulum"))
+        if(serverData != undefined && (serverData.coinname == "Gemlink" || serverData.coinname == "Vidulum"))
         {
           $scope.detail.hideprice = false
         }

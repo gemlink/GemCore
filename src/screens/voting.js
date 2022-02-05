@@ -4,7 +4,7 @@ app.controller('VotingCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   var sample = '[\
     {\
       "Name": "test2",\
-      "URL": "https://tent.app",\
+      "URL": "https://gemlink.org",\
       "Hash": "4ed246e40976aa24b758a95bb09f0b5ec7f3e305e4ab966039e6777c1d86a4a8",\
       "FeeHash": "a6c2ba3c9a2f34c88cc74cdc0e5729001bcfefd0229826f37085590e92700a8e",\
       "BlockStart": 11808,\

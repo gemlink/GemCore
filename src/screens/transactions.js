@@ -71,7 +71,7 @@ app.controller('TransactionsCtrl', ["$scope", "$http", "$timeout", "$translate",
   }
 
   $scope.faq = function(){
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   electron.ipcRenderer.on('child-update-transactions', function(event, msgData){

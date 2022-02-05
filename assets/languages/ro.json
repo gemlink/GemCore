@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Lucrat cu",
     "by": "de",
-    "tentTeam": "Echipa TENT"
+    "gemlinkTeam": "Echipa Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Comutați meniul",
     "reloadIconTitle": "Reîncărcați portofelul",
     "aboutIconTitle": "Despre",
@@ -395,7 +395,7 @@
     "selectDataDir": "Selectați directorul de date"
   },
   "endscreen": {
-    "shutdown1": "TENT Core se închide",
+    "shutdown1": "Gemlink Core se închide",
     "shutdown2": "Vă rugăm să nu închideți computerul",
     "shutdown3": "până când această fereastră nu dispare."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Insuficiente fonduri transparente, aveți ",
       "InsufficientTransparentFunds2": " în plus pentru a evita crearea unui rest invalid ",
       "InsufficientTransparentFunds3": " (pragul rezidual de monede este ",
-      "BadTxnsOversize": "Aveți eroarea 'bad-txns-oversize'. Incercați să trimiteți o cantitate mai mică de monede pentru început. Verificați sectiunea Întrebări Frecvente de pe pagina https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Aveți eroarea 'bad-txns-oversize'. Incercați să trimiteți o cantitate mai mică de monede pentru început. Verificați sectiunea Întrebări Frecvente de pe pagina https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "Aveți eroarea 'bad-txns-joinsplit-requirements-not-met'. Vă rugăm să rescanați portofelul.",
       "NonCoinbaseUTXOsToSpend": "Trebuie să vă protejați monedele înainte de a le trimite la altă adresă. În pagina Protejează Modede, alegeți adresa privată pentru protecție și apăsați pe Protejați sau Protejați Toate Monedele (în cazul a multiple Masternoduri)",
       "NoCoinbaseFundsToShield": "Nu există recompense din masternod în această adresă pentru a fi protejate. Folosiți pagina Trimite Monede."

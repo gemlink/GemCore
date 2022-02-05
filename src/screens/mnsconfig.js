@@ -201,7 +201,7 @@ app.controller('MasternodesConfigCtrl', ["$scope", "$http", "$timeout", "$transl
   }
 
   $scope.faq = function(){
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   electron.ipcRenderer.on('child-masternode-outputs', function(event, msgData){

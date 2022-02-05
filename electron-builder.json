@@ -1,6 +1,6 @@
 {
-    "appId": "tent.core",
-    "productName": "TENTCore",
+    "appId": "Gem.core",
+    "productName": "GemCore",
     "files": [
         "src/**/*",
         "global/**/*",

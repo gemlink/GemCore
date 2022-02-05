@@ -1,5 +1,5 @@
-Copyright (c) 2018-2021 The Snowgem developers
-Copyright (c) 2021 The TENT developers
+Copyright (c) 2018-2021 The gemcore developers
+Copyright (c) 2021 The Gemlink developers
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Сделано с",
     "by": "от",
-    "tentTeam": "Команда TENT"
+    "gemlinkTeam": "Команда Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Переключить меню",
     "reloadIconTitle": "Перезагрузить кошелёк",
     "aboutIconTitle": "О продукте",
@@ -395,7 +395,7 @@
     "selectDataDir": "Выберите папку данных"
   },
   "endscreen": {
-    "shutdown1": "TENT Core выключается",
+    "shutdown1": "Gemlink Core выключается",
     "shutdown2": "Пожалуйста не выключайте ваш компьютер",
     "shutdown3": "пока это окно не пропадёт."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Недостаточно свободных средств, есть ",
       "InsufficientTransparentFunds2": " больше, чтобы не допустить появление неправильного вывода сдачи ",
       "InsufficientTransparentFunds3": " (порог пыли это ",
-      "BadTxnsOversize": "Внимание: ошибка 'bad-txns-oversize'. Пожалуйста, пошлите меньшую сумму для начала. Подробнее об ошибке читайте в FAQ: https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Внимание: ошибка 'bad-txns-oversize'. Пожалуйста, пошлите меньшую сумму для начала. Подробнее об ошибке читайте в FAQ: https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "Внимание: ошибка 'bad-txns-joinsplit-requirements-not-met'. Пожалуйста, пересканируйте кошелек!",
       "NonCoinbaseUTXOsToSpend": "Вы должны защитить монеты, прежде чем вы сможете переслать их на другой адрес. Перейдите в раздел Защитить монеты, выберите ваш защищённый приватный адрес и нажмите Защитить или Защитить все (для нескольких МН)",
       "NoCoinbaseFundsToShield": "Для защиты монет на данный адрес, нет вознаграждений за мастерноду. Используйте отправку монет."

@@ -253,7 +253,7 @@ app.controller('ShieldCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   }
 
   $scope.faq = function(){
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   electron.ipcRenderer.on('child-update-shield', function(event, msgData){

@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Crafted with",
     "by": "by",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Toggle Menu",
     "reloadIconTitle": "Reload Wallet",
     "aboutIconTitle": "About",
@@ -405,7 +405,7 @@
     "selectDataDir": "Select data directory"
   },
   "endscreen": {
-    "shutdown1": "TENT Core is shutting down",
+    "shutdown1": "Gemlink Core is shutting down",
     "shutdown2": "Please do not shutdown the computer",
     "shutdown3": "until this window disappears."
   },
@@ -441,7 +441,7 @@
       "InsufficientTransparentFunds1": "Insufficient transparent funds, have ",
       "InsufficientTransparentFunds2": " more to avoid creating invalid change output ",
       "InsufficientTransparentFunds3": " (dust threshold is ",
-      "BadTxnsOversize": "You got a 'bad-txns-oversize' error. Please send the smaller amount first. Check FAQ section of https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "You got a 'bad-txns-oversize' error. Please send the smaller amount first. Check FAQ section of https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "You got a 'bad-txns-joinsplit-requirements-not-met' error. Please rescan the wallet.",
       "NonCoinbaseUTXOsToSpend": "You need to shield coins first before sending to another address. Go to Shield Coins, choose your shielding private address and click on Shield or Shield All (in case of multiple MN´s)",
       "NoCoinbaseFundsToShield": "There are no masternode rewards in this address to shield. Use Send Coins instead."

@@ -1,4 +1,4 @@
-var app = angular.module('tentcore', ['pascalprecht.translate'])
+var app = angular.module('gemcore', ['pascalprecht.translate'])
 var miningProcess = require('child_process')
 var StackTrace = require('stacktrace-js')
 var autoLaunch = require('auto-launch');
@@ -65,7 +65,7 @@ var currentCoin
 var coinList = {}
 var autoLauncher
 var progName
-var explorer = "https://explorer.tent.app/"
+var explorer = "https://explorer.gemlink.org/"
 var args = remote.process.argv
 var serverData = undefined
 var confData = undefined
@@ -129,22 +129,22 @@ if(args[0] == '.')
 //   if(process.platform == 'win32')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'TENTCore',
-//           path: currLoc.replace('/', /\\/g) + "\\" + "TENTCore.exe",
+//           name: 'GemCore',
+//           path: currLoc.replace('/', /\\/g) + "\\" + "GemCore.exe",
 //       });
 //   }
 //   else if(process.platform == 'linux')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'TENTCore',
-//           path: currLoc + "/" + "TENTCore",
+//           name: 'GemCore',
+//           path: currLoc + "/" + "GemCore",
 //       });
 //   }
 //   else if(process.platform == 'darwin')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'TENTCore',
-//           path: currLoc + "/" + "TENTCore.app",
+//           name: 'GemCore',
+//           path: currLoc + "/" + "GemCore.app",
 //       });
 //   }
 // }
@@ -330,17 +330,17 @@ function getHome()
 function getWalletHome(isGetConfig, coin) {
   var dataFolder = process.env[(process.platform == 'win32') ? 'APPDATA' : 'HOME']
   if (process.platform == 'win32') {
-    dataFolder += "\\tentcore"
+    dataFolder += "\\gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'linux') {
-    dataFolder += "/.tentcore"
+    dataFolder += "/.gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'darwin') {
-    dataFolder += "/Library/Application Support/tentcore"
+    dataFolder += "/Library/Application Support/gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
@@ -504,12 +504,12 @@ function backgroundProcess(name, arg) {
 
     } catch (err) {
       setTimeout(function(){
-        writeLog("cannot start snowgem-cli")
+        writeLog("cannot start gemcore-cli")
         spawnErr("Cannot start " + loc + err.toString())
       }, 0)
     }
   } else {
-    writeLog("cannot find snowgem-cli")
+    writeLog("cannot find gemcore-cli")
     spawnErr("Cannot find " + loc)
   }
 }
@@ -622,7 +622,7 @@ function startDeamon(arg){
 function startCli(arg, coinType){
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var tempArg = []
   var index = args.findIndex(function(e){return e == '-testnet'})
@@ -772,7 +772,7 @@ function getNetworkHeight(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "getinfo"]
   // writeLog(arg)
@@ -783,7 +783,7 @@ function getBestBlockhash(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = ["getblockchaininfo"]
   // writeLog(arg)
@@ -794,7 +794,7 @@ function getBestTime(bloblockHashckhash, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "getblockheader", bloblockHashckhash]
   // writeLog(arg)
@@ -805,7 +805,7 @@ function zGetTotalBalance(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "z_gettotalbalance"]
   // writeLog(arg)
@@ -816,7 +816,7 @@ function getWalletInfo( coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "getwalletinfo"]
   // writeLog(arg)
@@ -841,7 +841,7 @@ function getAddressBalance(address, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "z_getbalance", address]
   // writeLog(arg)
@@ -956,7 +956,7 @@ function listTransactions(count, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "listtransactions", "", count]
   // writeLog(arg)
@@ -967,7 +967,7 @@ function listReceivedByAddress(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "listreceivedbyaddress", 999999999, true, true]
   // writeLog(arg)
@@ -978,7 +978,7 @@ function getAddressByAccount(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "getaddressesbyaccount", ""]
   // writeLog(arg)
@@ -989,7 +989,7 @@ function listAddressGroupings(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "listaddressgroupings"]
   // writeLog(arg)
@@ -1000,7 +1000,7 @@ function zListAddress(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg = [ "z_listaddresses"]
   // writeLog(arg)
@@ -1090,7 +1090,7 @@ function verifyAddress(address, data, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   validateaddressData = undefined
   var arg= ['validateaddress', address]
@@ -1103,7 +1103,7 @@ function encryptWallet(password, coinType) {
   encryptData = undefined
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg= ['encryptwallet', password]
   // writeLog(arg)
@@ -1115,7 +1115,7 @@ function changePass(phrase, newPhrase, coinType)
   changePassData = undefined
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg= ['walletpassphrasechange', phrase, newPhrase]
   // writeLog(arg)
@@ -1127,7 +1127,7 @@ function lockWallet(coinType)
   lockData = undefined
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   var arg= ['walletlock']
   // writeLog(arg)
@@ -1139,7 +1139,7 @@ function unlockWallet(phrase, time, coinType)
   unlockData = undefined
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   if (time == undefined)
   {
@@ -1154,7 +1154,7 @@ function verifyZAddress(address, data, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'snowgem'
+    coinType = 'gemcore'
   }
   validateaddressData = undefined
   var arg = ['z_validateaddress', address]
@@ -2308,7 +2308,7 @@ function createHelpMessage(cmd)
   {
     msg = "\n\
     ``price``\n\
-    Get TENT price\n\
+    Get Gemlink price\n\
     \nExamples:\n\
       wallet1 price"
   }
@@ -2437,7 +2437,7 @@ function curlData(username, password, port, methods, params, coinType){
         rtnData['key'] = temp[0]
         rtnData['arg'] = temp
         rtnData['value'] = error
-        if(coinType == 'snowgem')
+        if(coinType == 'gemcore')
         {
           handleFunction(rtnData)
         }
@@ -2460,7 +2460,7 @@ function curlData(username, password, port, methods, params, coinType){
         rtnData['key'] = temp[0]
         rtnData['arg'] = temp
         rtnData['value'] = data
-        if(coinType == 'snowgem')
+        if(coinType == 'gemcore')
         {
           handleFunction(rtnData)
         }

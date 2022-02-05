@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Vytvořeno s",
     "by": "v",
-    "tentTeam": "TENT Týmu"
+    "gemlinkTeam": "Gemlink Týmu"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Skrýt Menu",
     "reloadIconTitle": "Znovu načíst Peněženku",
     "aboutIconTitle": "O produktu",
@@ -395,7 +395,7 @@
     "selectDataDir": "Vyberte adresář pro data"
   },
   "endscreen": {
-    "shutdown1": "TENT Core se vypíná",
+    "shutdown1": "Gemlink Core se vypíná",
     "shutdown2": "Nevypínejte prosím počítač",
     "shutdown3": "dokud se toto okno nevypne."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Nedostatek transparentních prostředků, mít ",
       "InsufficientTransparentFunds2": " více, aby se zabránilo neplatné změně výstupu ",
       "InsufficientTransparentFunds3": " (mezní hodnota prachu je ",
-      "BadTxnsOversize": "Pozor chyba: 'bad-txns-oversize'. Prosím odešlete nejprve menší částku. Více se dočtete v sekci FAQ: https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Pozor chyba: 'bad-txns-oversize'. Prosím odešlete nejprve menší částku. Více se dočtete v sekci FAQ: https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "Pozor chyba: 'bad-txns-joinsplit-requirements-not-met'. Prosím prohledejte znovu svoji peněženku.",
       "NonCoinbaseUTXOsToSpend": "Před odesláním na jinou adresu musíte mince nejprve skrýt. Běžte na Skrýt Mince, vyberte svoji privátní krycí adresu a klikněte na Skrýt nebo Skrýt Vše (v případě několika MN)",
       "NoCoinbaseFundsToShield": "Na této adrese nejsou žádné odměny masternodu ke skrytí, použijte Odeslat Mince."

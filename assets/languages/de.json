@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Hergestellt mit",
     "by": "vom",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Toggle-Menü",
     "reloadIconTitle": "Wallet neu laden",
     "aboutIconTitle": "Über",
@@ -395,7 +395,7 @@
     "selectDataDir": "Wählen Sie den Pfad für die Daten aus"
   },
   "endscreen": {
-    "shutdown1": "TENT Core wird ausgeschaltet",
+    "shutdown1": "Gemlink Core wird ausgeschaltet",
     "shutdown2": "Bitte schalten Sie den Computer nicht aus",
     "shutdown3": "bis dieses Fenster verschwindet."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Ungenügend transparentes Guthaben, Sie haben ",
       "InsufficientTransparentFunds2": " zusätzlich, um ungültiges Wechselgeld zu vermeiden ",
       "InsufficientTransparentFunds3": " (Der Mindestwert beträgt ",
-      "BadTxnsOversize": "Es ist ein 'bad-txns-oversize' Fehler aufgetreten. Bitte senden Sie zuerst den kleineren Betrag. Mehr dazu in den FAQ https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Es ist ein 'bad-txns-oversize' Fehler aufgetreten. Bitte senden Sie zuerst den kleineren Betrag. Mehr dazu in den FAQ https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "Es ist ein 'bad-txns-joinsplit-requirements-not-met' Fehler aufgetreten. Bitte führen Sie einen Rescan des Wallets durch.",
       "NonCoinbaseUTXOsToSpend": "Sie müssen die Coins erst abschirmen bevor Sie sie an eine andere Adresse schicken können. Gehen Sie zu 'Coins abschirmen', wählen Sie Ihre private Adresse und klicken Sie 'Abschirmen' bzw. 'Alle Coins abschirmen' (im Falle von mehreren MN´s).",
       "NoCoinbaseFundsToShield": "Auf dieser Adresse gibt es keine Masternode rewards abzuschirmen. Wählen Sie stattdessen 'Coins senden'."

@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Realizzato con",
     "by": "dal",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Commuta menu",
     "reloadIconTitle": "Ricarica il portafoglio",
     "aboutIconTitle": "Circa",
@@ -395,7 +395,7 @@
     "selectDataDir": "Seleziona la directory dei dati"
   },
   "endscreen": {
-    "shutdown1": "TENT Core si sta spegnendo",
+    "shutdown1": "Gemlink Core si sta spegnendo",
     "shutdown2": "Si prega di non spegnere il computer",
     "shutdown3": "finché questa finestra non scompare."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Hai insufficienti fondi trasparenti",
       "InsufficientTransparentFunds2": " più per evitare di creare output di modifiche non validi ",
       "InsufficientTransparentFunds3": " (La soglia è ",
-      "BadTxnsOversize": "Hai una 'bad-txns-oversize' error. Perfavore spedisci una somma inferiore. Controlla la sezione FAQ qui https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Hai una 'bad-txns-oversize' error. Perfavore spedisci una somma inferiore. Controlla la sezione FAQ qui https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "Hai una 'bad-txns-joinsplit-requirements-not-met' error. Perfavore ripeti la scansione del portafoglio.",
       "NonCoinbaseUTXOsToSpend": "È necessario proteggere le monete prima di inviarle a un altro indirizzo. Vai a Shield Coins, scegli il tuo indirizzo privato per la schermatura e fai clic su Shield o Shield All (in caso di più MN´s)",
       "NoCoinbaseFundsToShield": "Non ci sono ricompense per questo nodo da scudare. Invece utilizza manda monete ."

@@ -371,7 +371,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
       data.push('addnode=dnsseed1.tent.app')
       data.push('addnode=dnsseed2.tent.app')
       data.push('addnode=dnsseed3.tent.app')
-      data.push('addnode=explorer.tent.app')
+      data.push('addnode=explorer.gemlink.org')
       data.push('addnode=insight.tent.app')
       data.push('addnode=insight.tent.app')
       var index = $scope.selectedList.findIndex(function (e) {
@@ -523,7 +523,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
   }
 
   $scope.faq = function () {
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   electron.ipcRenderer.on('child-update-settings', function (event, msgData) {

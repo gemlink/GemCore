@@ -369,7 +369,7 @@ app.controller('SettingsCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
   }
 
   $scope.faq = function(){
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   $scope.valueChange = function(value){
@@ -895,7 +895,7 @@ app.controller('SettingsCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
     $timeout(function(){
       if(msgData.msg[2] != null && msgData.msg[2] != undefined)
       {
-        $scope.detail.showTransactionTime = msgData.msg[2].cointype == "snowgem" ? true : false
+        $scope.detail.showTransactionTime = msgData.msg[2].cointype == "gemcore" ? true : false
       }
     },0)
   })

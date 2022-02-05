@@ -422,7 +422,7 @@ app.controller('AddressesCtrl', ["$scope", "$http", "$timeout", "$translate", "$
   }
 
   $scope.exportToFile = function(){
-    exportPrivateKeys("xsgprivkey")
+    exportPrivateKeys("glinkprivkey")
   }
 
   function privKey(){

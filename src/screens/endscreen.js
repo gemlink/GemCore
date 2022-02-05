@@ -61,17 +61,17 @@ function getLanguageChecksumLoc(){
 function getWalletHome() {
   var dataFolder = process.env[(process.platform == 'win32') ? 'APPDATA' : 'HOME']
   if (process.platform == 'win32') {
-    dataFolder += "\\tentcore"
+    dataFolder += "\\gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'linux') {
-    dataFolder += "/.tentcore"
+    dataFolder += "/.gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'darwin') {
-    dataFolder += "/Library/Application Support/tentcore"
+    dataFolder += "/Library/Application Support/gemcore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
@@ -144,7 +144,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
         'endscreen.shutdown2',
         'endscreen.shutdown3'
       ]).then((o) => {
-        $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "TENT Core is shutting down"
+        $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "Gemlink Core is shutting down"
         $scope.detail.shutdown2 = $scope.ctrlTranslations['endscreen.shutdown2'] || "Please do not shutdown the computer"
         $scope.detail.shutdown3 = $scope.ctrlTranslations['endscreen.shutdown3'] || "until this window disappears."
         })
@@ -152,7 +152,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   }
 
   $timeout(function(){
-    $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "TENT Core is shutting down"
+    $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "Gemlink Core is shutting down"
     $scope.detail.shutdown2 = $scope.ctrlTranslations['endscreen.shutdown2'] || "Please do not shutdown the computer"
     $scope.detail.shutdown3 = $scope.ctrlTranslations['endscreen.shutdown3'] || "until this window disappears."
   }, 0)

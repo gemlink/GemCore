@@ -1,7 +1,7 @@
 app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$rootScope", function($scope, $http, $timeout, $translate, $rootScope) {
   var loading = true // set to true while we fetch the balances
   var serverUrl = "data.tent.app"
-  var backupUrl = "rates.tent.app"
+  var backupUrl = "data2.tent.app"
   var step = Steps.GET_COIN_LIST
   var verifyingKeyMD5 = "21e8b499aa84b5920ca0cea260074f34"
   var provingKeyMD5 = "af23e521697ed69d8b8a6b9c53e48300"
@@ -24,22 +24,22 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   if(process.platform == 'win32')
   {
       autoLauncher = new autoLaunch({
-          name: 'TENTCore',
-          path: currLoc.replace('/', '\\') + "\\" + "TENTCore.exe",
+          name: 'GemCore',
+          path: currLoc.replace('/', '\\') + "\\" + "GemCore.exe",
       });
   }
   else if(process.platform == 'linux')
   {
       autoLauncher = new autoLaunch({
-          name: 'TENTCore',
-          path: currLoc + "/" + "TENTCore",
+          name: 'GemCore',
+          path: currLoc + "/" + "GemCore",
       });
   }
   else if(process.platform == 'darwin')
   {
       autoLauncher = new autoLaunch({
-          name: 'TENTCore',
-          path: "/Applications/TENTCore.app",
+          name: 'GemCore',
+          path: "/Applications/GemCore.app",
       });
   }
 
@@ -471,10 +471,10 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   }
 
   function getCoinList(){
-    var coinlistPath = '/tentcore/coinlist.json'
+    var coinlistPath = '/gemcore/coinlist.json'
     if(isDevMode || betaTest)
     {
-      coinlistPath = '/tentcore/coinlist_beta.json'
+      coinlistPath = '/gemcore/coinlist_beta.json'
     }
 
     var request = require('request');
@@ -530,10 +530,10 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   }
 
   function getServerData(){
-    var coinData = '/tentcore/' + (currentCoin == undefined ? 'TENT' : currentCoin) + '/version.txt'
+    var coinData = '/gemcore?coin=' + (currentCoin == undefined ? 'gemlink' : currentCoin)
     if(isDevMode || betaTest)
     {
-      coinData = '/tentcore/beta/' + (currentCoin == undefined ? 'TENT' : currentCoin) + '/version.txt'
+      coinData = '/gemcore/beta?coin=' + (currentCoin == undefined ? 'gemlink' : currentCoin)
     }
     var request = require('request');
     if($scope.port == 443)

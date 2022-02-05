@@ -234,7 +234,7 @@ app.controller('SendCtrl', ["$scope", "$http", "$timeout", "$translate", "$rootS
   }
 
   $scope.faq = function () {
-    shell.openExternal('https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions')
+    shell.openExternal('https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions')
   }
 
   $scope.maxCoinClick = function () {

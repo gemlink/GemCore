@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "تم من طرف",
     "by": "من طرف",
-    "tentTeam": "TENT فريق"
+    "gemlinkTeam": "Gemlink فريق"
   },
   "navbar": {
-    "logoTitle": "TENT مركز",
+    "logoTitle": "Gemlink مركز",
     "menuIconTitle": "قائمة التبديل",
     "reloadIconTitle": "إعادة تحميل المحفظة",
     "aboutIconTitle": "حول",
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "أرصدة شفافة غير كافية، لديك ",
       "InsufficientTransparentFunds2": " المزيد لتجنب إنشاء تغيير إخراج غير صالح ",
       "InsufficientTransparentFunds3": " (عتبة الغبار يكون ",
-      "BadTxnsOversize": "لقد تلقيت خطأ 'تحويل سيئ كبير الحجم'. الرجاء إرسال مبالغ أصغر أولاً. تحقق من قسم الأسئلة الشائعة في https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "لقد تلقيت خطأ 'تحويل سيئ كبير الحجم'. الرجاء إرسال مبالغ أصغر أولاً. تحقق من قسم الأسئلة الشائعة في https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "قد تلقيت خطأ 'لم يتم استيفاء متطلبات الانضمام إلى المعاملات السيئة' . يرجى إعادة فحص المحفظة",
       "NonCoinbaseUTXOsToSpend": "تحتاج إلى حماية العملات أولاً قبل إرسالها إلى عنوان آخر. إذهب إلى العملات المحمية، و إختر عنوان الحماية الخاص بك و أنقر على حماية أو حماية الكل (في حالة وجود عدة ماسترنود)",
       "NoCoinbaseFundsToShield": "لا توجد مكافآت ماسترنود في هذا العنوان للحماية. إستخدم إرسال العملات الرقمية بدلاً من ذلك."

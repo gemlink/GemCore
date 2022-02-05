@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Créé avec",
     "by": "par",
-    "tentTeam": "L'équipe de TENT"
+    "gemlinkTeam": "L'équipe de Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Menu basculeur",
     "reloadIconTitle": "Rechargement du porte-monnaie",
     "aboutIconTitle": "A propos",
@@ -395,7 +395,7 @@
     "selectDataDir": "Selectionnez l'annuaire des données"
   },
   "endscreen": {
-    "shutdown1": "TENT Core est en fermeture",
+    "shutdown1": "Gemlink Core est en fermeture",
     "shutdown2": "S'il vous plait ne pas fermer l'ordinateur",
     "shutdown3": "jusqu'a temps que cette fenêtre soit disparue."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "fond transparent Insufficient, a ",
       "InsufficientTransparentFunds2": " plus pour éviter de créer une sortie de modification invalide ",
       "InsufficientTransparentFunds3": " (le seuil est de ",
-      "BadTxnsOversize": "Vous avez eu un erreur de 'bad-txns-oversize'. S'il vous plait, envoyez un plus petit montant en premier. Regardez la section FAQ au https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": "Vous avez eu un erreur de 'bad-txns-oversize'. S'il vous plait, envoyez un plus petit montant en premier. Regardez la section FAQ au https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": "vous avez un erreur 'bad-txns-joinsplit-requirements-not-met'. S'il vous plait rescannez le porte-monnaie.",
       "NonCoinbaseUTXOsToSpend": "vous devez privatiser la monnaie avant de l'envoyer à un autre adresse. Allez à privatiser la monnaie, choisissez votre adresse privée et cliquez sur Privatisez ou Privatisez tous les monnaies (en cas de plusieurs MN´s)",
       "NoCoinbaseFundsToShield": "There are no masternode rewards in this address to shield. Use Send Coins instead."

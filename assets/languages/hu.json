@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Készítette",
     "by": "a",
-    "tentTeam": "TENT Csapat"
+    "gemlinkTeam": "Gemlink Csapat"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Menü váltás",
     "reloadIconTitle": "Pénztárca újratöltés",
     "aboutIconTitle": "Infó",
@@ -395,7 +395,7 @@
     "selectDataDir": "Válassza ki az adatkönyvtárat"
   },
   "endscreen": {
-    "shutdown1": "TENT Core kilép",
+    "shutdown1": "Gemlink Core kilép",
     "shutdown2": "Kérem ne állítsa le a számítógépet",
     "shutdown3": "amíg ez az ablak el nem tűnik."
   },
@@ -431,7 +431,7 @@
       "InsufficientTransparentFunds1": "Nincs elegendő tiszta forrás, szükség van ",
       "InsufficientTransparentFunds2": " többre, hogy elkerüljük az érvénytelen változtatást ",
       "InsufficientTransparentFunds3": " (pénz határérték: ",
-      "BadTxnsOversize": " 'bad-txns-oversize' hiba. Kérlek előbb egy kisebb összeget küldj. Nézd meg a FAQ részt az alábbi oldalon: https://docs.tent.app/wallets/snowgem-modern-wallet/frequently-asked-questions",
+      "BadTxnsOversize": " 'bad-txns-oversize' hiba. Kérlek előbb egy kisebb összeget küldj. Nézd meg a FAQ részt az alábbi oldalon: https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions",
       "BadTxnsJoinsplitRequirementsNotMet": " 'bad-txns-joinsplit-requirements-not-met' hiba. Kérlek scanneld újra a tárcát.",
       "NonCoinbaseUTXOsToSpend": "Előbb be kell biztosítanod az érméid (shileding) mielőtt továbbküldöd egy másik címre. Biztosítsd be az érmeket, válaszd a biztosított privát címet majd nyomj a biztosítás, vagy összes biztosítása gombra (Több MasterNode esetén)",
       "NoCoinbaseFundsToShield": "Nincsenek MasterNode jutalmak amit be lehetne biztosítani. Helyette válaszd az érmek küldése lehetőséget."
