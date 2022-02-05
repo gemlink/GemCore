@@ -129,21 +129,21 @@ if(args[0] == '.')
 //   if(process.platform == 'win32')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'GemCore',
+//           name: 'gemlink',
 //           path: currLoc.replace('/', /\\/g) + "\\" + "GemCore.exe",
 //       });
 //   }
 //   else if(process.platform == 'linux')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'GemCore',
+//           name: 'gemlink',
 //           path: currLoc + "/" + "GemCore",
 //       });
 //   }
 //   else if(process.platform == 'darwin')
 //   {
 //       autoLauncher = new autoLaunch({
-//           name: 'GemCore',
+//           name: 'gemlink',
 //           path: currLoc + "/" + "GemCore.app",
 //       });
 //   }
@@ -622,7 +622,7 @@ function startDeamon(arg){
 function startCli(arg, coinType){
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var tempArg = []
   var index = args.findIndex(function(e){return e == '-testnet'})
@@ -772,7 +772,7 @@ function getNetworkHeight(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "getinfo"]
   // writeLog(arg)
@@ -783,7 +783,7 @@ function getBestBlockhash(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = ["getblockchaininfo"]
   // writeLog(arg)
@@ -794,7 +794,7 @@ function getBestTime(bloblockHashckhash, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "getblockheader", bloblockHashckhash]
   // writeLog(arg)
@@ -805,7 +805,7 @@ function zGetTotalBalance(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "z_gettotalbalance"]
   // writeLog(arg)
@@ -816,7 +816,7 @@ function getWalletInfo( coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "getwalletinfo"]
   // writeLog(arg)
@@ -841,7 +841,7 @@ function getAddressBalance(address, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "z_getbalance", address]
   // writeLog(arg)
@@ -956,7 +956,7 @@ function listTransactions(count, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "listtransactions", "", count]
   // writeLog(arg)
@@ -967,7 +967,7 @@ function listReceivedByAddress(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "listreceivedbyaddress", 999999999, true, true]
   // writeLog(arg)
@@ -978,7 +978,7 @@ function getAddressByAccount(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "getaddressesbyaccount", ""]
   // writeLog(arg)
@@ -989,7 +989,7 @@ function listAddressGroupings(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "listaddressgroupings"]
   // writeLog(arg)
@@ -1000,7 +1000,7 @@ function zListAddress(coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg = [ "z_listaddresses"]
   // writeLog(arg)
@@ -1090,7 +1090,7 @@ function verifyAddress(address, data, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   validateaddressData = undefined
   var arg= ['validateaddress', address]
@@ -1103,7 +1103,7 @@ function encryptWallet(password, coinType) {
   encryptData = undefined
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg= ['encryptwallet', password]
   // writeLog(arg)
@@ -1115,7 +1115,7 @@ function changePass(phrase, newPhrase, coinType)
   changePassData = undefined
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg= ['walletpassphrasechange', phrase, newPhrase]
   // writeLog(arg)
@@ -1127,7 +1127,7 @@ function lockWallet(coinType)
   lockData = undefined
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   var arg= ['walletlock']
   // writeLog(arg)
@@ -1139,7 +1139,7 @@ function unlockWallet(phrase, time, coinType)
   unlockData = undefined
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   if (time == undefined)
   {
@@ -1154,7 +1154,7 @@ function verifyZAddress(address, data, coinType)
 {
   if(coinType == undefined)
   {
-    coinType = 'gemcore'
+    coinType = 'gemlink'
   }
   validateaddressData = undefined
   var arg = ['z_validateaddress', address]
@@ -1685,8 +1685,8 @@ function countOcurrences(str, value, isProgramName) {
 
 function getPrice()
 {
-  var serverUrl = "data.tent.app"
-  var backupUrl = "rates.tent.app"
+  var serverUrl = "data.gemlink.org"
+  var backupUrl = "rates.gemlink.org"
   var path =  '/rates/index.html'
   var request = require('request');
   request('https://' + serverUrl + path, function (error, response, body) {
@@ -2437,7 +2437,7 @@ function curlData(username, password, port, methods, params, coinType){
         rtnData['key'] = temp[0]
         rtnData['arg'] = temp
         rtnData['value'] = error
-        if(coinType == 'gemcore')
+        if(coinType == 'gemlink')
         {
           handleFunction(rtnData)
         }
@@ -2460,7 +2460,7 @@ function curlData(username, password, port, methods, params, coinType){
         rtnData['key'] = temp[0]
         rtnData['arg'] = temp
         rtnData['value'] = data
-        if(coinType == 'gemcore')
+        if(coinType == 'gemlink')
         {
           handleFunction(rtnData)
         }

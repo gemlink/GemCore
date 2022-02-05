@@ -1,7 +1,7 @@
 app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$rootScope", function($scope, $http, $timeout, $translate, $rootScope) {
   var loading = true // set to true while we fetch the balances
-  var serverUrl = "data.tent.app"
-  var backupUrl = "data2.tent.app"
+  var serverUrl = "https://data.gemlink.org"
+  var backupUrl = "https://data2.gemlink.org"
   var step = Steps.GET_COIN_LIST
   var verifyingKeyMD5 = "21e8b499aa84b5920ca0cea260074f34"
   var provingKeyMD5 = "af23e521697ed69d8b8a6b9c53e48300"
@@ -24,21 +24,21 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   if(process.platform == 'win32')
   {
       autoLauncher = new autoLaunch({
-          name: 'GemCore',
+          name: 'gemlink',
           path: currLoc.replace('/', '\\') + "\\" + "GemCore.exe",
       });
   }
   else if(process.platform == 'linux')
   {
       autoLauncher = new autoLaunch({
-          name: 'GemCore',
+          name: 'gemlink',
           path: currLoc + "/" + "GemCore",
       });
   }
   else if(process.platform == 'darwin')
   {
       autoLauncher = new autoLaunch({
-          name: 'GemCore',
+          name: 'gemlink',
           path: "/Applications/GemCore.app",
       });
   }
@@ -471,43 +471,25 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   }
 
   function getCoinList(){
-    var coinlistPath = '/gemcore/coinlist.json'
+    var coinlistPath = '/getcoins'
     if(isDevMode || betaTest)
     {
-      coinlistPath = '/gemcore/coinlist_beta.json'
+      coinlistPath = '/getcoinsbeta'
     }
 
     var request = require('request');
-    request('https://' + serverUrl + coinlistPath, function (error, response, body) {
-      console.log('error:', error); // Print the error if one occurred
+    request(serverUrl + coinlistPath, function (error, response, body) {
+      console.log('error:', error, response, body); // Print the error if one occurred
       if(response == undefined || response.statusCode != 200)
       {
-        request('https://' + backupUrl + coinlistPath, function (error, response, body) {
+        request(backupUrl + coinlistPath, function (error, response, body) {
           console.log('error:', error); // Print the error if one occurred
           if(response == undefined || response.statusCode != 200){
-            request('http://' + serverUrl + coinlistPath, function (error, response, body) {
-              console.log('error:', error); // Print the error if one occurred
-              if(response == undefined || response.statusCode != 200){
-                spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
-              }
-              else
-              {
-                $scope.server = serverUrl
-                $scope.port = 80
-                coinList = JSON.parse(String(body))
-                if(isDevMode || betaTest)
-                {
-                  writeLog(coinList)
-                }
-                step = Steps.CHECK_LANGUAGE
-                prepareFiles(step)
-              }
-            })
+            spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
           }
           else
           {
             $scope.server = backupUrl
-            $scope.port = 443
             coinList = JSON.parse(String(body))
             if(isDevMode || betaTest)
             {
@@ -521,7 +503,6 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
       else
       {
         $scope.server = serverUrl
-        $scope.port = 443
         coinList = JSON.parse(String(body))
         step = Steps.CHECK_LANGUAGE
         prepareFiles(step)
@@ -535,57 +516,30 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
     {
       coinData = '/gemcore/beta?coin=' + (currentCoin == undefined ? 'gemlink' : currentCoin)
     }
+    writeLog("Curent coin", currentCoin)
     var request = require('request');
-    if($scope.port == 443)
-    {
-      request('https://' + $scope.server + coinData, function (error, response, body) {
-        if(response == undefined){
+    request($scope.server + coinData, function (error, response, body) {
+      if(response == undefined){
+        spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
+      }
+      else
+      {
+        try
+        {
+          serverData = JSON.parse(String(body))
+          if(isDevMode || betaTest)
+          {
+            writeLog(serverData)
+          }
+          step = Steps.SHOW_POPUP
+          prepareFiles(step)
+        }
+        catch(err)
+        {
           spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
         }
-        else
-        {
-          try
-          {
-            serverData = JSON.parse(String(body))
-            if(isDevMode || betaTest)
-            {
-              writeLog(serverData)
-            }
-            step = Steps.SHOW_POPUP
-            prepareFiles(step)
-          }
-          catch(err)
-          {
-            spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
-          }
-        }
-      })
-    }
-    else if($scope.port == 80)
-    {
-      request('http://' + $scope.server + coinData, function (error, response, body) {
-        if(response == undefined){
-          spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
-        }
-        else
-        {
-          try
-          {
-            serverData = JSON.parse(String(body))
-            if(isDevMode || betaTest)
-            {
-              writeLog(serverData)
-            }
-            step = Steps.SHOW_POPUP
-            prepareFiles(step)
-          }
-          catch(err)
-          {
-            spawnMessage(MsgType.ALERT, $scope.ctrlTranslations['loadingView.serverErr'])
-          }
-        }
-      })
-    }
+      }
+    })
   }
 
   function checkWalletVersion(ver) {

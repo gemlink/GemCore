@@ -295,7 +295,7 @@ app.controller('OverviewCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
 
   electron.ipcRenderer.on('child-execute-timer', function(event, msgData){
     writeLog('execute screen summary timer')
-    if(msgData.msg[1].cointype == 'gemcore')
+    if(msgData.msg[1].cointype == 'gemlink')
     {
       setTimeout(getDataTimerFunction, 3000)
     }

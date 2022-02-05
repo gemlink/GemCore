@@ -149,7 +149,7 @@ app.controller('SplashCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   var confData
   var hideSplash = false
   var isStart = false
-  $scope.detail.log = 'GemCore'
+  $scope.detail.log = 'gemlink'
   $timeout(function(){
     $scope.detail.hidedata = false
   },1000)

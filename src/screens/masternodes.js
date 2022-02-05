@@ -136,9 +136,9 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
   }
 
   function populateNetworkMN(data) {
-    writeLog('total MNs: ' + data.result.length)
+    //writeLog('total MNs: ' + data.result?.length)
     $scope.networkMNs = []
-    data.result.forEach(function (element) {
+    if(data.result) {data.result.forEach(function (element) {
       var temp = {}
       temp['rank'] = element.rank
       temp['ip'] = element.ip
@@ -152,6 +152,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
       temp['outidx'] = element.outidx
       $scope.networkMNs.push(temp)
     })
+  }
 
     if ($scope.networkMNs.length == 0) {
       setTimeout(getMasternodeList, 5000);
@@ -368,12 +369,12 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
       var data = []
       data.push('rpcuser=' + makeRandom(40))
       data.push('rpcpassword=' + makeRandom(40))
-      data.push('addnode=dnsseed1.tent.app')
-      data.push('addnode=dnsseed2.tent.app')
-      data.push('addnode=dnsseed3.tent.app')
+      data.push('addnode=dnsseed1.gemlink.org')
+      data.push('addnode=dnsseed2.gemlink.org')
+      data.push('addnode=dnsseed3.gemlink.org')
       data.push('addnode=explorer.gemlink.org')
-      data.push('addnode=insight.tent.app')
-      data.push('addnode=insight.tent.app')
+      data.push('addnode=insight.gemlink.org')
+      data.push('addnode=insight.gemlink.org')
       var index = $scope.selectedList.findIndex(function (e) {
         return e.status == true
       })
