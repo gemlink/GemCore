@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Vytvořeno s",
     "by": "v",
-    "tentTeam": "TENT Týmu"
+    "gemlinkTeam": "Gemlink Týmu"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Skrýt Menu",
     "reloadIconTitle": "Znovu načíst Peněženku",
     "aboutIconTitle": "O produktu",
@@ -395,7 +395,7 @@
     "selectDataDir": "Vyberte adresář pro data"
   },
   "endscreen": {
-    "shutdown1": "TENT Core se vypíná",
+    "shutdown1": "Gemlink Core se vypíná",
     "shutdown2": "Nevypínejte prosím počítač",
     "shutdown3": "dokud se toto okno nevypne."
   },

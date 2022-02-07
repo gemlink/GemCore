@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Crafted with",
     "by": "by",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Toggle Menu",
     "reloadIconTitle": "Reload Wallet",
     "aboutIconTitle": "About",
@@ -405,7 +405,7 @@
     "selectDataDir": "Select data directory"
   },
   "endscreen": {
-    "shutdown1": "TENT Core is shutting down",
+    "shutdown1": "Gemlink Core is shutting down",
     "shutdown2": "Please do not shutdown the computer",
     "shutdown3": "until this window disappears."
   },

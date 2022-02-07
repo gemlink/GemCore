@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Készítette",
     "by": "a",
-    "tentTeam": "TENT Csapat"
+    "gemlinkTeam": "Gemlink Csapat"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Menü váltás",
     "reloadIconTitle": "Pénztárca újratöltés",
     "aboutIconTitle": "Infó",
@@ -395,7 +395,7 @@
     "selectDataDir": "Válassza ki az adatkönyvtárat"
   },
   "endscreen": {
-    "shutdown1": "TENT Core kilép",
+    "shutdown1": "Gemlink Core kilép",
     "shutdown2": "Kérem ne állítsa le a számítógépet",
     "shutdown3": "amíg ez az ablak el nem tűnik."
   },

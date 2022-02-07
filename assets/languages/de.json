@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Hergestellt mit",
     "by": "vom",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Toggle-Menü",
     "reloadIconTitle": "Wallet neu laden",
     "aboutIconTitle": "Über",
@@ -395,7 +395,7 @@
     "selectDataDir": "Wählen Sie den Pfad für die Daten aus"
   },
   "endscreen": {
-    "shutdown1": "TENT Core wird ausgeschaltet",
+    "shutdown1": "Gemlink Core wird ausgeschaltet",
     "shutdown2": "Bitte schalten Sie den Computer nicht aus",
     "shutdown3": "bis dieses Fenster verschwindet."
   },

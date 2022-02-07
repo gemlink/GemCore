@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Elaborado con",
     "by": "por",
-    "tentTeam": "El Equipo de TENT"
+    "gemlinkTeam": "El Equipo de Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Alternar el Menú",
     "reloadIconTitle": "Recargar Cartera",
     "aboutIconTitle": "Acerca de",
@@ -395,7 +395,7 @@
     "selectDataDir": "Seleccionar del directorio de datos"
   },
   "endscreen": {
-    "shutdown1": "El TENT Core se está cerrando",
+    "shutdown1": "El Gemlink Core se está cerrando",
     "shutdown2": "Favor de no apagar la computadora",
     "shutdown3": "hasta que la ventana se desaparezca."
   },

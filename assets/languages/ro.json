@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Lucrat cu",
     "by": "de",
-    "tentTeam": "Echipa TENT"
+    "gemlinkTeam": "Echipa Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Comutați meniul",
     "reloadIconTitle": "Reîncărcați portofelul",
     "aboutIconTitle": "Despre",
@@ -395,7 +395,7 @@
     "selectDataDir": "Selectați directorul de date"
   },
   "endscreen": {
-    "shutdown1": "TENT Core se închide",
+    "shutdown1": "Gemlink Core se închide",
     "shutdown2": "Vă rugăm să nu închideți computerul",
     "shutdown3": "până când această fereastră nu dispare."
   },

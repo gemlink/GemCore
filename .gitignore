@@ -108,3 +108,5 @@ src/endscreen.js
 src/index.js
 src/splashscreen.js
 package-lock.json
+release-builds
+src/mwapp

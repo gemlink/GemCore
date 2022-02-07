@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "تم من طرف",
     "by": "من طرف",
-    "tentTeam": "TENT فريق"
+    "gemlinkTeam": "Gemlink فريق"
   },
   "navbar": {
-    "logoTitle": "TENT مركز",
+    "logoTitle": "Gemlink مركز",
     "menuIconTitle": "قائمة التبديل",
     "reloadIconTitle": "إعادة تحميل المحفظة",
     "aboutIconTitle": "حول",

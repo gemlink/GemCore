@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Gemaakt met",
     "by": "door",
-    "tentTeam": "TENT Team"
+    "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Schakel Menu",
     "reloadIconTitle": "Herstart Wallet",
     "aboutIconTitle": "Over",
@@ -391,7 +391,7 @@
     "selectDataDir": "Selecteer data map"
   },
   "endscreen": {
-    "shutdown1": "TENT Core is aan het afsluiten",
+    "shutdown1": "Gemlink Core is aan het afsluiten",
     "shutdown2": "Schakel uw computer alstublieft niet uit",
     "shutdown3": "Totdat dit venster verdwijnt."
   },

@@ -8,10 +8,10 @@
   "crafted": {
     "craftedWith": "Сделано с",
     "by": "от",
-    "tentTeam": "Команда TENT"
+    "gemlinkTeam": "Команда Gemlink"
   },
   "navbar": {
-    "logoTitle": "TENT Core",
+    "logoTitle": "Gemlink Core",
     "menuIconTitle": "Переключить меню",
     "reloadIconTitle": "Перезагрузить кошелёк",
     "aboutIconTitle": "О продукте",
@@ -395,7 +395,7 @@
     "selectDataDir": "Выберите папку данных"
   },
   "endscreen": {
-    "shutdown1": "TENT Core выключается",
+    "shutdown1": "Gemlink Core выключается",
     "shutdown2": "Пожалуйста не выключайте ваш компьютер",
     "shutdown3": "пока это окно не пропадёт."
   },
