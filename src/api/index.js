@@ -1183,7 +1183,7 @@ function getTransaction(txid)
 function getMNPrivKey()
 {
   masternodegenkeyData = undefined
-  var arg = [ "masternode", 'genkey' ]
+  var arg = [ "createmasternodekey" ]
   // writeLog(arg)
   startCli(arg)
 }
@@ -1191,7 +1191,7 @@ function getMNPrivKey()
 function getMNOutputs()
 {
   masternodeoutputsData = undefined
-  var arg = [ "masternode", 'outputs' ]
+  var arg = [ "getmasternodeoutputs" ]
   // writeLog(arg)
   startCli(arg)
 }
@@ -1199,7 +1199,7 @@ function getMNOutputs()
 function getMasternodeList()
 {
   masternodelistData = undefined
-  var arg = [ "masternode", 'list' ]
+  var arg = [ "listmasternodes" ]
   // writeLog(arg)
   startCli(arg)
 }
