@@ -1204,23 +1204,20 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
       z_shieldcoinbaseData = data
       electron.ipcRenderer.send('main-shield-coin', z_shieldcoinbaseData)
     }
-    else if(data.key == 'masternode')
+    else if(data.key == 'getmasternodeoutputs')
     {
-      if(data.arg['1'] == 'list')
-      {
-        masternodelistData = data.value
-        electron.ipcRenderer.send('main-masternode-list', masternodelistData)
-      }
-      else  if(data.arg['1'] == 'outputs')
-      {
-        masternodeoutputsData = data.value
-        electron.ipcRenderer.send('main-masternode-outputs', masternodeoutputsData)
-      }
-      else  if(data.arg['1'] == 'genkey')
-      {
-        masternodegenkeyData = data.value
-        electron.ipcRenderer.send('main-masternode-genkey', masternodegenkeyData)
-      }
+      masternodeoutputsData = data.value
+      electron.ipcRenderer.send('main-masternode-outputs', masternodeoutputsData)
+    }
+    else if(data.key == 'createmasternodekey')
+    {
+      masternodegenkeyData = data.value
+      electron.ipcRenderer.send('main-masternode-genkey', masternodegenkeyData)
+    }
+    else if(data.key == 'listmasternodes')
+    {
+      masternodelistData = data.value
+      electron.ipcRenderer.send('main-masternode-list', masternodelistData)
     }
     else if(data.key == 'startmasternode')
     {
