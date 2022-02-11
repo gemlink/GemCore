@@ -378,7 +378,7 @@ app.on('ready', function () {
     tray = new Tray(path.join(__dirname, "../assets/logo/linux/icon.png"))
   }
   else if (process.platform == 'darwin') {
-    tray = new Tray(path.join(__dirname, "../assets/logo/mac/icon.icns"))
+    return
   }
 })
 
