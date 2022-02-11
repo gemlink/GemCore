@@ -1,6 +1,7 @@
 {
     "appId": "Gem.core",
     "productName": "GemCore",
+    "buildVersion": "2.0.1",
     "files": [
         "src/**/*",
         "global/**/*",
@@ -43,22 +44,19 @@
             "AppImage",
             "deb"
         ],
-        "icon": "assets/logo/linux/icon.png",
-        "publish": ["Gemlink Inc."]
+        "icon": "assets/logo/linux/icon.png"
     },
     "win": {
         "target": [
             "nsis"
         ],
-        "icon": "assets/logo/win/icon.ico",
-        "publish": ["Gemlink Inc."]
+        "icon": "assets/logo/win/icon.ico"
     },
     "mac": {
         "target": [
             "pkg"
         ],
-        "icon": "assets/logo/mac/icon.icns",
-        "publish": ["Gemlink Inc."]
+        "icon": "assets/logo/mac/icon.icns"
     }
 }
 
