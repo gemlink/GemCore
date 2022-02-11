@@ -1,7 +1,7 @@
 {
   "name": "GemCore",
   "version": "2.0.1",
-  "description": "A minimal Electron application",
+  "description": "GemCore Wallet",
   "main": "src/index.js",
   "scripts": {
     "start": "grunt concat && electron . ",
@@ -17,12 +17,12 @@
     "build-appimage-linux": "npm run package-linux && npm run build-appimage",
     "build-appimage-mac": "npm run package-mac && npm run build-appimage"
   },
-  "repository": "https://github.com/gemlink/GemCore",
+  "repository": "https://github.com/gemlink/gemcore",
   "keywords": [
     "Electron",
     "GemCore"
   ],
-  "author": "Gemlink Inc.",
+  "author": "Gemlink Inc. <business@gemlink.org>",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^2.0.18",
