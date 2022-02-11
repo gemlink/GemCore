@@ -40,21 +40,25 @@
     "asar": true,
     "linux": {
         "target": [
-            "AppImage"
+            "AppImage",
+            "deb"
         ],
-        "icon": "assets/icons/linux/icon.png"
+        "icon": "assets/logo/linux/icon.png",
+        "publish": ["Gemlink Inc."]
     },
     "win": {
         "target": [
-            "msi"
+            "nsis"
         ],
-        "icon": "assets/icons/linux/icon.ico"
+        "icon": "assets/logo/win/icon.ico",
+        "publish": ["Gemlink Inc."]
     },
     "mac": {
         "target": [
-            "default"
+            "pkg"
         ],
-        "icon": "assets/icons/mac/icon.icns"
+        "icon": "assets/logo/mac/icon.icns",
+        "publish": ["Gemlink Inc."]
     }
 }
 

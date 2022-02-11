@@ -42,7 +42,7 @@ function createEndWindow () {
       minHeight: 400,
       frame: isFrame,
       show: isShow,
-      icon: path.join(__dirname + '/../assets/icons/linux/icon.png')
+      icon: path.join(__dirname + '/../assets/logo/linux/icon.png')
     })
   }
   else
@@ -89,7 +89,7 @@ function createSplashWindow () {
       minWidth: 750,
       minHeight: 400,
       resizable: true,
-      icon: path.join(__dirname + '/../assets/icons/linux/icon.png'),
+      icon: path.join(__dirname + '/../assets/logo/linux/icon.png'),
       frame: isFrame,
       show: isShow
     })
@@ -165,7 +165,7 @@ function createWindow () {
       minHeight: 620,
       enableLargerThanScreen: true,
       show: isShow,
-      icon: path.join(__dirname + '/../assets/icons/linux/icon.png'),
+      icon: path.join(__dirname + '/../assets/logo/linux/icon.png'),
       frame: isFrame
     })
   }
@@ -305,7 +305,7 @@ function createDebuggingWindow () {
         minWidth: 750,
         minHeight: 400,
         resizable: false,
-        icon: path.join(__dirname + '/../assets/icons/linux/icon.png'),
+        icon: path.join(__dirname + '/../assets/logo/linux/icon.png'),
         frame: isFrame,
         show: false
       })
@@ -372,13 +372,13 @@ app.on('ready', function () {
   createSplashWindow()
   
   if (process.platform == 'win32') {
-    tray = new Tray(path.join(__dirname, "../assets/icons/win/icon.ico"))
+    tray = new Tray(path.join(__dirname, "../assets/logo/win/icon.ico"))
   }
   else if (process.platform == 'linux') {
-    tray = new Tray(path.join(__dirname, "../assets/icons/linux/icon.png"))
+    tray = new Tray(path.join(__dirname, "../assets/logo/linux/icon.png"))
   }
   else if (process.platform == 'darwin') {
-    return
+    tray = new Tray(path.join(__dirname, "../assets/logo/mac/icon.icns"))
   }
 })
 
