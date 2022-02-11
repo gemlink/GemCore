@@ -107,6 +107,7 @@ src/mwapp.js
 src/endscreen.js
 src/index.js
 src/splashscreen.js
+src/debuggingscreen.js
 package-lock.json
 release-builds
 src/mwapp
