@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Csapat"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Menü váltás",
     "reloadIconTitle": "Pénztárca újratöltés",
     "aboutIconTitle": "Infó",
@@ -395,7 +395,7 @@
     "selectDataDir": "Válassza ki az adatkönyvtárat"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core kilép",
+    "shutdown1": "GemCore kilép",
     "shutdown2": "Kérem ne állítsa le a számítógépet",
     "shutdown3": "amíg ez az ablak el nem tűnik."
   },

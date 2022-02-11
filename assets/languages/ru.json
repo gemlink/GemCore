@@ -11,7 +11,7 @@
     "gemlinkTeam": "Команда Gemlink"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Переключить меню",
     "reloadIconTitle": "Перезагрузить кошелёк",
     "aboutIconTitle": "О продукте",
@@ -395,7 +395,7 @@
     "selectDataDir": "Выберите папку данных"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core выключается",
+    "shutdown1": "GemCore выключается",
     "shutdown2": "Пожалуйста не выключайте ваш компьютер",
     "shutdown3": "пока это окно не пропадёт."
   },

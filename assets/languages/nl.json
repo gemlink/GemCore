@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Schakel Menu",
     "reloadIconTitle": "Herstart Wallet",
     "aboutIconTitle": "Over",
@@ -391,7 +391,7 @@
     "selectDataDir": "Selecteer data map"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core is aan het afsluiten",
+    "shutdown1": "GemCore is aan het afsluiten",
     "shutdown2": "Schakel uw computer alstublieft niet uit",
     "shutdown3": "Totdat dit venster verdwijnt."
   },

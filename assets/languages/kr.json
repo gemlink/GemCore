@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink 일동"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "토글 메뉴",
     "reloadIconTitle": "지갑 다시 로드",
     "aboutIconTitle": "자세히",
@@ -395,7 +395,7 @@
     "selectDataDir": "데이터 경로를 선택해주세요"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core 종료 중 입니다",
+    "shutdown1": "GemCore 종료 중 입니다",
     "shutdown2": "이 창이 없어지기 전에는",
     "shutdown3": "컴퓨터를 끄지 마세요."
   },

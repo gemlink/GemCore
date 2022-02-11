@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Týmu"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Skrýt Menu",
     "reloadIconTitle": "Znovu načíst Peněženku",
     "aboutIconTitle": "O produktu",
@@ -395,7 +395,7 @@
     "selectDataDir": "Vyberte adresář pro data"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core se vypíná",
+    "shutdown1": "GemCore se vypíná",
     "shutdown2": "Nevypínejte prosím počítač",
     "shutdown3": "dokud se toto okno nevypne."
   },

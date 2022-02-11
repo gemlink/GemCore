@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink团队"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "切换菜单",
     "reloadIconTitle": "重新加载钱包",
     "aboutIconTitle": "关于",
@@ -391,7 +391,7 @@
     "selectDataDir": "选择数据目录"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core 正在关闭",
+    "shutdown1": "GemCore 正在关闭",
     "shutdown2": "请不要关闭电脑",
     "shutdown3": "直到此窗口消失"
   },

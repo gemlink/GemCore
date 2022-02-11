@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Toggle Menu",
     "reloadIconTitle": "Reload Wallet",
     "aboutIconTitle": "About",
@@ -405,7 +405,7 @@
     "selectDataDir": "Select data directory"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core is shutting down",
+    "shutdown1": "GemCore is shutting down",
     "shutdown2": "Please do not shutdown the computer",
     "shutdown3": "until this window disappears."
   },

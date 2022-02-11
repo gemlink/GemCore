@@ -11,7 +11,7 @@
     "gemlinkTeam": "Echipa Gemlink"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Comutați meniul",
     "reloadIconTitle": "Reîncărcați portofelul",
     "aboutIconTitle": "Despre",
@@ -395,7 +395,7 @@
     "selectDataDir": "Selectați directorul de date"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core se închide",
+    "shutdown1": "GemCore se închide",
     "shutdown2": "Vă rugăm să nu închideți computerul",
     "shutdown3": "până când această fereastră nu dispare."
   },

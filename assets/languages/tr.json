@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Takımı"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Geçiş Menüsü",
     "reloadIconTitle": "Cüzdanı Yeniden Yükle",
     "aboutIconTitle": "Hakkında",
@@ -391,7 +391,7 @@
     "selectDataDir": "Veri rehberinizi seçin"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core kapanıyor",
+    "shutdown1": "GemCore kapanıyor",
     "shutdown2": "Lütfen bilgisayarı kapatmayın",
     "shutdown3": "bu pencere kaybolana kadar."
   },

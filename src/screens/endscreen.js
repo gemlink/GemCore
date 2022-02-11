@@ -144,7 +144,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
         'endscreen.shutdown2',
         'endscreen.shutdown3'
       ]).then((o) => {
-        $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "Gemlink Core is shutting down"
+        $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "GemCore is shutting down"
         $scope.detail.shutdown2 = $scope.ctrlTranslations['endscreen.shutdown2'] || "Please do not shutdown the computer"
         $scope.detail.shutdown3 = $scope.ctrlTranslations['endscreen.shutdown3'] || "until this window disappears."
         })
@@ -152,7 +152,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
   }
 
   $timeout(function(){
-    $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "Gemlink Core is shutting down"
+    $scope.detail.shutdown1 = $scope.ctrlTranslations['endscreen.shutdown1'] || "GemCore is shutting down"
     $scope.detail.shutdown2 = $scope.ctrlTranslations['endscreen.shutdown2'] || "Please do not shutdown the computer"
     $scope.detail.shutdown3 = $scope.ctrlTranslations['endscreen.shutdown3'] || "until this window disappears."
   }, 0)

@@ -11,7 +11,7 @@
     "gemlinkTeam": "L'équipe de Gemlink"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Menu basculeur",
     "reloadIconTitle": "Rechargement du porte-monnaie",
     "aboutIconTitle": "A propos",
@@ -395,7 +395,7 @@
     "selectDataDir": "Selectionnez l'annuaire des données"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core est en fermeture",
+    "shutdown1": "GemCore est en fermeture",
     "shutdown2": "S'il vous plait ne pas fermer l'ordinateur",
     "shutdown3": "jusqu'a temps que cette fenêtre soit disparue."
   },

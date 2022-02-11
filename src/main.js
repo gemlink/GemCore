@@ -258,7 +258,7 @@ function createWindow () {
 
     if (process.platform != 'darwin')
     {
-      tray.setToolTip('Gemlink Core')
+      tray.setToolTip('GemCore')
       tray.setContextMenu(trayMenu)
       tray.on('double-click', function () {
         mainWindow ? mainWindow.show() : ""

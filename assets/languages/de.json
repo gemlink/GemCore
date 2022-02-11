@@ -11,7 +11,7 @@
     "gemlinkTeam": "Gemlink Team"
   },
   "navbar": {
-    "logoTitle": "Gemlink Core",
+    "logoTitle": "GemCore",
     "menuIconTitle": "Toggle-Menü",
     "reloadIconTitle": "Wallet neu laden",
     "aboutIconTitle": "Über",
@@ -395,7 +395,7 @@
     "selectDataDir": "Wählen Sie den Pfad für die Daten aus"
   },
   "endscreen": {
-    "shutdown1": "Gemlink Core wird ausgeschaltet",
+    "shutdown1": "GemCore wird ausgeschaltet",
     "shutdown2": "Bitte schalten Sie den Computer nicht aus",
     "shutdown3": "bis dieses Fenster verschwindet."
   },
