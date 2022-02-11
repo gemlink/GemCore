@@ -43,6 +43,18 @@
             "AppImage"
         ],
         "icon": "assets/icons/linux/icon.png"
+    },
+    "win": {
+        "target": [
+            "msi"
+        ],
+        "icon": "assets/icons/linux/icon.ico"
+    },
+    "mac": {
+        "target": [
+            "default"
+        ],
+        "icon": "assets/icons/mac/icon.icns"
     }
 }
 
