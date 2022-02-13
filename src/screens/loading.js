@@ -443,39 +443,35 @@ app.controller("LoadingCtrl", [
             }
             var filesUrl = serverData.blockchain_file;
             if (filesUrl && filesUrl.trim() != "") {
-              request(
-                filesUrl,
-                function (error, response, body) {
-                  if (response == undefined || error) {
-                    console.log("Request blockchain server error", error);
-                    spawnMessage(
-                      MsgType.ALERT,
-                      $scope.ctrlTranslations["loadingView.blockchainServerErr"]
-                    );
-                  } else {
-                    try {
-                      var dataFiles = JSON.parse(String(body));
-                      var files = [];
-                      if (confData.txindex == 1) {
-                        files = dataFiles.index;
-                      }
-                      else {
-                        files = dataFiles.noindex;
-                      }
-                      if (isDevMode || betaTest) {
-                        writeLog(files);
-                      }
-                      downloadBlockChain(
-                        files,
-                        getUserHome(serverData, settings)
-                      );
-                    } catch (err) {
-                      step = Steps.START_DAEMON;
-                      prepareFiles(step);
+              request(filesUrl, function (error, response, body) {
+                if (response == undefined || error) {
+                  console.log("Request blockchain server error", error);
+                  spawnMessage(
+                    MsgType.ALERT,
+                    $scope.ctrlTranslations["loadingView.blockchainServerErr"]
+                  );
+                } else {
+                  try {
+                    var dataFiles = JSON.parse(String(body));
+                    var files = [];
+                    if (confData.txindex == 1) {
+                      files = dataFiles.index;
+                    } else {
+                      files = dataFiles.noindex;
                     }
+                    if (isDevMode || betaTest) {
+                      writeLog(files);
+                    }
+                    downloadBlockChain(
+                      files,
+                      getUserHome(serverData, settings)
+                    );
+                  } catch (err) {
+                    step = Steps.START_DAEMON;
+                    prepareFiles(step);
                   }
                 }
-              );
+              });
             } else {
               step = Steps.START_DAEMON;
               prepareFiles(step);
@@ -773,7 +769,12 @@ app.controller("LoadingCtrl", [
           .split("\n");
       }
       console.log("Finished files", finishedFile);
-      var waitingFiles = files.filters(e => !finishedFile.find(ee => ee == e));
+      var waitingFiles = files;
+      if (finishedFile.length > 0) {
+        waitingFiles = waitingFiles.filters(
+          (e) => !finishedFile.find((ee) => ee == e)
+        );
+      }
       console.log("Waiting for downloading files", waitingFiles);
       if (waitingFiles.length > 0) {
         var temp = {};

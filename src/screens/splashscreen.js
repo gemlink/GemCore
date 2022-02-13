@@ -596,20 +596,25 @@ app.controller("SplashCtrl", [
 
     function downloadBlockchain(data) {
       var files = data.files;
-
+      var count = 0;
       if (files.length > 0) {
-        url = files[0];
-        delete files[0];
-        console.log("downloading " + url);
+        var url = files.splice(0, 1);
+        console.log("downloading " + url[0]);
         console.log(data.saveFolder);
-        name = getNameFromUrl(url);
+        var name = getNameFromUrl(url[0]);
         if (!fs.existsSync(data.saveFolder)) {
           fs.mkdirSync(data.saveFolder);
         }
-        var saveFile = data.saveFolder + "/" + name;
-        downloadFileInside(url, saveFile, name);
-        console.log(saveFile);
+        if (!fs.existsSync(data.saveFolder + "/cache")) {
+          fs.mkdirSync(data.saveFolder + "/cache");
+        }
+        var targetPath = data.saveFolder;
+        downloadFileInside(url[0], targetPath, name);
       } else {
+        finishBlockchain();
+      }
+
+      function finishBlockchain() {
         $timeout(function () {
           $scope.detail.disableProgressbar = true;
         }, 0);
@@ -618,6 +623,21 @@ app.controller("SplashCtrl", [
         });
       }
 
+      function unzipFile(name, targetFolder, callback) {
+        var unzip = require("unzip-stream");
+        fs.createReadStream(targetFolder + name)
+          .pipe(
+            unzip.Extract({ path: targetFolder }).on("entry", function (entry) {
+              console.log(entry);
+            })
+          )
+          .on("close", function () {
+            $timeout(function () {
+              fs.unlinkSync(targetFolder + name);
+              callback();
+            }, 0);
+          });
+      }
       function downloadFileInside(file_url, targetPath, name) {
         // Save variable to know progress
         var received_bytes = 0;
@@ -627,35 +647,50 @@ app.controller("SplashCtrl", [
           uri: file_url,
         });
 
-        var out = fs.createWriteStream(targetPath);
+        var out = fs.createWriteStream(targetPath + "/cache/" + name);
         var stream = req.pipe(out);
 
         //finish downloading
         stream.on("finish", function () {
-          //enable flag
-          // if (files.length == 0) {
-          //   finishStream = true;
-          //   $timeout(function () {
-          //     $scope.detail.disableProgressbar = true;
-          //   }, 0);
-          //   setTimeout(function () {
-          //     downloadTimerFunction();
-          //   }, 3000);
-          // } else {
-          //   url = Object.values(files)[0];
-          //   delete files[Object.keys(files)[0]];
-          //   console.log("downloading " + url);
-          //   console.log(data.saveFolder);
-          //   name = getNameFromUrl(url);
-          //   var saveFile = data.saveFolder + "/" + name;
-          //   downloadFileInside(url, saveFile, name);
-          // }
-          //extract file
-          if (files.length == 0) {
-            $timeout(function () {
-              $scope.detail.disableProgressbar = true;
-            }, 0);
-          }
+          // extract file
+          var dest = targetPath;
+          unzipFile(name, targetPath + "/cache/", function () {
+            //finish file, write to cache
+            fs.appendFileSync(getWalletHome(true) + "/bc_finished.txt", file_url);
+
+            if (files.length == 0) {
+              // move extracted files to correct folder
+              fs.rename(
+                dest + "/cache/blocks",
+                dest + "/blocks",
+                function (err) {
+                  if (err) throw err;
+                  fs.rename(
+                    dest + "/cache/chainstate",
+                    dest + "/chainstate",
+                    function (err) {
+                      if (err) throw err;
+                      fs.unlink(
+                        getWalletHome(true) + "/bc_finished.txt",
+                        function (err) {}
+                      );
+                      fs.rmdir(
+                        dest + "/cache",
+                        function (err) {}
+                      );
+                      finishBlockchain();
+                      console.log("Successfully move blockchain folders!");
+                    }
+                  );
+                }
+              );
+            } else {
+              url = files.splice(0, 1);
+              var name = getNameFromUrl(url[0]);
+              var targetPath = data.saveFolder;
+              downloadFileInside(url[0], targetPath, name);
+            }
+          });
         });
 
         req.on("response", function (data) {
@@ -666,8 +701,11 @@ app.controller("SplashCtrl", [
         req.on("data", function (chunk) {
           // Update the received bytes
           received_bytes += chunk.length;
-
-          showProgress(received_bytes, total_bytes, name);
+          if(count++ == 10)
+          {
+            showProgress(received_bytes, total_bytes, name);
+            count = 0;
+          }
         });
 
         req.on("error", function (err) {
@@ -680,125 +718,6 @@ app.controller("SplashCtrl", [
             text: $scope.ctrlTranslations["splashscreen.downloadErr3"],
           });
         });
-      }
-
-      function downloadTimerFunction(allFilesOk) {
-        updateScope(
-          $scope.ctrlTranslations["splashscreen.scopeUpdate4"] + "..."
-        );
-        var splitFile = require("split-file");
-        var saveFile = data.saveFolder + "/" + data.outputFile;
-        var fileName = [];
-        if (Object.values(data.files).length > 0 || allFilesOk) {
-          Object.values(data.files).forEach(function (element) {
-            var splits = element.split("/");
-            fileName.push(data.saveFolder + "/" + splits[splits.length - 1]);
-          });
-          splitFile
-            .mergeFiles(fileName, saveFile)
-            .then(function () {
-              $timeout(function () {
-                updateScope(
-                  $scope.ctrlTranslations["splashscreen.scopeUpdate1"]
-                );
-                $scope.detail.disableProgressbar = false;
-                $scope.detail.progress = 0;
-                $scope.detail.width = "0%";
-
-                //extracting text
-                // {
-                //   var unzipper = new DecompressZip(saveFile);
-
-                //   // Add the error event listener
-                //   unzipper.on('error', function (err) {
-                //     $timeout(function(){
-                //       console.log(err)
-                //       spawnMessage({type: MsgType.ALERT, text: $scope.ctrlTranslations['splashscreen.downloadErr4'] + ' ' + err.message})
-                //       $scope.detail.disableProgressbar = true
-                //     },0)
-                //   });
-
-                //   // Notify when everything is extracted
-                //   unzipper.on('extract', function (log) {
-                //     $timeout(function(){
-                //       $scope.detail.disableProgressbar = true
-                //       fs.unlinkSync(saveFile)
-                //       fileName.forEach(function(element){
-                //         var saveFile = data.saveFolder + "/" + getNameFromUrl(element);
-                //         fs.unlinkSync(saveFile);
-                //       });
-                //       ipc.send('main-update-data-loading', {type: UpdateDataType.STARTDAEMON})
-                //     },0)
-                //   });
-
-                //   // Notify "progress" of the decompressed files
-                //   unzipper.on('progress', function (fileIndex, fileCount) {
-                //     $timeout(function(){
-                //       var percentage = (parseFloat(fileIndex + 1) / fileCount * 100).toFixed(2)
-                //       updateScope($scope.ctrlTranslations['splashscreen.scopeUpdate1'] + ' (' + percentage + '%)')
-                //       $scope.detail.progress = percentage
-                //       $scope.detail.width = percentage + '%'
-                //     },0)
-                //   });
-
-                //   // Start extraction of the content
-                //   unzipper.extract({
-                //     path: data.saveFolder
-                //   });
-                // }
-                var percentage = 0;
-                var isFinished = false;
-                function setPercentage() {
-                  percentage += 1;
-                  $scope.detail.width = percentage + "%";
-                  if (percentage >= 100) {
-                    percentage = 0;
-                  }
-                  if (!isFinished) {
-                    $timeout(function () {
-                      setPercentage();
-                    }, 200);
-                  }
-                }
-
-                $timeout(function () {
-                  setPercentage();
-                }, 200);
-
-                var unzip = require("unzip-stream");
-                fs.createReadStream(saveFile)
-                  .pipe(
-                    unzip
-                      .Extract({ path: data.saveFolder })
-                      .on("entry", function (entry) {
-                        console.log(entry);
-                      })
-                  )
-                  .on("close", function () {
-                    $timeout(function () {
-                      isFinished = true;
-                      $scope.detail.disableProgressbar = true;
-                      fs.unlinkSync(saveFile);
-                      fileName.forEach(function (element) {
-                        var saveFile =
-                          data.saveFolder + "/" + getNameFromUrl(element);
-                        fs.unlinkSync(saveFile);
-                      });
-                      ipc.send("main-update-data-loading", {
-                        type: UpdateDataType.STARTDAEMON,
-                      });
-                    }, 0);
-                  });
-              }, 0);
-            })
-            .catch(function (err) {
-              console.log("Error: ", err);
-            });
-        } else {
-          ipc.send("main-update-data-loading", {
-            type: UpdateDataType.STARTDAEMON,
-          });
-        }
       }
 
       function showProgress(received, total, name) {
