@@ -304,6 +304,7 @@
     "startDeamon": "Starting daemon",
     "finishing": "Finishing",
     "serverErr": "Could not get data from server",
+    "blockchainServerErr": "Could not get data from blockchain server",
     "downloadNewFiles": "Downloading new files",
     "downloadQuestion": "Do you want to download?",
     "isAvailable": "is available",

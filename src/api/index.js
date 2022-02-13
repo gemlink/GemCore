@@ -330,7 +330,7 @@ function getHome()
 function getWalletHome(isGetConfig, coin) {
   var dataFolder = process.env[(process.platform == 'win32') ? 'APPDATA' : 'HOME']
   if (process.platform == 'win32') {
-    dataFolder += "\\gemcore"
+    dataFolder += "\\GemCore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
@@ -340,7 +340,7 @@ function getWalletHome(isGetConfig, coin) {
       fs.mkdirSync(dataFolder)
     }
   } else if (process.platform == 'darwin') {
-    dataFolder += "/Library/Application Support/gemcore"
+    dataFolder += "/Library/Application Support/GemCore"
     if (!fs.existsSync(dataFolder)) {
       fs.mkdirSync(dataFolder)
     }
