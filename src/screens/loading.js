@@ -467,6 +467,7 @@ app.controller("LoadingCtrl", [
                       getUserHome(serverData, settings)
                     );
                   } catch (err) {
+                    console.log("err")
                     step = Steps.START_DAEMON;
                     prepareFiles(step);
                   }
@@ -763,17 +764,17 @@ app.controller("LoadingCtrl", [
     function downloadBlockChain(files, saveFolder) {
       var finishedFile = [];
       if (fs.existsSync(getWalletHome(true) + "/bc_finished.txt")) {
-        finishedFile = fs
-          .readFileSync(getWalletHome(true) + "/bc_finished.txt")
+        var data = fs
+        .readFileSync(getWalletHome(true) + "/bc_finished.txt", 'utf8');
+        finishedFile = data
           .replace("\r\n", "\n")
           .split("\n");
       }
       console.log("Finished files", finishedFile);
       var waitingFiles = files;
       if (finishedFile.length > 0) {
-        waitingFiles = waitingFiles.filters(
-          (e) => !finishedFile.find((ee) => ee == e)
-        );
+        waitingFiles = waitingFiles.filter(
+          (e) => !finishedFile.find(ee => ee == e));
       }
       console.log("Waiting for downloading files", waitingFiles);
       if (waitingFiles.length > 0) {

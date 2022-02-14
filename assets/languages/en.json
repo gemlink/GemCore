@@ -403,7 +403,8 @@
     "scopeUpdate3": "Checking blockchain files",
     "scopeUpdate4": "Joining files",
     "downloadErr4": "Download blockchain error, please restart wallet.",
-    "selectDataDir": "Select data directory"
+    "selectDataDir": "Select data directory",
+    "extracting": "Extracting"
   },
   "endscreen": {
     "shutdown1": "GemCore is shutting down",

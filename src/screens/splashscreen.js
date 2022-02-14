@@ -206,6 +206,7 @@ app.controller("SplashCtrl", [
           "splashscreen.scopeUpdate3",
           "splashscreen.scopeUpdate4",
           "splashscreen.downloadErr4",
+          "splashscreen.extracting",
           "loadingView.selectBinaryFiles",
           "splashscreen.selectDataDir",
         ]).then((o) => {
@@ -654,9 +655,15 @@ app.controller("SplashCtrl", [
         stream.on("finish", function () {
           // extract file
           var dest = targetPath;
+          updateScope(
+            $scope.ctrlTranslations["splashscreen.extracting"] + " " + name
+          );
           unzipFile(name, targetPath + "/cache/", function () {
             //finish file, write to cache
-            fs.appendFileSync(getWalletHome(true) + "/bc_finished.txt", file_url);
+            fs.appendFileSync(
+              getWalletHome(true) + "/bc_finished.txt",
+              file_url + "\n"
+            );
 
             if (files.length == 0) {
               // move extracted files to correct folder
@@ -674,10 +681,7 @@ app.controller("SplashCtrl", [
                         getWalletHome(true) + "/bc_finished.txt",
                         function (err) {}
                       );
-                      fs.rmdir(
-                        dest + "/cache",
-                        function (err) {}
-                      );
+                      fs.rmdir(dest + "/cache", function (err) {});
                       finishBlockchain();
                       console.log("Successfully move blockchain folders!");
                     }
@@ -701,8 +705,7 @@ app.controller("SplashCtrl", [
         req.on("data", function (chunk) {
           // Update the received bytes
           received_bytes += chunk.length;
-          if(count++ == 10)
-          {
+          if (count++ == 10) {
             showProgress(received_bytes, total_bytes, name);
             count = 0;
           }
