@@ -1,4 +1,4 @@
-var appVersion = "2.0.1"
+var appVersion = "2.0.2"
 var betaTest = false
 var DecompressZip = require('decompress-zip')
 var md5File = require('md5-file')
