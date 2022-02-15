@@ -54,7 +54,7 @@
     },
     "mac": {
         "target": [
-            "pkg"
+            "dmg"
         ],
         "icon": "assets/logo/mac/icon.icns"
     }
