@@ -161,26 +161,11 @@ app.controller("MenuBarCtrl", [
       writeLog($scope.detail.coinSelect);
       currData["coinname"] = $scope.detail.coinSelect;
       saveCurrentCoin($scope.detail.coinSelect);
-      helpData = undefined;
-      setTimeout(walletStatusTimerFunction, 500);
+      stopWallet(function () {
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     };
-
-    function walletStatusTimerFunction() {
-      // writeLog(helpData)
-      stopDaemon();
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result == null && helpData.errno != undefined) {
-          //refresh wallet
-          var arg = [];
-          electron.ipcRenderer.send("main-reload", arg);
-        } else {
-          setTimeout(walletStatusTimerFunction, 2000);
-        }
-      } else {
-        setTimeout(walletStatusTimerFunction, 500);
-      }
-    }
 
     electron.ipcRenderer.on("child-show-screen", function (event, msgData) {
       var scrn = msgData.msg[0];
@@ -265,30 +250,15 @@ app.controller("NavBarCtrl", [
     $scope.getControllerTranslations();
 
     $scope.refreshWallet = function () {
-      stopDaemon();
-      setTimeout(walletStatusTimerFunction, 500);
+      stopWallet(function () {
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     };
 
     $scope.openNotification = function (url) {
       url ? shell.openExternal(url) : "";
     };
-
-    function walletStatusTimerFunction() {
-      // writeLog(helpData)
-
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result == null && helpData.errno != undefined) {
-          //refresh wallet
-          var arg = [];
-          electron.ipcRenderer.send("main-reload", arg);
-        } else {
-          setTimeout(walletStatusTimerFunction, 2000);
-        }
-      } else {
-        setTimeout(walletStatusTimerFunction, 500);
-      }
-    }
 
     $scope.getFlag = function () {
       var current = $translate.use();

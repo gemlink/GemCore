@@ -156,22 +156,6 @@ app.controller("MasternodesConfigCtrl", [
       }, 0);
     });
 
-    function walletStatusTimerFunction() {
-      // writeLog(helpData)
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result == null) {
-          //refresh wallet
-          var arg = [];
-          electron.ipcRenderer.send("main-reload", arg);
-        } else {
-          setTimeout(walletStatusTimerFunction, 500);
-        }
-      } else {
-        setTimeout(walletStatusTimerFunction, 500);
-      }
-    }
-
     $scope.generate = function () {
       $scope.detail.showNewMasternodeData = false;
       $scope.detail.btnDisabled = true;
@@ -182,11 +166,10 @@ app.controller("MasternodesConfigCtrl", [
     $scope.restartAction = function () {
       //stop wallet
       isRestarting = true;
-      stopDaemon();
-
-      //check wallet status
-      helpData = undefined;
-      setTimeout(walletStatusTimerFunction, 500);
+      stopWallet(function(){
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      })
     };
 
     $scope.getPrivKey = function () {

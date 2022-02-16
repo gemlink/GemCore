@@ -430,9 +430,10 @@ app.controller("SettingsCtrl", [
     };
 
     $scope.restartAction = function () {
-      //check wallet status
-      helpData = undefined;
-      setTimeout(walletStatusTimerFunction, 500);
+      stopWallet(function () {
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     };
 
     $scope.defaultAction = function () {
@@ -449,14 +450,6 @@ app.controller("SettingsCtrl", [
         $scope.ctrlTranslations["settingsView.operations.restartWallet"]
       );
     };
-
-    function walletStatusTimerFunction() {
-      // writeLog(helpData)
-      stopWallet(function () {
-        var arg = [];
-        electron.ipcRenderer.send("main-reload", arg);
-      });
-    }
 
     function backupWalletTimerFunction(fileName) {
       // writeLog(helpData)

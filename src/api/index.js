@@ -721,9 +721,7 @@ function stopWallet(callback) {
           // wallet is closed
           callback();
         } else {
-          setTimeout(() => {
-            stopWallet(callback);
-          }, 2000);
+          setTimeout(stopWallet, 2000, callback);
         }
       });
     }

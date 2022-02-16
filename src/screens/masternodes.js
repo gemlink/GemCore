@@ -405,32 +405,11 @@ app.controller("MasternodesCtrl", [
     $scope.restartAction = function () {
       //stop wallet
       isRestarting = true;
-      stopDaemon();
-
-      //check wallet status
-      helpData = undefined;
-      setTimeout(walletStatusTimerFunction, 500, false);
+      stopWallet(function () {
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     };
-
-    function walletStatusTimerFunction(deleteCache) {
-      // writeLog(helpData)
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result == null || helpData.result == undefined) {
-          if (deleteCache) {
-            var loc = getUserHome(serverData, settings) + "/mncache.dat";
-            fs.unlinkSync(loc);
-          }
-          //refresh wallet
-          var arg = [];
-          electron.ipcRenderer.send("main-reload", arg);
-        } else {
-          setTimeout(walletStatusTimerFunction, 500);
-        }
-      } else {
-        setTimeout(walletStatusTimerFunction, 500);
-      }
-    }
 
     $scope.copyConfig = function (isDisabled) {
       if (!isDisabled) {
@@ -627,11 +606,13 @@ app.controller("MasternodesCtrl", [
     $scope.clearCache = function () {
       //stop wallet
       isRestarting = true;
-      stopDaemon();
+      stopWallet(function () {
+        var loc = getUserHome(serverData, settings) + "/mncache.dat";
+        fs.unlinkSync(loc);
 
-      //check wallet status
-      helpData = undefined;
-      setTimeout(walletStatusTimerFunction, 500, true);
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     };
 
     $scope.faq = function () {

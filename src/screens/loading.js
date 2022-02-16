@@ -508,7 +508,7 @@ app.controller("LoadingCtrl", [
             }
             break;
           case Steps.OPENING_WALLET:
-            setTimeout(walletStatusTimerFunction, 2000);
+            setTimeout(checkWalletStarting, 2000);
             break;
           case Steps.FINISH:
             updateScope(
@@ -980,19 +980,10 @@ app.controller("LoadingCtrl", [
     }
 
     function restartFunction() {
-      // writeLog(helpData)
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result == null) {
-          //refresh wallet
-          var arg = [];
-          electron.ipcRenderer.send("main-reload", arg);
-        } else {
-          setTimeout(restartFunction, 500);
-        }
-      } else {
-        setTimeout(restartFunction, 500);
-      }
+      stopWallet(function () {
+        var arg = [];
+        electron.ipcRenderer.send("main-reload", arg);
+      });
     }
 
     function start() {
