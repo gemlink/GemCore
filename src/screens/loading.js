@@ -690,59 +690,62 @@ app.controller("LoadingCtrl", [
     //   }
     // }
 
-    function walletStatusTimerFunction() {
+    function checkWalletStarting() {
       // writeLog(helpData)
-      checkDaemon();
-      if (helpData != null && helpData != undefined) {
-        if (helpData.result != null) {
-          writeLog("go to finish");
-          step = Steps.FINISH;
-          prepareFiles(step);
+      checkDaemon(function (data) {
+        if (data.value.errno) {
+          //daemon is stopped, reload
+          var arg = [];
+          electron.ipcRenderer.send("main-reload", arg);
         } else {
-          if (step != Steps.END) {
-            setTimeout(walletStatusTimerFunction, 2000);
-          }
-          var msg;
-          if (
-            helpData.error.message.toLowerCase().includes("verifying wallet")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.verifyingWallet"];
-          } else if (
-            helpData.error.message.toLowerCase().includes("loading block index")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.loadingBlockIdx"];
-          } else if (
-            helpData.error.message.toLowerCase().includes("verifying blocks")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.verifyingBlocks"];
-          } else if (
-            helpData.error.message.toLowerCase().includes("loading wallet")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.loadingWalletDaemon"];
-          } else if (
-            helpData.error.message.toLowerCase().includes("rescanning")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.rescanning"];
-          } else if (
-            helpData.error.message.toLowerCase().includes("loading addresses")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.loadingAddresses"];
-          } else if (
-            helpData.error.message
-              .toLowerCase()
-              .includes("rewinding blocks if needed")
-          ) {
-            msg = $scope.ctrlTranslations["loadingView.rewindingBlocks"];
-          }
-          if (msg) {
-            updateScope(msg);
+          if (!data.value.error ) {
+            writeLog("go to finish");
+            step = Steps.FINISH;
+            prepareFiles(step);
+          } else {
+            var msg;
+            if (
+              data.value.error.message.toLowerCase().includes("verifying wallet")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.verifyingWallet"];
+            } else if (
+              data.value.error.message
+                .toLowerCase()
+                .includes("loading block index")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.loadingBlockIdx"];
+            } else if (
+              data.value.error.message.toLowerCase().includes("verifying blocks")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.verifyingBlocks"];
+            } else if (
+              data.value.error.message.toLowerCase().includes("loading wallet")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.loadingWalletDaemon"];
+            } else if (
+              data.value.error.message.toLowerCase().includes("rescanning")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.rescanning"];
+            } else if (
+              data.value.error.message.toLowerCase().includes("loading addresses")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.loadingAddresses"];
+            } else if (
+              data.value.error.message
+                .toLowerCase()
+                .includes("rewinding blocks if needed")
+            ) {
+              msg = $scope.ctrlTranslations["loadingView.rewindingBlocks"];
+            }
+            if (msg) {
+              updateScope(msg);
+            }
+            if (step != Steps.END) {
+              setTimeout(checkWalletStarting, 2000);
+            }
           }
         }
-      } else {
-        if (step != Steps.END) {
-          setTimeout(walletStatusTimerFunction, 2000);
-        }
-      }
+      });
     }
 
     function finishLoading(coin, serverData) {

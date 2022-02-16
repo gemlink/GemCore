@@ -712,12 +712,12 @@ function checkDaemon(callback) {
 
 function stopWallet(callback) {
   stopDaemon(function (data) {
-    if (!(data.value.errno == undefined || data.value.errno == null)) {
+    if (!!data.value.errno) {
       // wallet is closed
       callback();
     } else {
       checkDaemon(function (data2) {
-        if (!(data2.value.errno == undefined || data2.value.errno == null)) {
+        if (!!data2.value.errno) {
           // wallet is closed
           callback();
         } else {
