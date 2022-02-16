@@ -1,7 +1,14 @@
-app.controller('VotingCtrl', ["$scope", "$http", "$timeout", "$translate", "$rootScope", function($scope, $http, $timeout, $translate, $rootScope) {
-  $scope.detail = {}
+app.controller("VotingCtrl", [
+  "$scope",
+  "$http",
+  "$timeout",
+  "$translate",
+  "$rootScope",
+  function ($scope, $http, $timeout, $translate, $rootScope) {
+    $scope.detail = {};
 
-  var sample = '[\
+    var sample =
+      '[\
     {\
       "Name": "test2",\
       "URL": "https://gemlink.org",\
@@ -23,99 +30,93 @@ app.controller('VotingCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
       "IsValidReason": "",\
       "fValid": true\
     }\
-  ]'
-  // $scope.detail.book = readAddressBook(false, serverData, currentCoin)
-  // $scope.detail.bookKeys = Object.keys($scope.detail.book)
+  ]';
+    // $scope.detail.book = readAddressBook(false, serverData, currentCoin)
+    // $scope.detail.bookKeys = Object.keys($scope.detail.book)
 
-  $scope.ctrlTranslations = {}
+    $scope.ctrlTranslations = {};
 
-  $rootScope.$on('$translateChangeSuccess', function(event, current, previous) {
-    // Language has changed
+    $rootScope.$on(
+      "$translateChangeSuccess",
+      function (event, current, previous) {
+        // Language has changed
+        $scope.getControllerTranslations();
+      }
+    );
+
+    $scope.getControllerTranslations = function () {
+      translationsAvailable().then(() => {
+        $translate([]).then((o) => {
+          $scope.ctrlTranslations = o;
+        });
+      });
+    };
+
     $scope.getControllerTranslations();
-  });
 
-  $scope.getControllerTranslations = function () {
-    translationsAvailable().then(() => {
-      $translate([
-      ]).then((o) => {
-         $scope.ctrlTranslations = o;
-        })
-    })
-  }
-
-  $scope.getControllerTranslations();
-
-  function spawnMessage(type, proposal)
-  {
-    $timeout(function() {
-      if(proposal)
-      {
-        $scope.detail.proposal = proposal
-      }
-      if(type == MsgType.BUDGET_VOTE)
-      {
-        $('#modalMasternodeVote').modal()
-      }
-      else if(type == MsgType.ALERT)
-      {
-        $('#votingResult').modal()
-      }
-    }, 200)
-  }
-
-  $scope.votingAction = function(proposal){
-    spawnMessage(MsgType.BUDGET_VOTE, proposal)
-  }
-
-  $scope.openUrl = function(url){
-    shell.openExternal(url)
-  }
-
-  $scope.votingResult = function(proposal, result){
-    var choice
-    if(result == true){
-      choice = "yes"
+    function spawnMessage(type, proposal) {
+      $timeout(function () {
+        if (proposal) {
+          $scope.detail.proposal = proposal;
+        }
+        if (type == MsgType.BUDGET_VOTE) {
+          $("#modalMasternodeVote").modal();
+        } else if (type == MsgType.ALERT) {
+          $("#votingResult").modal();
+        }
+      }, 200);
     }
-    else
-    {
-      choice = "no"
-    }
-    voteProposal("many", proposal, choice)
-  }
 
-  electron.ipcRenderer.on('child-update-settings', function(event, msgData){
-    $timeout(function(){
-      if(msgData.msg[0] != null && msgData.msg[0] != undefined)
-      {
-        $scope.detail.hideAddress = msgData.msg[0].hideAddress
-        $scope.detail.shieldAddress = msgData.msg[0].shieldaddress
-      }
-      if(msgData.msg[1] != null && msgData.msg[1] != undefined)
-      {
-        $scope.detail.sapling = msgData.msg[2].sapling
-      }
-      $scope.detail.currentCoin = currentCoin
-    },0)
-  })
+    $scope.votingAction = function (proposal) {
+      spawnMessage(MsgType.BUDGET_VOTE, proposal);
+    };
 
-  electron.ipcRenderer.on('child-localmn-status', function(event, msgData) {
-    $scope.detail.localMNs = msgData.msg;
-    $scope.detail.localMNs = $scope.detail.localMNs.filter( function(item) {
-      return item.rank == "-";
+    $scope.openUrl = function (url) {
+      shell.openExternal(url);
+    };
+
+    $scope.votingResult = function (proposal, result) {
+      var choice;
+      if (result == true) {
+        choice = "yes";
+      } else {
+        choice = "no";
+      }
+      voteProposal("many", proposal, choice);
+    };
+
+    electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
+      $timeout(function () {
+        if (msgData.msg[0] != null && msgData.msg[0] != undefined) {
+          $scope.detail.hideAddress = msgData.msg[0].hideAddress;
+          $scope.detail.shieldAddress = msgData.msg[0].shieldaddress;
+        }
+        if (msgData.msg[1] != null && msgData.msg[1] != undefined) {
+          $scope.detail.sapling = msgData.msg[2].sapling;
+        }
+        $scope.detail.currentCoin = currentCoin;
+      }, 0);
     });
-  })
 
-  electron.ipcRenderer.on('child-mnbudget-show', function(event, msgData){
-    $timeout(function(){
-      $scope.detail.mnbudgetVote = msgData.msg.result;
-      // $scope.detail.mnbudgetVote = JSON.parse(sample);
-    },0)
-  })
+    electron.ipcRenderer.on("child-localmn-status", function (event, msgData) {
+      $scope.detail.localMNs = msgData.msg;
+      $scope.detail.localMNs = $scope.detail.localMNs.filter(function (item) {
+        return item.rank == "-";
+      });
+    });
 
-  electron.ipcRenderer.on('child-mnbudget-vote', function(event, msgData){
-    $timeout(function(){
-      $scope.detail.votingResult = JSON.stringify(msgData.msg, null, 2)
-      spawnMessage(MsgType.ALERT)
-    },500)
-  })
-}])
+    electron.ipcRenderer.on("child-mnbudget-show", function (event, msgData) {
+      $timeout(function () {
+        $scope.detail.mnbudgetVote = msgData.msg.result;
+        // $scope.detail.mnbudgetVote = JSON.parse(sample);
+      }, 0);
+    });
+
+    electron.ipcRenderer.on("child-mnbudget-vote", function (event, msgData) {
+      $timeout(function () {
+        $scope.detail.votingResult = JSON.stringify(msgData.msg, null, 2);
+        spawnMessage(MsgType.ALERT);
+      }, 500);
+    });
+  },
+]);
