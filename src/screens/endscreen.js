@@ -175,7 +175,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
     return result;
   }
 
-  function checkWallet()
+  function checkDaemon()
   {
     var index = args.findIndex(function(e){return e == '-testnet'})
     if(index > -1)
@@ -284,7 +284,7 @@ app.controller('LoadingCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
     };
 
     request(options, function(error, response, body) {
-      setTimeout(checkWallet, 2000)
+      setTimeout(checkDaemon, 2000)
     })
   }
 }])

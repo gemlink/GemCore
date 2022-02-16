@@ -494,110 +494,67 @@ app.controller('SettingsCtrl', ["$scope", "$http", "$timeout", "$translate", "$r
 
   function walletStatusTimerFunction(){
     // writeLog(helpData)
-    stopWallet()
-    checkWallet()
-    if(helpData != null  && helpData != undefined)
-    {
-      if (helpData.result == null && helpData.errno != undefined)
-      {
-        //refresh wallet
-        var arg = []
-        electron.ipcRenderer.send('main-reload', arg)
-      }
-      else
-      {
-        setTimeout(walletStatusTimerFunction, 500)
-      }
-    }
-    else
-    {
-      setTimeout(walletStatusTimerFunction, 500)
-    }
+    stopWallet(function(){
+      var arg = []
+      electron.ipcRenderer.send('main-reload', arg)
+    })
   }
 
 
   function backupWalletTimerFunction(fileName){
     // writeLog(helpData)
-    stopWallet()
-    checkWallet()
-    if(helpData != null  && helpData != undefined)
-    {
-      if (helpData.result == null && helpData.errno != undefined)
-      {
-        //refresh wallet
-        var walletLocation = getUserHome(serverData, settings);
-        if(fs.existsSync(walletLocation + '/wallet.dat'))
-          {
-            fsextra.copySync(walletLocation + '/wallet.dat', fileName);
-            spawnMessage(
-              MsgType.ALERT,
-              $scope.ctrlTranslations['settingsView.operations.walletBackup'] + " " + fileName,
-              $scope.ctrlTranslations['global.success2'] + "!!!"
-            )
-          }
-          else
-          {
-            spawnMessage(
-              MsgType.ALERT,
-              $scope.ctrlTranslations['settingsView.operations.cannotBackupWallet'],
-              $scope.ctrlTranslations['global.fail'] + "!!"
-            )
-          }
-          setTimeout(reload, 3000)
-          function reload(){
-            var arg = []
-            electron.ipcRenderer.send('main-reload', arg)
-          }
-      }
-      else
-      {
-        setTimeout(backupWalletTimerFunction, 500, fileName)
-      }
-    }
-    else
-    {
-      setTimeout(backupWalletTimerFunction, 500, fileName)
-    }
+    stopWallet(function(){
+      //refresh wallet
+      var walletLocation = getUserHome(serverData, settings);
+      if(fs.existsSync(walletLocation + '/wallet.dat'))
+        {
+          fsextra.copySync(walletLocation + '/wallet.dat', fileName);
+          spawnMessage(
+            MsgType.ALERT,
+            $scope.ctrlTranslations['settingsView.operations.walletBackup'] + " " + fileName,
+            $scope.ctrlTranslations['global.success2'] + "!!!"
+          )
+        }
+        else
+        {
+          spawnMessage(
+            MsgType.ALERT,
+            $scope.ctrlTranslations['settingsView.operations.cannotBackupWallet'],
+            $scope.ctrlTranslations['global.fail'] + "!!"
+          )
+        }
+        setTimeout(reload, 3000)
+        function reload(){
+          var arg = []
+          electron.ipcRenderer.send('main-reload', arg)
+        }
+    })
   }
 
   function restoreWalletStatusTimerFunction(file){
     // writeLog(helpData)
-    stopWallet()
-    checkWallet()
-    if(helpData != null  && helpData != undefined)
-    {
-      if (helpData.result == null && helpData.errno != undefined)
+    stopWallet(function(){
+      //refresh wallet
+      var walletLocation = getUserHome(serverData, settings);
+      if(fs.existsSync(walletLocation + '/wallet.dat'))
       {
-        //refresh wallet
-        var walletLocation = getUserHome(serverData, settings);
-        if(fs.existsSync(walletLocation + '/wallet.dat'))
-        {
-          fsextra.move(walletLocation + '/wallet.dat', walletLocation  + '/wallet.dat.' + Math.round((new Date()).getTime() / 1000), function (err) {
-            if (err) return console.error(err)
-            moveWallet(file)
-          })
-        }
-        else
-        {
+        fsextra.move(walletLocation + '/wallet.dat', walletLocation  + '/wallet.dat.' + Math.round((new Date()).getTime() / 1000), function (err) {
+          if (err) return console.error(err)
           moveWallet(file)
-        }
-
-        function moveWallet(dir)
-        {
-          fsextra.copySync(dir, walletLocation + '/wallet.dat');
-          var arg = []
-          electron.ipcRenderer.send('main-reload', arg)
-        }
+        })
       }
       else
       {
-        setTimeout(restoreWalletStatusTimerFunction, 500, file)
+        moveWallet(file)
       }
-    }
-    else
-    {
-      setTimeout(restoreWalletStatusTimerFunction, 500, file)
-    }
+
+      function moveWallet(dir)
+      {
+        fsextra.copySync(dir, walletLocation + '/wallet.dat');
+        var arg = []
+        electron.ipcRenderer.send('main-reload', arg)
+      }
+    })
   }
 
   function populateAddress(data){

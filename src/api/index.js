@@ -619,7 +619,7 @@ function startDeamon(arg){
 //   backgroundProcess(settings.cli, tempArg)
 // }
 
-function startCli(arg, coinType){
+function startCli(arg, coinType, callback){
   if(coinType == undefined)
   {
     coinType = 'gemlink'
@@ -639,7 +639,7 @@ function startCli(arg, coinType){
     var methods = arg[0]
     arg.splice(0,1)
 
-    curlData(confData.rpcuser, confData.rpcpassword, port, methods, arg, coinType)
+    curlData(confData.rpcuser, confData.rpcpassword, port, methods, arg, coinType, callback)
   }
 }
 
@@ -731,15 +731,35 @@ function startWallet(arg) {
   startDeamon(arg)
 }
 
-function stopWallet() {
+function stopDaemon(callback) {
   var arg = ['stop']
-  startCli(arg)
+  startCli(arg, undefined, callback)
 }
 
-function checkWallet()
+function checkDaemon(callback)
 {
     var arg = [ "getinfo" ]
-    startCli(arg)
+    startCli(arg, undefined, callback)
+}
+
+function stopWallet(callback){
+  stopDaemon(function(data){
+    if(!(data.value.errno == undefined || data.value.errno == null)) {
+      // wallet is closed
+      callback();
+    } else {
+      checkDaemon(function(data2){
+        if(!(data2.value.errno == undefined || data2.value.errno == null)) {
+          // wallet is closed
+          callback();
+        } else {
+          setTimeout(() => {
+            stopWallet(callback);
+          }, 2000)
+        }
+      })
+    }
+  })
 }
 
 function getAllData(type, transacionType)
@@ -2398,7 +2418,7 @@ function sendMessage(type, id, msg)
 
 //#endregion
 
-function curlData(username, password, port, methods, params, coinType){
+function curlData(username, password, port, methods, params, coinType, callback){
   var temp = [methods.slice(0, methods.length)]
   temp = temp.concat(params)
   if(methods == 'z_getoperationstatus')
@@ -2449,6 +2469,8 @@ function curlData(username, password, port, methods, params, coinType){
         {
           writeLog("curlData not supported")
         }
+        if(callback)
+          callback(rtnData)
       } else {
         var rtnData = {}
         var data = body
@@ -2472,6 +2494,8 @@ function curlData(username, password, port, methods, params, coinType){
         {
           writeLog("curlData not supported")
         }
+        if(callback)
+          callback(rtnData)
       }
   })
 }

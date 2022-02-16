@@ -336,7 +336,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
   $scope.restartAction = function () {
     //stop wallet
     isRestarting = true
-    stopWallet()
+    stopDaemon()
 
     //check wallet status
     helpData = undefined
@@ -345,7 +345,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
 
   function walletStatusTimerFunction(deleteCache) {
     // writeLog(helpData)
-    checkWallet()
+    checkDaemon()
     if (helpData != null && helpData != undefined) {
       if (helpData.result == null || helpData.result == undefined) {
         if (deleteCache) {
@@ -516,7 +516,7 @@ app.controller('MasternodesCtrl', ["$scope", "$http", "$timeout", "$translate", 
   $scope.clearCache = function () {
     //stop wallet
     isRestarting = true
-    stopWallet()
+    stopDaemon()
 
     //check wallet status
     helpData = undefined

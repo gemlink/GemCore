@@ -128,7 +128,7 @@ app.controller("LoadingCtrl", [
         isRunning(serverData.daemon, function (status) {
           var count = countOcurrences(status, serverData.daemon);
           if (count >= 1) {
-            stopWallet();
+            stopDaemon();
           }
         });
       }
@@ -333,7 +333,7 @@ app.controller("LoadingCtrl", [
             //check daemon from server or local
             //if server
             if (settings.autoupdatedaemon == true) {
-              checkDaemon();
+              checkDaemonFile();
             } else if (settings.autoupdatedaemon == false) {
               step = Steps.CHECK_DATA_FOLDER;
               prepareFiles(step);
@@ -357,7 +357,7 @@ app.controller("LoadingCtrl", [
             isRunning("daemon", function (status) {
               var count = countOcurrences(status, "daemon");
               if (count >= 1) {
-                stopWallet();
+                stopDaemon();
               }
             });
             if (process.platform == "win32") {
@@ -671,7 +671,7 @@ app.controller("LoadingCtrl", [
       }
     }
 
-    // function checkDaemon() {
+    // function checkDaemonFile() {
     //   var version = getToolVersion(getWalletHome(false, currentCoin))
     //   try
     //   {
@@ -692,7 +692,7 @@ app.controller("LoadingCtrl", [
 
     function walletStatusTimerFunction() {
       // writeLog(helpData)
-      checkWallet();
+      checkDaemon();
       if (helpData != null && helpData != undefined) {
         if (helpData.result != null) {
           writeLog("go to finish");
@@ -863,7 +863,7 @@ app.controller("LoadingCtrl", [
       }
     }
 
-    function checkDaemon() {
+    function checkDaemonFile() {
       writeLog("check daemon");
 
       if (!fs.existsSync(settings.daemon)) {
@@ -918,7 +918,7 @@ app.controller("LoadingCtrl", [
         settings.daemon += ".exe";
       }
       saveSettings(settings, currentCoin);
-      checkDaemon();
+      checkDaemonFile();
     }
 
     function autoDownloadBlockchain(value) {
@@ -977,7 +977,7 @@ app.controller("LoadingCtrl", [
 
     function restartFunction() {
       // writeLog(helpData)
-      checkWallet();
+      checkDaemon();
       if (helpData != null && helpData != undefined) {
         if (helpData.result == null) {
           //refresh wallet
@@ -1139,7 +1139,7 @@ app.controller("LoadingCtrl", [
     });
 
     electron.ipcRenderer.on("child-stop-daemon", function (event, msgData) {
-      stopWallet();
+      stopDaemon();
     });
 
     electron.ipcRenderer.on("child-spawn-error", function (event, msgData) {

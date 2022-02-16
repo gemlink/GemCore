@@ -129,8 +129,8 @@ app.controller('MenuBarCtrl', ["$scope", "$http", "$timeout", "$translate", "$ro
 
   function walletStatusTimerFunction(){
     // writeLog(helpData)
-    stopWallet()
-    checkWallet()
+    stopDaemon()
+    checkDaemon()
     if(helpData != null  && helpData != undefined)
     {
       if (helpData.result == null && helpData.errno != undefined)
@@ -209,7 +209,7 @@ app.controller('NavBarCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   $scope.getControllerTranslations();
 
   $scope.refreshWallet = function(){
-    stopWallet()
+    stopDaemon()
     setTimeout(walletStatusTimerFunction, 500)
   }
 
@@ -220,7 +220,7 @@ app.controller('NavBarCtrl', ["$scope", "$http", "$timeout", "$translate", "$roo
   function walletStatusTimerFunction(){
     // writeLog(helpData)
 
-    checkWallet()
+    checkDaemon()
     if(helpData != null  && helpData != undefined)
     {
       if (helpData.result == null && helpData.errno != undefined)

@@ -123,7 +123,7 @@ app.controller('MasternodesConfigCtrl', ["$scope", "$http", "$timeout", "$transl
 
   function walletStatusTimerFunction(){
     // writeLog(helpData)
-    checkWallet()
+    checkDaemon()
     if(helpData != null  && helpData != undefined)
     {
       if (helpData.result == null)
@@ -153,7 +153,7 @@ app.controller('MasternodesConfigCtrl', ["$scope", "$http", "$timeout", "$transl
   $scope.restartAction = function(){
     //stop wallet
     isRestarting = true
-    stopWallet()
+    stopDaemon()
 
     //check wallet status
     helpData = undefined
