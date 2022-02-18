@@ -137,7 +137,7 @@ app.controller("AddressBookCtrl", [
 
     $scope.editAddressBookAction = function () {
       editAddressBook($scope.detail.book, serverData, currentCoin);
-      shouldGetWallet = true;
+      electron.ipcRenderer.send("main-update-addressbook", {});
       $scope.detail.isEditing = false;
     };
 
@@ -155,6 +155,7 @@ app.controller("AddressBookCtrl", [
       // writeLog(newName)
       $timeout(function () {
         $scope.detail.book[address] = newName;
+        electron.ipcRenderer.send("main-update-addressbook", {});
         // var index = $scope.addresses.findIndex(function(e) {return e.address === address})
         // $scope.addresses[index].book = newName
         //editAddressBook($scope.detail.book, serverData, currentCoin)
@@ -189,7 +190,7 @@ app.controller("AddressBookCtrl", [
       var rtn = addAddressBook(name, address, serverData, currentCoin);
       if (rtn.result == true) {
         book = rtn.book;
-        shouldGetWallet = true;
+        electron.ipcRenderer.send("main-update-addressbook", {});
       } else {
         //display alert
         showAlert(

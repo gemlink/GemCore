@@ -52,7 +52,6 @@ var apiStatus = {};
 var listtransactions;
 var listtransactionstime;
 var shouldGetTransaction = false;
-var shouldGetWallet = false;
 var shouldGetAll = true;
 var sendingCoin;
 var w;
@@ -573,10 +572,7 @@ function startDeamon(arg) {
 //   backgroundProcess(settings.cli, tempArg)
 // }
 
-function startCli(arg, coinType, callback) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function startCli(arg, callback) {
   var tempArg = [];
   var index = args.findIndex(function (e) {
     return e == "-testnet";
@@ -600,7 +596,6 @@ function startCli(arg, coinType, callback) {
       port,
       methods,
       arg,
-      coinType,
       callback
     );
   }
@@ -702,12 +697,12 @@ function startWallet(arg) {
 
 function stopDaemon(callback) {
   var arg = ["stop"];
-  startCli(arg, undefined, callback);
+  startCli(arg, callback);
 }
 
 function checkDaemon(callback) {
   var arg = ["getinfo"];
-  startCli(arg, undefined, callback);
+  startCli(arg, callback);
 }
 
 function stopWallet(callback) {
@@ -728,103 +723,85 @@ function stopWallet(callback) {
   });
 }
 
-function getAllData(type, transacionType) {
+// "1. \"datatype\"     (integer, required) \n"
+// "                    Value of 0: Return address, balance, transactions and blockchain info\n"
+// "                    Value of 1: Return address, balance, blockchain info\n"
+// "                    Value of 2: Return transactions and blockchain info\n"
+// "2. \"transactiontype\"     (integer, optional) \n"
+// "                    Value of 1: Return all transactions in the last 24 hours\n"
+// "                    Value of 2: Return all transactions in the last 7 days\n"
+// "                    Value of 3: Return all transactions in the last 30 days\n"
+// "                    Other number: Return all transactions in the last 24 hours\n"
+function getAllData(type, transacionType, callback) {
   var arg = ["getalldata", type];
   if (transacionType != undefined) {
     arg.push(transacionType);
   }
-  if (
-    apiStatus["getalldata"] == false ||
-    apiStatus["getalldata"] == undefined
-  ) {
-    // writeLog(arg)
-    apiStatus["getalldata"] = true;
-    startCli(arg);
-  } else {
-    writeLog("getting data, do not start another one");
-  }
+  startCli(arg, callback);
 }
 
-function getPeerInfo() {
+function getPeerInfo(callback) {
   var arg = ["getpeerinfo"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getNetworkHeight(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getNetworkHeight(callback) {
   var arg = ["getinfo"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function getBestBlockhash(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getBestBlockhash(callback) {
   var arg = ["getblockchaininfo"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function getBestTime(bloblockHashckhash, coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getBestTime(bloblockHashckhash, callback) {
   var arg = ["getblockheader", bloblockHashckhash];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function zGetTotalBalance(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function zGetTotalBalance(callback) {
   var arg = ["z_gettotalbalance"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function getWalletInfo(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getWalletInfo(callback) {
   var arg = ["getwalletinfo"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function getUnconfirmedBalance() {
+function getUnconfirmedBalance(callback) {
   var arg = ["getunconfirmedbalance"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function checkConnections() {
+function checkConnections(callback) {
   var arg = ["getconnectioncount"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getAddressBalance(address, coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getAddressBalance(address, callback) {
   var arg = ["z_getbalance", address];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function newAddress() {
+function newAddress(callback) {
   getNewAddressData = undefined;
   var arg = ["getnewaddress"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function newZAddress(sapling) {
+function newZAddress(sapling, callback) {
   getNewAddressData = undefined;
   var arg = ["z_getnewaddress"];
   if (sapling != undefined) {
@@ -833,10 +810,10 @@ function newZAddress(sapling) {
     arg.push("sprout");
   }
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getDebug(request) {
+function getDebug(request, callback) {
   writeLog(request);
   var arr = request.split(" ");
   arr = arr.filter(function (n) {
@@ -844,34 +821,34 @@ function getDebug(request) {
   });
   var arg = ["getdebug"];
   arg = arg.concat(arr);
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function exportPrivateKeys(filename) {
+function exportPrivateKeys(filename, callback) {
   var arg = ["z_exportwallet", filename];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function importPrivateKeys(filename) {
+function importPrivateKeys(filename, callback) {
   var arg = ["z_importwallet " + '"' + filename + '"'];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function exportPrivateKey(address) {
+function exportPrivateKey(address, callback) {
   var arg = ["dumpprivkey", address];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function z_exportPrivateKey(address) {
+function z_exportPrivateKey(address, callback) {
   var arg = ["z_exportkey", address];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function importPrivateKey(key, label, fRescan) {
+function importPrivateKey(key, label, callback) {
   var arg = ["importprivkey", key];
   if (label != undefined) {
     arg.push(label);
@@ -885,10 +862,10 @@ function importPrivateKey(key, label, fRescan) {
   //   arg.push(fRescan)
   // }
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function z_importPrivateKey(key, fRescan, rescanBlock) {
+function z_importPrivateKey(key, callback) {
   var arg = ["z_importkey", key];
   // if(fRescan != undefined)
   // {
@@ -907,55 +884,40 @@ function z_importPrivateKey(key, fRescan, rescanBlock) {
   //   arg.push(0)
   // }
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function listTransactions(count, coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function listTransactions(count, callback) {
   var arg = ["listtransactions", "", count];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function listReceivedByAddress(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function listReceivedByAddress(callback) {
   var arg = ["listreceivedbyaddress", 999999999, true, true];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function getAddressByAccount(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function getAddressByAccount(callback) {
   var arg = ["getaddressesbyaccount", ""];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function listAddressGroupings(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function listAddressGroupings(callback) {
   var arg = ["listaddressgroupings"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function zListAddress(coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function zListAddress(callback) {
   var arg = ["z_listaddresses"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function sendCoin(from, to, amount, fee, defaultFee) {
+function sendCoin(from, to, amount, fee, callback) {
   z_sendmanyData = undefined;
   z_getoperationstatusData = undefined;
   var toData = [];
@@ -965,41 +927,41 @@ function sendCoin(from, to, amount, fee, defaultFee) {
   toData.push(temp);
   var arg = ["z_sendmany", from, toData, 1, parseFloat(fee)];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function settxfee(fee) {
+function settxfee(fee, callback) {
   feeData = undefined;
   var arg = ["settxfee", parseFloat(fee)];
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function sendCoinPublic(to, amount) {
+function sendCoinPublic(to, amount, callback) {
   z_sendmanyData = undefined;
   z_getoperationstatusData = undefined;
   var arg = ["sendtoaddress", to, parseFloat(amount)];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function exec_sendCoin(from, to, amount, fee, type) {
+function exec_sendCoin(from, to, amount, fee, type, callback) {
   z_sendmanyData = undefined;
   z_getoperationstatusData = undefined;
   writeLog(type);
   if (type == SendType.NORMAL) {
     writeLog("send coin normal");
-    sendCoin(from, to, amount, fee);
+    sendCoin(from, to, amount, fee, callback);
   } else if (type == SendType.SHIELD) {
     writeLog("shield coin");
-    shieldCoin(from, to, fee);
+    shieldCoin(from, to, fee, callback);
   } else if (type == SendType.PUBLIC) {
     writeLog("set tx fee");
-    settxfee(fee);
+    settxfee(fee, callback);
   }
   //@TODO disable send & shield coin button
 }
 
-function sendManyCoin(from, to, fee) {
+function sendManyCoin(from, to, fee, callback) {
   var sendInfo = '"' + from + '" ' + '"[';
 
   to.forEach(function (item) {
@@ -1011,145 +973,127 @@ function sendManyCoin(from, to, fee) {
 
   var arg = ["z_sendmany", sendInfo, "1", fee];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function shieldCoin(from, to, fee) {
+function shieldCoin(from, to, fee, callback) {
   z_shieldcoinbaseData = undefined;
   var arg = ["z_shieldcoinbase", from, to, parseFloat(fee), 300];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function verifyAddress(address, data, coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function verifyAddress(address, data, callback) {
   validateaddressData = undefined;
   var arg = ["validateaddress", address];
   arg.push(data);
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function encryptWallet(password, coinType) {
+function encryptWallet(password, callback) {
   encryptData = undefined;
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
   var arg = ["encryptwallet", password];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function changePass(phrase, newPhrase, coinType) {
+function changePass(phrase, newPhrase, callback) {
   changePassData = undefined;
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
   var arg = ["walletpassphrasechange", phrase, newPhrase];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function lockWallet(coinType) {
+function lockWallet(callback) {
   lockData = undefined;
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
   var arg = ["walletlock"];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function unlockWallet(phrase, time, coinType) {
+function unlockWallet(phrase, time, callback) {
   unlockData = undefined;
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
   if (time == undefined) {
     time = 300;
   }
   var arg = ["walletpassphrase", phrase, parseInt(time)];
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function verifyZAddress(address, data, coinType) {
-  if (coinType == undefined) {
-    coinType = "gemlink";
-  }
+function verifyZAddress(address, data, callback) {
   validateaddressData = undefined;
   var arg = ["z_validateaddress", address];
   arg.push(data);
   // writeLog(arg)
-  startCli(arg, coinType);
+  startCli(arg, callback);
 }
 
-function checkTransaction(opid, type) {
+function checkTransaction(opid, type, callback) {
   opid = strstd(opid);
   var temp = [opid];
   var arg = ["z_getoperationstatus", temp];
   arg.push(type);
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getTransaction(txid) {
+function getTransaction(txid, callback) {
   var arg = ["gettransaction", txid];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getMNPrivKey() {
+function getMNPrivKey(callback) {
   masternodegenkeyData = undefined;
   var arg = ["createmasternodekey"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getMNOutputs() {
+function getMNOutputs(callback) {
   masternodeoutputsData = undefined;
   var arg = ["getmasternodeoutputs"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getMasternodeList() {
+function getMasternodeList(callback) {
   masternodelistData = undefined;
   var arg = ["listmasternodes"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function startMasternode(name) {
+function startMasternode(name, callback) {
   var arg = ["startmasternode", "alias", "false", name];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function startAlias(name) {
+function startAlias(name, callback) {
   var arg = ["startalias", name];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function startAll() {
+function startAll(callback) {
   var arg = ["startmasternode", "many", "false"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function getProposal() {
+function getProposal(callback) {
   var arg = ["mnbudget", "show"];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
-function voteProposal(mode, hash, value) {
+function voteProposal(mode, hash, value, callback) {
   var arg = ["mnbudgetvote", mode, hash, value];
   // writeLog(arg)
-  startCli(arg);
+  startCli(arg, callback);
 }
 
 function readAddressBook(isGetDonation, serverData, currentCoin) {
@@ -1223,7 +1167,6 @@ function updateWalletDic(walletDic) {
   var bookLocal = readAddressBook(true, serverData, currentCoin);
   if (bookLocal != undefined) {
     var bookKeys = Object.keys(bookLocal);
-
     bookKeys.forEach(function (key) {
       var index = dicKeys.findIndex(function (e) {
         return e == key;
@@ -1239,7 +1182,6 @@ function updateWalletDic(walletDic) {
       }
     });
   }
-
   return newObj;
 }
 
@@ -2211,9 +2153,9 @@ function curlData(
   port,
   methods,
   params,
-  coinType,
   callback
 ) {
+  var coinType = "gemlink";
   var temp = [methods.slice(0, methods.length)];
   temp = temp.concat(params);
   if (methods == "z_getoperationstatus") {

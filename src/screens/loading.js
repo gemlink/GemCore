@@ -1144,10 +1144,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "getalldata") {
-        getalldata = data;
-        electron.ipcRenderer.send("main-summary-data", getalldata);
-      } else if (data.key == "help") {
+      if (data.key == "help") {
         helpData = data.value;
       } else if (data.key == "getinfo") {
         getinfoData = data.value;

@@ -764,6 +764,10 @@ app.controller("SettingsCtrl", [
         if (settings != null && settings != undefined) {
           populateSettings(settings);
         }
+        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
+          $scope.detail.showTransactionTime =
+            msgData.msg[2].cointype == "gemcore" ? true : false;
+        }
       }, 0);
     });
 
@@ -819,14 +823,5 @@ app.controller("SettingsCtrl", [
     var PositionTextAreaToBottom = function () {
       textArea.scrollTop = textArea.scrollHeight;
     };
-
-    electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
-      $timeout(function () {
-        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
-          $scope.detail.showTransactionTime =
-            msgData.msg[2].cointype == "gemcore" ? true : false;
-        }
-      }, 0);
-    });
   },
 ]);

@@ -153,83 +153,86 @@ app.controller("AddressesCtrl", [
     function populateAddress(data) {
       var walletDic = data.from;
       var keys = Object.keys(walletDic);
-      var count = 1;
-      var settings = readSettings($scope.detail.currentCoin);
+      if(keys.length > 0)
+        {
+        var count = 1;
+        var settings = readSettings($scope.detail.currentCoin);
 
-      var countSelected = 0;
-      keys.forEach(function (element) {
-        if ($scope.selectedList[element] == true) {
-          countSelected += 1;
-        }
-      });
-
-      if (countSelected >= 1) {
-        $scope.detail.showGetPrivKey = true;
-        $scope.detail.enableGetPrivKey = true;
-      } else {
-        $scope.detail.showGetPrivKey = false;
-        $scope.detail.enableGetPrivKey = false;
-      }
-      $timeout(function () {
-        $scope.addresses = [];
+        var countSelected = 0;
         keys.forEach(function (element) {
-          var temp = {};
-          temp["no"] = count;
-          temp["copy"] = "";
-          var split = element.split(" ");
-          temp["address"] = element.split(" ")[0];
-          if (split.length > 1) {
-            var newbook = element.split(temp["address"] + " ")[1];
-            if (newbook.startsWith("(")) {
-              newbook = newbook.slice(1, newbook.length - 1);
-            }
-            if (newbook.endsWith(")")) {
-              newbook = newbook.splice(0, newbook.length - 2);
-            }
-            temp["book"] = newbook;
+          if ($scope.selectedList[element] == true) {
+            countSelected += 1;
           }
-          var type;
-          if (element.startsWith("z")) {
-            type = "private";
-          } else {
-            type = "public";
-          }
-          if (walletDic[element].ismine == false) {
-            type = "read-only";
-          }
-          temp["type"] = type;
-          temp["amount"] = walletDic[element].amount;
-          if (
-            settings.addresses == undefined ||
-            (settings.addresses != undefined &&
-              (settings.addresses[temp.address] == true ||
-                settings.addresses[temp.address] == undefined))
-          ) {
-            $scope.addresses.push(temp);
-            var selectedKeys = Object.keys($scope.selectedList);
-            var index = selectedKeys.findIndex(function (e) {
-              return e === temp.address;
-            });
+        });
 
-            if (index == -1 && temp.type != "read-only") {
-              $scope.selectedList[temp.address] = false;
-            }
-            count += 1;
-          }
-        });
-        $scope.addresses.sort(function (a, b) {
-          return a.address[0] >= b.address[0]
-            ? a.book
-              ? a.book.localeCompare(b.book)
-              : true
-            : false;
-        });
-        $scope.detail.enableButton = true;
-        if (!$scope.detail.isEditing) {
-          $scope.detail.book = readAddressBook(false, serverData, currentCoin);
-          $scope.detail.bookKeys = Object.keys($scope.detail.book);
+        if (countSelected >= 1) {
+          $scope.detail.showGetPrivKey = true;
+          $scope.detail.enableGetPrivKey = true;
+        } else {
+          $scope.detail.showGetPrivKey = false;
+          $scope.detail.enableGetPrivKey = false;
         }
-      }, 0);
+        $timeout(function () {
+          $scope.addresses = [];
+          keys.forEach(function (element) {
+            var temp = {};
+            temp["no"] = count;
+            temp["copy"] = "";
+            var split = element.split(" ");
+            temp["address"] = element.split(" ")[0];
+            if (split.length > 1) {
+              var newbook = element.split(temp["address"] + " ")[1];
+              if (newbook.startsWith("(")) {
+                newbook = newbook.slice(1, newbook.length - 1);
+              }
+              if (newbook.endsWith(")")) {
+                newbook = newbook.splice(0, newbook.length - 2);
+              }
+              temp["book"] = newbook;
+            }
+            var type;
+            if (element.startsWith("z")) {
+              type = "private";
+            } else {
+              type = "public";
+            }
+            if (walletDic[element].ismine == false) {
+              type = "read-only";
+            }
+            temp["type"] = type;
+            temp["amount"] = walletDic[element].amount;
+            if (
+              settings.addresses == undefined ||
+              (settings.addresses != undefined &&
+                (settings.addresses[temp.address] == true ||
+                  settings.addresses[temp.address] == undefined))
+            ) {
+              $scope.addresses.push(temp);
+              var selectedKeys = Object.keys($scope.selectedList);
+              var index = selectedKeys.findIndex(function (e) {
+                return e === temp.address;
+              });
+
+              if (index == -1 && temp.type != "read-only") {
+                $scope.selectedList[temp.address] = false;
+              }
+              count += 1;
+            }
+          });
+          $scope.addresses.sort(function (a, b) {
+            return a.address[0] >= b.address[0]
+              ? a.book
+                ? a.book.localeCompare(b.book)
+                : true
+              : false;
+          });
+          $scope.detail.enableButton = true;
+          if (!$scope.detail.isEditing) {
+            $scope.detail.book = readAddressBook(false, serverData, currentCoin);
+            $scope.detail.bookKeys = Object.keys($scope.detail.book);
+          }
+        }, 0);
+      }
     }
 
     function countSelected(keys) {
@@ -258,7 +261,7 @@ app.controller("AddressesCtrl", [
 
     $scope.editAddressBookAction = function () {
       editAddressBook($scope.detail.book, serverData, currentCoin);
-      shouldGetWallet = true;
+      electron.ipcRenderer.send("main-update-addressbook", {});
       $scope.detail.isEditing = false;
     };
 
@@ -276,6 +279,7 @@ app.controller("AddressesCtrl", [
       // writeLog(newName)
       $timeout(function () {
         $scope.detail.book[address] = newName;
+        electron.ipcRenderer.send("main-update-addressbook", {});
         // var index = $scope.addresses.findIndex(function(e) {return e.address === address})
         // $scope.addresses[index].book = newName
         //editAddressBook($scope.detail.book, serverData, currentCoin)
@@ -502,7 +506,6 @@ app.controller("AddressesCtrl", [
       var rtn = addAddressBook(name, address, serverData, currentCoin);
       if (rtn.result == true) {
         book = rtn.book;
-        shouldGetWallet = true;
       } else {
         //display alert
         showAlert(
@@ -642,7 +645,6 @@ app.controller("AddressesCtrl", [
         serverData,
         currentCoin
       );
-      shouldGetWallet = true;
       showAlert(
         "#modalAddressNoti",
         $scope.ctrlTranslations["addressesView.newAddressButton"],
@@ -659,15 +661,6 @@ app.controller("AddressesCtrl", [
               msgData.msg.value.result
           : msgData.msg.value.error.message
       );
-    });
-
-    electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
-      $timeout(function () {
-        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
-          $scope.detail.showPrivateAddress = msgData.msg[2].showprivateaddress;
-          $scope.detail.shield = msgData.msg[2].shield;
-        }
-      }, 0);
     });
 
     electron.ipcRenderer.on(
@@ -720,6 +713,10 @@ app.controller("AddressesCtrl", [
         }
         if (msgData.msg[1] != null && msgData.msg[1] != undefined) {
           $scope.detail.sapling = msgData.msg[2].sapling;
+        }
+        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
+          $scope.detail.showPrivateAddress = msgData.msg[2].showprivateaddress;
+          $scope.detail.shield = msgData.msg[2].shield;
         }
         $scope.detail.currentCoin = currentCoin;
       }, 0);

@@ -729,6 +729,11 @@ ipc.on("main-unlock-modal", function (event, arg) {
   event.sender.send("child-unlock-modal", { msg: arg });
 });
 
+ipc.on("main-update-addressbook", function (event, arg) {
+  event.sender.send("child-update-addressbook", { });
+});
+
+
 // end screen
 ipc.on("main-change-language", function (event, arg) {
   endWindow.webContents.send("child-change-language", { msg: arg });
