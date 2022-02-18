@@ -24,11 +24,6 @@ var isInit = true;
 var isSynced = false;
 var child;
 var childDaemon;
-var allData;
-var helpData;
-var getinfoData;
-var z_sendmanyData;
-var sendToAddress;
 var feeData;
 var z_getoperationstatusData;
 var z_shieldcoinbaseData;
@@ -68,7 +63,6 @@ var explorer = "https://explorer.gemlink.org/";
 var args = remote.process.argv;
 var serverData = undefined;
 var confData = undefined;
-var lastBlock;
 var lastBalance;
 var lastTotalBalance;
 var bot;
@@ -397,79 +391,6 @@ function makeRandom(count) {
   return text;
 }
 
-function backgroundProcess(name, arg) {
-  var loc = name.replace(/\\/g, "/");
-
-  var temp = arg.slice();
-  if (temp[0] == "-testnet") {
-    temp.splice(0, 1);
-  }
-  if (arg[0] == "z_getoperationstatus") {
-    arg.splice(2, 1);
-  } else if (arg[0] == "-testnet" && arg[1] == "z_getoperationstatus") {
-    arg.splice(3, 1);
-  } else if (arg[0] == "getdebug") {
-    arg.splice(0, 1);
-  } else if (arg[0].includes("validateaddress")) {
-    if (arg.length > 2) {
-      arg.splice(2, 1);
-    }
-  }
-  // writeLog(arg)
-  // writeLog(temp)
-  var rtnData = {};
-
-  if (fs.existsSync(loc)) {
-    try {
-      if (process.platform == "linux" || process.platform == "darwin") {
-        var temparg = ["+x", loc];
-        miningProcess.spawnSync("chmod", temparg);
-      }
-
-      child = miningProcess.spawn(loc, arg);
-
-      child.stdout.on("data", function (data) {
-        var strOutput = String(data);
-        if (strOutput.startsWith("Error")) {
-          writeLog("stroutput error");
-          spawnErr(strOutput);
-        } else {
-          if (rtnData["value"] == undefined) {
-            rtnData["key"] = temp[0];
-            rtnData["arg"] = temp;
-            rtnData["value"] = strOutput;
-          } else {
-            rtnData["value"] += strOutput;
-          }
-        }
-      });
-
-      child.stderr.on("data", function (data) {
-        var strOutput = String(data);
-        if (rtnData["value"] == undefined) {
-          rtnData["key"] = temp[0];
-          rtnData["arg"] = temp;
-          rtnData["value"] = strOutput;
-        } else {
-          rtnData["value"] += strOutput;
-        }
-      });
-
-      child.on("close", function (code) {
-        return handleFunction(rtnData);
-      });
-    } catch (err) {
-      setTimeout(function () {
-        writeLog("cannot start gemcore-cli");
-        spawnErr("Cannot start " + loc + err.toString());
-      }, 0);
-    }
-  } else {
-    writeLog("cannot find gemcore-cli");
-    spawnErr("Cannot find " + loc);
-  }
-}
-
 function backgroundProcessDaemon(name, arg) {
   var loc = name.replace(/\\/g, "/");
   var rtnData = {};
@@ -560,17 +481,6 @@ function startDeamon(arg) {
   writeLog("\n\n\nSTART wallet");
   backgroundProcessDaemon(settings.daemon, arg);
 }
-
-// function startCli(arg){
-//   var tempArg = []
-//   var index = args.findIndex(function(e){return e == '-testnet'})
-//   if(index > -1)
-//   {
-//     tempArg.push('-testnet')
-//   }
-//   tempArg = tempArg.concat(arg)
-//   backgroundProcess(settings.cli, tempArg)
-// }
 
 function startCli(arg, callback) {
   var tempArg = [];
@@ -918,8 +828,6 @@ function zListAddress(callback) {
 }
 
 function sendCoin(from, to, amount, fee, callback) {
-  z_sendmanyData = undefined;
-  z_getoperationstatusData = undefined;
   var toData = [];
   var temp = {};
   temp["address"] = to;
@@ -937,15 +845,12 @@ function settxfee(fee, callback) {
 }
 
 function sendCoinPublic(to, amount, callback) {
-  z_sendmanyData = undefined;
-  z_getoperationstatusData = undefined;
   var arg = ["sendtoaddress", to, parseFloat(amount)];
   // writeLog(arg)
   startCli(arg, callback);
 }
 
 function exec_sendCoin(from, to, amount, fee, type, callback) {
-  z_sendmanyData = undefined;
   z_getoperationstatusData = undefined;
   writeLog(type);
   if (type == SendType.NORMAL) {
@@ -954,9 +859,6 @@ function exec_sendCoin(from, to, amount, fee, type, callback) {
   } else if (type == SendType.SHIELD) {
     writeLog("shield coin");
     shieldCoin(from, to, fee, callback);
-  } else if (type == SendType.PUBLIC) {
-    writeLog("set tx fee");
-    settxfee(fee, callback);
   }
   //@TODO disable send & shield coin button
 }
@@ -983,10 +885,8 @@ function shieldCoin(from, to, fee, callback) {
   startCli(arg, callback);
 }
 
-function verifyAddress(address, data, callback) {
-  validateaddressData = undefined;
+function verifyAddress(address, callback) {
   var arg = ["validateaddress", address];
-  arg.push(data);
   // writeLog(arg)
   startCli(arg, callback);
 }
@@ -2147,14 +2047,7 @@ function sendMessage(type, id, msg) {
 
 //#endregion
 
-function curlData(
-  username,
-  password,
-  port,
-  methods,
-  params,
-  callback
-) {
+function curlData(username, password, port, methods, params, callback) {
   var coinType = "gemlink";
   var temp = [methods.slice(0, methods.length)];
   temp = temp.concat(params);

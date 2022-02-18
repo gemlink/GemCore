@@ -452,7 +452,6 @@ app.controller("SettingsCtrl", [
     };
 
     function backupWalletTimerFunction(fileName) {
-      // writeLog(helpData)
       stopWallet(function () {
         //refresh wallet
         var walletLocation = getUserHome(serverData, settings);
@@ -483,7 +482,6 @@ app.controller("SettingsCtrl", [
     }
 
     function restoreWalletStatusTimerFunction(file) {
-      // writeLog(helpData)
       stopWallet(function () {
         //refresh wallet
         var walletLocation = getUserHome(serverData, settings);

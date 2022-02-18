@@ -153,8 +153,43 @@ app.controller("SendCtrl", [
       );
     };
 
+    function finishSend(data) {
+      $timeout(function () {
+        $scope.detail.btnDisable = false;
+        if (!data.value.error) {
+          var msg = $scope.ctrlTranslations["global.success2"];
+          if ($scope.detail.isBot == false) {
+            spawnMessage(MsgType.ALERT, msg);
+          } else {
+            msg += "\n" + explorer + "tx/" + data.value.result.txid;
+            sendBotReplyMsg(msg);
+          }
+        } else {
+          if ($scope.detail.isBot == false) {
+            spawnMessage(
+              MsgType.ALERT,
+              data.error
+                ? data.error.message
+                : $scope.ctrlTranslations["global.error"]
+            );
+          } else {
+            sendBotReplyMsg(
+              data.error
+                ? data.error.message
+                : $scope.ctrlTranslations["global.error"]
+            );
+          }
+        }
+      });
+    }
+
+    function sendFromPublic(dataToSend, callback) {
+      settxfee(String(dataToSend.fee).replace(",", "."), function () {
+        sendCoinPublic(dataToSend.to, dataToSend.amount, callback);
+      });
+    }
+
     $scope.sendCoin = function () {
-      writeLog("verifyAddress");
       $scope.detail.btnDisable = true;
       var dataToSend = {};
       dataToSend["from"] = $scope.detail.selected;
@@ -165,15 +200,32 @@ app.controller("SendCtrl", [
       dataToSend["fee"] = $scope.detail.fee;
       $scope.detail.isBot = false;
       if (dataToSend["from"] == "public") {
-        exec_sendCoin(
-          dataToSend.from,
-          dataToSend.to,
-          String(dataToSend.amount).replace(",", "."),
-          String(dataToSend.fee).replace(",", "."),
-          SendType.PUBLIC
-        );
+        sendFromPublic(dataToSend, function (dataSendPublic) {
+          // console.log("dataSendPublic", dataSendPublic);
+          finishSend(dataSendPublic);
+        });
       } else {
-        verifyAddress($scope.detail.recipientAddress, dataToSend);
+        verifyAddress($scope.detail.recipientAddress, function(verifyData){
+          // console.log("verifyData", verifyData);
+          if (verifyData.value.result.isvalid == true) {
+            sendCoin(dataToSend.from, dataToSend.to, dataToSend.amount, dataToSend.fee, function(sendData){
+              // console.log("sendData", sendData);
+              finishSend(sendData);
+            });
+          } else if (verifyData.value.result.isvalid == false) {
+              verifyZAddress($scope.detail.recipientAddress, function(verifyzData){
+                // console.log("verifyzData", verifyzData);
+                if (verifyzData.value.result.isvalid == true) {
+                  sendCoin(dataToSend.from, dataToSend.to, dataToSend.amount, dataToSend.fee, function(sendData){
+                    // console.log("sendData", sendData);
+                    finishSend(sendData);
+                  });
+                } else if (data != undefined && data.isvalid == false) {
+                  finishSend(verifyzData);
+                }
+              });
+          }
+        });
       }
     };
 
@@ -342,143 +394,6 @@ app.controller("SendCtrl", [
     electron.ipcRenderer.on("child-update-send", function (event, msgData) {
       var data = msgData.msg;
       populateAddress(data);
-    });
-
-    electron.ipcRenderer.on("child-verify-address", function (event, msgData) {
-      var info = msgData.msg;
-      var data = info[0].result;
-      var arg = info[1];
-      if (data != undefined && data.isvalid == true) {
-        $timeout(function () {
-          exec_sendCoin(
-            arg[2].from,
-            arg[2].to,
-            String(arg[2].amount).replace(",", "."),
-            String(arg[2].fee).replace(",", "."),
-            SendType.NORMAL
-          );
-        }, 0);
-      } else if (data != undefined && data.isvalid == false) {
-        $timeout(function () {
-          writeLog(arg[2]);
-          verifyZAddress(arg[2].to, arg[2]);
-        }, 0);
-      }
-    });
-
-    electron.ipcRenderer.on("child-verify-zaddress", function (event, msgData) {
-      var info = msgData.msg;
-      var data = info[0].result;
-      var arg = info[1];
-      if (data != undefined && data.isvalid == true) {
-        $timeout(function () {
-          exec_sendCoin(
-            arg[2].from,
-            arg[2].to,
-            String(arg[2].amount).replace(",", "."),
-            String(arg[2].fee).replace(",", "."),
-            SendType.NORMAL
-          );
-        }, 0);
-      } else if (data != undefined && data.isvalid == false) {
-        $timeout(function () {
-          $scope.detail.btnDisable = false;
-          var msg =
-            $scope.ctrlTranslations["sendView.operations.invalidAddress"] +
-            " " +
-            $scope.detail.recipientAddress;
-          if ($scope.detail.isBot == false) {
-            spawnMessage(MsgType.ALERT, msg);
-          } else {
-            sendBotReplyMsg(msg);
-          }
-        }, 0);
-      }
-    });
-
-    electron.ipcRenderer.on("child-send-coin", function (event, msgData) {
-      var data = msgData.msg;
-      // writeLog(data)
-      if (data.result != null) {
-        checkTransaction(data.result, SendType.NORMAL);
-      } else {
-        $timeout(function () {
-          $scope.detail.btnDisable = false;
-          if ($scope.detail.isBot == false) {
-            spawnMessage(MsgType.ALERT, data.error.message);
-          } else {
-            sendBotReplyMsg(data.error.message);
-          }
-        }, 0);
-      }
-    });
-
-    electron.ipcRenderer.on("child-set-tx-fee", function (event, msgData) {
-      var data = msgData.msg;
-      if (data.error == null) {
-        $timeout(function () {
-          var realAmount =
-            parseFloat($scope.detail.amount) * parseFloat($scope.detail.value);
-          sendCoinPublic($scope.detail.recipientAddress, realAmount);
-        });
-      } else {
-        $timeout(function () {
-          $scope.detail.btnDisable = false;
-          if ($scope.detail.isBot == false) {
-            spawnMessage(
-              MsgType.ALERT,
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
-          } else {
-            sendBotReplyMsg(
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
-          }
-        }, 0);
-      }
-    });
-
-    electron.ipcRenderer.on("child-send-to-address", function (event, msgData) {
-      var data = msgData.msg;
-      writeLog(data);
-      if (data.error == null) {
-        $timeout(function () {
-          $scope.detail.btnDisable = false;
-          var msg = $scope.ctrlTranslations["global.success2"];
-          if ($scope.detail.isBot == false) {
-            spawnMessage(MsgType.ALERT, msg);
-          } else {
-            msg += "\n" + explorer + "tx/" + element.result.txid;
-            sendBotReplyMsg(msg);
-          }
-          shouldGetAll = true;
-          $scope.detail.amount = undefined;
-          $scope.detail.recipientAddress = undefined;
-          $scope.detail.message = undefined;
-        }, 0);
-      } else {
-        $timeout(function () {
-          $scope.detail.btnDisable = false;
-          if ($scope.detail.isBot == false) {
-            spawnMessage(
-              MsgType.ALERT,
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
-          } else {
-            sendBotReplyMsg(
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
-          }
-        }, 0);
-      }
     });
 
     electron.ipcRenderer.on(

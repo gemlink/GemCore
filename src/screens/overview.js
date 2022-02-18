@@ -521,7 +521,7 @@ app.controller("OverviewCtrl", [
 
     function verifyAllAddress() {
       if (addressList.length > 0) {
-        verifyAddress(addressList[0], undefined, serverData.cointype);
+        verifyAddress(addressList[0]);
         addressList.splice(0, 1);
       } else {
         addressList = Object.keys($scope.rawData.addressbalance);

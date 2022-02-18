@@ -133,7 +133,6 @@ app.controller("LoadingCtrl", [
         });
       }
       //check wallet status
-      helpData = undefined;
       setTimeout(restartFunction, 500);
     };
 
@@ -691,7 +690,6 @@ app.controller("LoadingCtrl", [
     // }
 
     function checkWalletStarting() {
-      // writeLog(helpData)
       checkDaemon(function (data) {
         if (data.value.errno) {
           //daemon is stopped, reload
@@ -1144,22 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "help") {
-        helpData = data.value;
-      } else if (data.key == "getinfo") {
-        getinfoData = data.value;
-        helpData = data.value;
-        //update network height
-      } else if (data.key == "z_sendmany") {
-        z_sendmanyData = data.value;
-        electron.ipcRenderer.send("main-send-coin", z_sendmanyData);
-      } else if (data.key == "sendtoaddress") {
-        sendToAddress = data.value;
-        electron.ipcRenderer.send("main-send-to-address", sendToAddress);
-      } else if (data.key == "settxfee") {
-        feeData = data.value;
-        electron.ipcRenderer.send("main-set-tx-fee", feeData);
-      } else if (data.key == "z_getoperationstatus") {
+      if (data.key == "z_getoperationstatus") {
         z_getoperationstatusData = data.value;
         var arg = data.arg;
         if (arg[2] == SendType.NORMAL || arg[2] == SendType.PUBLIC) {
@@ -1173,18 +1156,6 @@ app.controller("LoadingCtrl", [
             z_getoperationstatusData
           );
         }
-      } else if (data.key == "validateaddress") {
-        var arg = [];
-        validateaddressData = data.value;
-        arg.push(data.value);
-        arg.push(data.arg);
-        electron.ipcRenderer.send("main-verify-address", arg);
-      } else if (data.key == "z_validateaddress") {
-        var arg = [];
-        validateaddressData = data.value;
-        arg.push(data.value);
-        arg.push(data.arg);
-        electron.ipcRenderer.send("main-verify-zaddress", arg);
       } else if (data.key == "z_shieldcoinbase") {
         z_shieldcoinbaseData = data;
         electron.ipcRenderer.send("main-shield-coin", z_shieldcoinbaseData);
@@ -1332,7 +1303,6 @@ app.controller("LoadingCtrl", [
           } else if (msgData.msg.type == UpdateDataType.SELECTLINUX) {
             selectLinux(msgData.msg.data);
           } else if (msgData.msg.type == UpdateDataType.RESTART) {
-            helpData = {};
             setTimeout(restartFunction, 500);
           }
         }, 0);

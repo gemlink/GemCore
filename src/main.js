@@ -511,23 +511,6 @@ ipc.on("main-update-shield", function (event, arg) {
   event.sender.send("child-update-shield", { msg: arg });
 });
 
-ipc.on("main-verify-address", function (event, arg) {
-  event.sender.send("child-verify-address", { msg: arg });
-});
-
-ipc.on("main-verify-zaddress", function (event, arg) {
-  event.sender.send("child-verify-zaddress", { msg: arg });
-});
-
-ipc.on("main-send-coin", function (event, arg) {
-  event.sender.send("child-send-coin", { msg: arg });
-});
-ipc.on("main-send-to-address", function (event, arg) {
-  event.sender.send("child-send-to-address", { msg: arg });
-});
-ipc.on("main-set-tx-fee", function (event, arg) {
-  event.sender.send("child-set-tx-fee", { msg: arg });
-});
 ipc.on("main-check-transaction", function (event, arg) {
   event.sender.send("child-check-transaction", { msg: arg });
 });
