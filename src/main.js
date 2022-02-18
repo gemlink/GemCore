@@ -511,16 +511,8 @@ ipc.on("main-update-shield", function (event, arg) {
   event.sender.send("child-update-shield", { msg: arg });
 });
 
-ipc.on("main-check-transaction", function (event, arg) {
-  event.sender.send("child-check-transaction", { msg: arg });
-});
-
 ipc.on("main-shield-coin", function (event, arg) {
   event.sender.send("child-shield-coin", { msg: arg });
-});
-
-ipc.on("main-check-transaction-shield", function (event, arg) {
-  event.sender.send("child-check-transaction-shield", { msg: arg });
 });
 
 ipc.on("main-update-transactions", function (event, arg) {
@@ -669,9 +661,9 @@ ipc.on("main-list-received-by-address-zcash", function (event, arg) {
   event.sender.send("child-list-received-by-address-zcash", { msg: arg });
 });
 
-ipc.on("main-execute-shield-all", function (event, arg) {
-  event.sender.send("child-execute-shield-all", { msg: arg });
-});
+// ipc.on("main-execute-shield-all", function (event, arg) {
+//   event.sender.send("child-execute-shield-all", { msg: arg });
+// });
 
 ipc.on("main-execute-multiple-shield", function (event, arg) {
   event.sender.send("child-execute-multiple-shield", { msg: arg });

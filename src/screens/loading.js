@@ -752,9 +752,9 @@ app.controller("LoadingCtrl", [
 
       var arg = [coin, serverData];
       electron.ipcRenderer.send("main-execute-timer", arg);
-      if (settings.autoshield) {
-        electron.ipcRenderer.send("main-execute-shield-all", settings);
-      }
+      // if (settings.autoshield) {
+      //   electron.ipcRenderer.send("main-execute-shield-all", settings);
+      // }
     }
 
     $scope.closePopup = function () {
@@ -1148,11 +1148,6 @@ app.controller("LoadingCtrl", [
         if (arg[2] == SendType.NORMAL || arg[2] == SendType.PUBLIC) {
           electron.ipcRenderer.send(
             "main-check-transaction",
-            z_getoperationstatusData
-          );
-        } else if (arg[2] == SendType.SHIELD) {
-          electron.ipcRenderer.send(
-            "main-check-transaction-shield",
             z_getoperationstatusData
           );
         }

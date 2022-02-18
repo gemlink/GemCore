@@ -25,7 +25,6 @@ var isSynced = false;
 var child;
 var childDaemon;
 var feeData;
-var z_getoperationstatusData;
 var z_shieldcoinbaseData;
 var validateaddressData;
 var masternodelistData;
@@ -850,19 +849,6 @@ function sendCoinPublic(to, amount, callback) {
   startCli(arg, callback);
 }
 
-function exec_sendCoin(from, to, amount, fee, type, callback) {
-  z_getoperationstatusData = undefined;
-  writeLog(type);
-  if (type == SendType.NORMAL) {
-    writeLog("send coin normal");
-    sendCoin(from, to, amount, fee, callback);
-  } else if (type == SendType.SHIELD) {
-    writeLog("shield coin");
-    shieldCoin(from, to, fee, callback);
-  }
-  //@TODO disable send & shield coin button
-}
-
 function sendManyCoin(from, to, fee, callback) {
   var sendInfo = '"' + from + '" ' + '"[';
 
@@ -930,13 +916,21 @@ function verifyZAddress(address, data, callback) {
   startCli(arg, callback);
 }
 
-function checkTransaction(opid, type, callback) {
+function checkTransaction(opid, callback) {
   opid = strstd(opid);
   var temp = [opid];
   var arg = ["z_getoperationstatus", temp];
-  arg.push(type);
+  // arg.push(type);
   // writeLog(arg)
-  startCli(arg, callback);
+  startCli(arg, function (data) {
+    console.log("Check transaction data", data);
+    var status = data.value.result[0].status;
+    if (status == "executing" || status == undefined) {
+      setTimeout(checkTransaction, 2000, opid, callback);
+    } else {
+      callback(data);
+    }
+  });
 }
 
 function getTransaction(txid, callback) {
@@ -1686,31 +1680,31 @@ function replyMessage(txt, id) {
         }
         saveSettings(settings, currentCoin);
         sendMessage(settings.bot, id, botStr + msg + " successfully");
-      } else if (command == "shieldall") {
-        isBotCmd = true;
-        if (res[2]) {
-          var data = {};
-          data.shieldthreshold = 8;
-          var values = Object.keys(book);
-          var keys = Object.values(book);
-          var idx = keys.findIndex(function (e) {
-            return e == res[2];
-          });
-          if (idx > -1) {
-            data.shieldaddress = values[idx];
-          } else {
-            data.shieldaddress = res[2];
-          }
-          data.isBot = true;
-          sendMessage(
-            settings.bot,
-            id,
-            botStr + "Shielding all generated coin to " + data.shieldaddress
-          );
-          electron.ipcRenderer.send("main-execute-shield-all", data);
-        } else {
-          createHelpMessage(command);
-        }
+      // } else if (command == "shieldall") {
+      //   isBotCmd = true;
+      //   if (res[2]) {
+      //     var data = {};
+      //     data.shieldthreshold = 8;
+      //     var values = Object.keys(book);
+      //     var keys = Object.values(book);
+      //     var idx = keys.findIndex(function (e) {
+      //       return e == res[2];
+      //     });
+      //     if (idx > -1) {
+      //       data.shieldaddress = values[idx];
+      //     } else {
+      //       data.shieldaddress = res[2];
+      //     }
+      //     data.isBot = true;
+      //     sendMessage(
+      //       settings.bot,
+      //       id,
+      //       botStr + "Shielding all generated coin to " + data.shieldaddress
+      //     );
+      //     electron.ipcRenderer.send("main-execute-shield-all", data);
+      //   } else {
+      //     createHelpMessage(command);
+      //   }
       } else if (command == "send") {
         isBotCmd = true;
         if (res[2] && res[3] && res[4]) {
@@ -2050,17 +2044,17 @@ function sendMessage(type, id, msg) {
 function curlData(username, password, port, methods, params, callback) {
   var coinType = "gemlink";
   var temp = [methods.slice(0, methods.length)];
-  temp = temp.concat(params);
-  if (methods == "z_getoperationstatus") {
-    params.splice(1, 1);
-  } else if (methods == "getdebug") {
-    methods = params[0];
-    params.splice(0, 1);
-  } else if (methods.includes("validateaddress")) {
-    if (params.length > 1) {
-      params.splice(1, 1);
-    }
-  }
+  // temp = temp.concat(params);
+  // if (methods == "z_getoperationstatus") {
+  //   params.splice(1, 1);
+  // } else if (methods == "getdebug") {
+  //   methods = params[0];
+  //   params.splice(0, 1);
+  // } else if (methods.includes("validateaddress")) {
+  //   if (params.length > 1) {
+  //     params.splice(1, 1);
+  //   }
+  // }
   var options = {
     url: "http://localhost:" + port,
     method: "post",

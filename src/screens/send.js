@@ -153,31 +153,122 @@ app.controller("SendCtrl", [
       );
     };
 
-    function finishSend(data) {
+    function finishSend(checkdata) {
       $timeout(function () {
         $scope.detail.btnDisable = false;
-        if (!data.value.error) {
-          var msg = $scope.ctrlTranslations["global.success2"];
-          if ($scope.detail.isBot == false) {
-            spawnMessage(MsgType.ALERT, msg);
-          } else {
-            msg += "\n" + explorer + "tx/" + data.value.result.txid;
-            sendBotReplyMsg(msg);
-          }
+        var data = checkdata.value;
+        if (data.result[0] == null) {
+          $timeout(function () {
+            $scope.detail.btnDisable = false;
+            var msg =
+              $scope.ctrlTranslations["sendView.operations.checkTxError"];
+            if ($scope.detail.isBot == false) {
+              spawnMessage(MsgType.ALERT, msg);
+            } else {
+              sendBotReplyMsg(msg);
+            }
+          }, 0);
         } else {
-          if ($scope.detail.isBot == false) {
-            spawnMessage(
-              MsgType.ALERT,
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
+          var status = data.result[0].status;
+          if (status == "success") {
+            $timeout(function () {
+              $scope.detail.btnDisable = false;
+              var msg = $scope.ctrlTranslations["global.success2"];
+              if ($scope.detail.isBot == false) {
+                spawnMessage(MsgType.ALERT, msg);
+              } else {
+                msg += "\n" + explorer + "tx/" + data.result[0].txid;
+                sendBotReplyMsg(msg);
+              }
+              $scope.detail.amount = undefined;
+              $scope.detail.recipientAddress = undefined;
+              $scope.detail.message = undefined;
+            }, 0);
           } else {
-            sendBotReplyMsg(
-              data.error
-                ? data.error.message
-                : $scope.ctrlTranslations["global.error"]
-            );
+            $scope.detail.btnDisable = false;
+            var error_msg = data.result[0].error.message;
+            writeLog(error_msg);
+            switch (true) {
+              case error_msg.includes("Insufficient shielded funds"):
+                var have = error_msg.split("have ").pop().split(",")[0];
+                var need = error_msg.split("need ").pop().split(",")[0];
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientShieldedFunds1"
+                  ] + have;
+                msg +=
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientShieldedFunds2"
+                  ] + need;
+                break;
+              case error_msg.includes("Insufficient transparent funds") &&
+                !error_msg.includes("dust threshold is"):
+                var have = error_msg.split("have ").pop().split(",")[0];
+                var need = error_msg.split("need ").pop().split(",")[0];
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientTransparentFunds1"
+                  ] + have;
+                msg +=
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientShieldedFunds2"
+                  ] + need;
+                break;
+              case error_msg.includes("Insufficient transparent funds") &&
+                error_msg.includes("dust threshold is"):
+                var have = error_msg.split("have ").pop().split(",")[0];
+                var need = error_msg.split("need ").pop().split(" more")[0];
+                var invalid_change = error_msg
+                  .split("output ")
+                  .pop()
+                  .split(" (")[0];
+                var dust_threshold = error_msg.split("is ").pop().split(")")[0];
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientTransparentFunds1"
+                  ] + have;
+                msg +=
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientShieldedFunds2"
+                  ] + need;
+                msg +=
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientTransparentFunds2"
+                  ] + invalid_change;
+                msg +=
+                  $scope.ctrlTranslations[
+                    "global.errors.InsufficientTransparentFunds3"
+                  ] +
+                  dust_threshold +
+                  ")";
+                break;
+              case error_msg.includes("bad-txns-oversize"):
+                msg = $scope.ctrlTranslations["global.errors.BadTxnsOversize"];
+                break;
+              case error_msg.includes(
+                "bad-txns-joinsplit-requirements-not-met"
+              ):
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.BadTxnsJoinsplitRequirementsNotMet"
+                  ];
+                break;
+              case error_msg.includes(
+                "Could not find any non-coinbase UTXOs to spend."
+              ):
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.NonCoinbaseUTXOsToSpend"
+                  ];
+                break;
+              default:
+                msg = error_msg;
+            }
+            if ($scope.detail.isBot == false) {
+              spawnMessage(MsgType.ALERT, msg);
+            } else {
+              sendBotReplyMsg(msg);
+            }
           }
         }
       });
@@ -187,6 +278,17 @@ app.controller("SendCtrl", [
       settxfee(String(dataToSend.fee).replace(",", "."), function () {
         sendCoinPublic(dataToSend.to, dataToSend.amount, callback);
       });
+    }
+
+    function handleSendData(data) {
+      if (!data.value.error) {
+        var txid = data.value.result;
+        checkTransaction(txid, function (checkTxData) {
+          finishSend(checkTxData);
+        });
+      } else {
+        finishSend(data);
+      }
     }
 
     $scope.sendCoin = function () {
@@ -202,28 +304,52 @@ app.controller("SendCtrl", [
       if (dataToSend["from"] == "public") {
         sendFromPublic(dataToSend, function (dataSendPublic) {
           // console.log("dataSendPublic", dataSendPublic);
-          finishSend(dataSendPublic);
+          handleSendData(dataSendPublic);
         });
       } else {
-        verifyAddress($scope.detail.recipientAddress, function(verifyData){
+        verifyAddress($scope.detail.recipientAddress, function (verifyData) {
           // console.log("verifyData", verifyData);
           if (verifyData.value.result.isvalid == true) {
-            sendCoin(dataToSend.from, dataToSend.to, dataToSend.amount, dataToSend.fee, function(sendData){
-              // console.log("sendData", sendData);
-              finishSend(sendData);
-            });
+            sendCoin(
+              dataToSend.from,
+              dataToSend.to,
+              dataToSend.amount,
+              dataToSend.fee,
+              function (sendData) {
+                // console.log("sendData", sendData);
+                handleSendData(sendData);
+              }
+            );
           } else if (verifyData.value.result.isvalid == false) {
-              verifyZAddress($scope.detail.recipientAddress, function(verifyzData){
+            verifyZAddress(
+              $scope.detail.recipientAddress,
+              function (verifyzData) {
                 // console.log("verifyzData", verifyzData);
                 if (verifyzData.value.result.isvalid == true) {
-                  sendCoin(dataToSend.from, dataToSend.to, dataToSend.amount, dataToSend.fee, function(sendData){
-                    // console.log("sendData", sendData);
-                    finishSend(sendData);
-                  });
+                  sendCoin(
+                    dataToSend.from,
+                    dataToSend.to,
+                    dataToSend.amount,
+                    dataToSend.fee,
+                    function (sendData) {
+                      handleSendData(sendData);
+                    }
+                  );
                 } else if (data != undefined && data.isvalid == false) {
-                  finishSend(verifyzData);
+                  var msg =
+                    $scope.ctrlTranslations[
+                      "sendView.operations.invalidAddress"
+                    ] +
+                    " " +
+                    $scope.detail.recipientAddress;
+                  if ($scope.detail.isBot == false) {
+                    spawnMessage(MsgType.ALERT, msg);
+                  } else {
+                    sendBotReplyMsg(msg);
+                  }
                 }
-              });
+              }
+            );
           }
         });
       }
@@ -395,137 +521,6 @@ app.controller("SendCtrl", [
       var data = msgData.msg;
       populateAddress(data);
     });
-
-    electron.ipcRenderer.on(
-      "child-check-transaction",
-      function (event, msgData) {
-        // writeLog(msgData.msg)
-        var data = msgData.msg;
-        if (data.result == null) {
-          $timeout(function () {
-            $scope.detail.btnDisable = false;
-            var msg =
-              $scope.ctrlTranslations["sendView.operations.checkTxError"];
-            if ($scope.detail.isBot == false) {
-              spawnMessage(MsgType.ALERT, msg);
-            } else {
-              sendBotReplyMsg(msg);
-            }
-          }, 0);
-        } else {
-          //send done, check status
-          var element = data.result[0];
-          // writeLog(element)
-          var status = element ? element.status : undefined;
-          if (status == "executing" || status == undefined) {
-            setTimeout(function () {
-              checkTransaction(element ? element.id : data.id, SendType.NORMAL);
-              //update sending process
-            }, 2000);
-          } else if (status == "success") {
-            $timeout(function () {
-              $scope.detail.btnDisable = false;
-              var msg = $scope.ctrlTranslations["global.success2"];
-              if ($scope.detail.isBot == false) {
-                spawnMessage(MsgType.ALERT, msg);
-              } else {
-                msg += "\n" + explorer + "tx/" + element.result.txid;
-                sendBotReplyMsg(msg);
-              }
-              shouldGetAll = true;
-              $scope.detail.amount = undefined;
-              $scope.detail.recipientAddress = undefined;
-              $scope.detail.message = undefined;
-            }, 0);
-          } else {
-            $scope.detail.btnDisable = false;
-            var error_msg = element.error.message;
-            writeLog(error_msg);
-            switch (true) {
-              case error_msg.includes("Insufficient shielded funds"):
-                var have = error_msg.split("have ").pop().split(",")[0];
-                var need = error_msg.split("need ").pop().split(",")[0];
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientShieldedFunds1"
-                  ] + have;
-                msg +=
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientShieldedFunds2"
-                  ] + need;
-                break;
-              case error_msg.includes("Insufficient transparent funds") &&
-                !error_msg.includes("dust threshold is"):
-                var have = error_msg.split("have ").pop().split(",")[0];
-                var need = error_msg.split("need ").pop().split(",")[0];
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientTransparentFunds1"
-                  ] + have;
-                msg +=
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientShieldedFunds2"
-                  ] + need;
-                break;
-              case error_msg.includes("Insufficient transparent funds") &&
-                error_msg.includes("dust threshold is"):
-                var have = error_msg.split("have ").pop().split(",")[0];
-                var need = error_msg.split("need ").pop().split(" more")[0];
-                var invalid_change = error_msg
-                  .split("output ")
-                  .pop()
-                  .split(" (")[0];
-                var dust_threshold = error_msg.split("is ").pop().split(")")[0];
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientTransparentFunds1"
-                  ] + have;
-                msg +=
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientShieldedFunds2"
-                  ] + need;
-                msg +=
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientTransparentFunds2"
-                  ] + invalid_change;
-                msg +=
-                  $scope.ctrlTranslations[
-                    "global.errors.InsufficientTransparentFunds3"
-                  ] +
-                  dust_threshold +
-                  ")";
-                break;
-              case error_msg.includes("bad-txns-oversize"):
-                msg = $scope.ctrlTranslations["global.errors.BadTxnsOversize"];
-                break;
-              case error_msg.includes(
-                "bad-txns-joinsplit-requirements-not-met"
-              ):
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.BadTxnsJoinsplitRequirementsNotMet"
-                  ];
-                break;
-              case error_msg.includes(
-                "Could not find any non-coinbase UTXOs to spend."
-              ):
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.NonCoinbaseUTXOsToSpend"
-                  ];
-                break;
-              default:
-                msg = error_msg;
-            }
-            if ($scope.detail.isBot == false) {
-              spawnMessage(MsgType.ALERT, msg);
-            } else {
-              sendBotReplyMsg(msg);
-            }
-          }
-        }
-      }
-    );
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       $timeout(function () {

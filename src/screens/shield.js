@@ -15,9 +15,7 @@ app.controller("ShieldCtrl", [
     $scope.detail.privateAddr = undefined;
     $scope.detail.fee = 0.0001;
     $scope.detail.remainingvalue = 0;
-    var isShieldAll = false;
-    var isAutoShield = false;
-    var isMultipleShield = false;
+    var isShielding = false;
     var continueShieldTimer = undefined;
     $scope.detail.btnEnabled = true;
     $scope.detail.bestTime = -1;
@@ -128,45 +126,42 @@ app.controller("ShieldCtrl", [
       }, 0);
     }
 
-    function autoShield(threshold, addr) {
-      writeLog(
-        "check auto shield, locked coin = " +
-          $scope.detail.remainingvalue +
-          ", threshold = " +
-          threshold
-      );
-      if (
-        !isShieldAll &&
-        isSynced &&
-        parseInt($scope.detail.remainingvalue) >= threshold
-      ) {
-        $scope.detail.privateAddr = addr;
-        isAutoShield = true;
-        $scope.detail.btnEnabled = false;
-        isShieldAll = true;
-        exec_sendCoin(
-          "*",
-          $scope.detail.privateAddr,
-          0,
-          $scope.detail.fee,
-          SendType.SHIELD
-        );
-      }
-    }
-
     function multipleShield(addr) {
-      if (!isShieldAll && isSynced) {
+      if (!isShielding && isSynced) {
+        isShielding = true;
         $scope.detail.privateAddr = addr;
-        isMultipleShield = true;
         $scope.detail.btnEnabled = false;
-        isShieldAll = false;
-        isAutoShield = false;
-        exec_sendCoin(
+
+        shieldCoin(
           $scope.shieldAddresses[0],
           $scope.detail.privateAddr,
-          0,
           $scope.detail.fee,
-          SendType.SHIELD
+          function (shieldData) {
+            if (!shieldData.value.result.error) {
+              // continue shield
+              multipleShield(addr);
+            } else {
+              $timeout(function () {
+                // splice done address, try with the next one
+                if (shieldData.value.result.error.code == -6) {
+                  $scope.shieldAddresses.splice(0, 1);
+                  if ($scope.shieldAddresses.length > 0) {
+                    multipleShield(addr);
+                  } else {
+                    // shield done
+                    $scope.detail.btnEnabled = false;
+                  }
+                } else {
+                  $scope.detail.btnEnabled = true;
+                  var msg =
+                    $scope.ctrlTranslations[
+                      "shieldView.operations.multipleShield"
+                    ];
+                  spawnMessage(MsgType.ALERT, msg, "");
+                }
+              });
+            }
+          }
         );
       } else if (!isSynced) {
         spawnMessage(
@@ -176,23 +171,6 @@ app.controller("ShieldCtrl", [
       }
     }
 
-    function continueShield(from, to, fee) {
-      //if($scope.detail.lastBestTime != $scope.detail.bestTime)
-      {
-        clearInterval(continueShieldTimer);
-        continueShieldTimer = undefined;
-        exec_sendCoin(from, to, 0, fee, SendType.SHIELD);
-      }
-      // else
-      // {
-      //   if(continueShieldTimer == undefined)
-      //   {
-      //     continueShieldTimer = setInterval(function(){
-      //       continueShield(from, to, fee)
-      //     },2000)
-      //   }
-      // }
-    }
     $scope.selectPubAddress = function (addr) {
       $scope.detail.publicAddr = addr;
     };
@@ -202,7 +180,7 @@ app.controller("ShieldCtrl", [
     };
 
     $scope.shieldClick = function () {
-      isAutoShield = false;
+      isShielding = true;
       if ($scope.detail.publicAddr == undefined) {
         writeLog("send address = null");
         spawnMessage(
@@ -234,18 +212,36 @@ app.controller("ShieldCtrl", [
       }
 
       $scope.detail.btnEnabled = false;
-      isShieldAll = false;
-      exec_sendCoin(
+      shieldCoin(
         $scope.detail.publicAddr,
         $scope.detail.privateAddr,
-        0,
         String($scope.detail.fee).replace(",", "."),
-        SendType.SHIELD
+        function (shieldData) {
+          isShielding = false;
+          if (shieldData.value.result.error) {
+            error_msg = shieldData.value.result.error.message;
+            writeLog(error_msg);
+            switch (true) {
+              case error_msg.includes(
+                "Could not find any coinbase funds to shield."
+              ):
+                msg =
+                  $scope.ctrlTranslations[
+                    "global.errors.NoCoinbaseFundsToShield"
+                  ];
+                break;
+              default:
+                msg = error_msg;
+            }
+            spawnMessage(MsgType.ALERT, msg);
+          }
+          $scope.detail.btnEnabled = false;
+        }
       );
     };
 
     $scope.shieldAllClick = function () {
-      isAutoShield = false;
+      isShielding = true;
       if (
         $scope.detail.privateAddr == undefined ||
         $scope.detail.privateAddr == ""
@@ -276,16 +272,27 @@ app.controller("ShieldCtrl", [
       );
     };
 
+    function shieldAll(to, fee) {
+      shieldCoin("*", to, fee, function (shieldData) {
+        if (shieldData.value.result.error) {
+          $timeout(function () {
+            $scope.detail.btnEnabled = true;
+            var msg =
+              $scope.ctrlTranslations["shieldView.operations.shieldAllDone"];
+            spawnMessage(MsgType.ALERT, msg, "");
+          });
+        } else {
+          shieldAll(to, fee);
+        }
+      });
+    }
+
     $scope.shieldAllAction = function () {
       if ($scope.publicAddresses.length > 0) {
         $scope.detail.btnEnabled = false;
-        isShieldAll = true;
-        exec_sendCoin(
-          "*",
+        shieldAll(
           $scope.detail.privateAddr,
-          0,
-          String($scope.detail.fee).replace(",", "."),
-          SendType.SHIELD
+          String($scope.detail.fee).replace(",", ".")
         );
       } else {
         spawnMessage(
@@ -376,7 +383,7 @@ app.controller("ShieldCtrl", [
             }
           }
         } else {
-          checkTransaction(data.result.opid, SendType.SHIELD);
+          checkTransaction(data.result.opid);
         }
       }, 0);
     });
@@ -409,7 +416,7 @@ app.controller("ShieldCtrl", [
             writeLog(status);
             if (status == "executing") {
               setTimeout(function () {
-                checkTransaction(element.id, SendType.SHIELD);
+                checkTransaction(element.id);
                 //update sending process
               }, 2000);
             } else if (status == "success") {
@@ -489,24 +496,6 @@ app.controller("ShieldCtrl", [
             }
           }
         }, 0);
-      }
-    );
-
-    electron.ipcRenderer.on(
-      "child-execute-shield-all",
-      function (event, msgData) {
-        writeLog(msgData.msg);
-        if (msgData.msg.isBot == true) {
-          $timeout(function () {
-            autoShield(msgData.msg.shieldthreshold, msgData.msg.shieldaddress);
-            //update sending process
-          }, 0);
-        } else {
-          setInterval(function () {
-            autoShield(msgData.msg.shieldthreshold, msgData.msg.shieldaddress);
-            //update sending process
-          }, 60000);
-        }
       }
     );
 
