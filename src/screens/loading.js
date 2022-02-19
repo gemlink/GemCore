@@ -1142,19 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "z_getoperationstatus") {
-        z_getoperationstatusData = data.value;
-        var arg = data.arg;
-        if (arg[2] == SendType.NORMAL || arg[2] == SendType.PUBLIC) {
-          electron.ipcRenderer.send(
-            "main-check-transaction",
-            z_getoperationstatusData
-          );
-        }
-      } else if (data.key == "z_shieldcoinbase") {
-        z_shieldcoinbaseData = data;
-        electron.ipcRenderer.send("main-shield-coin", z_shieldcoinbaseData);
-      } else if (data.key == "getmasternodeoutputs") {
+      if (data.key == "getmasternodeoutputs") {
         masternodeoutputsData = data.value;
         electron.ipcRenderer.send(
           "main-masternode-outputs",

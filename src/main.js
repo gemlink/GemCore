@@ -511,10 +511,6 @@ ipc.on("main-update-shield", function (event, arg) {
   event.sender.send("child-update-shield", { msg: arg });
 });
 
-ipc.on("main-shield-coin", function (event, arg) {
-  event.sender.send("child-shield-coin", { msg: arg });
-});
-
 ipc.on("main-update-transactions", function (event, arg) {
   event.sender.send("child-update-transactions", { msg: arg });
 });

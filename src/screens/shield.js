@@ -179,6 +179,12 @@ app.controller("ShieldCtrl", [
       $scope.detail.privateAddr = addr;
     };
 
+    function shieldDone(msg) {
+      $timeout(function () {
+        spawnMessage(MsgType.ALERT, msg);
+        $scope.detail.btnEnabled = true;
+      });
+    }
     $scope.shieldClick = function () {
       isShielding = true;
       if ($scope.detail.publicAddr == undefined) {
@@ -218,24 +224,25 @@ app.controller("ShieldCtrl", [
         String($scope.detail.fee).replace(",", "."),
         function (shieldData) {
           isShielding = false;
-          if (shieldData.value.result.error) {
-            error_msg = shieldData.value.result.error.message;
-            writeLog(error_msg);
-            switch (true) {
-              case error_msg.includes(
-                "Could not find any coinbase funds to shield."
-              ):
-                msg =
-                  $scope.ctrlTranslations[
-                    "global.errors.NoCoinbaseFundsToShield"
-                  ];
-                break;
-              default:
-                msg = error_msg;
+          if (shieldData.value.error) {
+            error_msg = shieldData.value.error.message;
+            if (
+              error_msg.includes("Could not find any coinbase funds to shield.")
+            ) {
+              msg =
+                $scope.ctrlTranslations[
+                  "global.errors.NoCoinbaseFundsToShield"
+                ];
+            } else {
+              msg = error_msg;
             }
-            spawnMessage(MsgType.ALERT, msg);
+            shieldDone(msg);
+          } else {
+            var opid = shieldData.value.result.opid;
+            checkTransaction(opid, function (checkTxData) {
+              shieldDone($scope.ctrlTranslations["global.success2"]);
+            });
           }
-          $scope.detail.btnEnabled = false;
         }
       );
     };
@@ -274,15 +281,17 @@ app.controller("ShieldCtrl", [
 
     function shieldAll(to, fee) {
       shieldCoin("*", to, fee, function (shieldData) {
-        if (shieldData.value.result.error) {
-          $timeout(function () {
-            $scope.detail.btnEnabled = true;
-            var msg =
-              $scope.ctrlTranslations["shieldView.operations.shieldAllDone"];
-            spawnMessage(MsgType.ALERT, msg, "");
-          });
+        if (shieldData.value.error) {
+            shieldDone(
+              $scope.ctrlTranslations["shieldView.operations.shieldAllDone"]
+            );
         } else {
-          shieldAll(to, fee);
+          checkTransaction(
+            shieldData.value.result.opid,
+            function (checkTxData) {
+              shieldAll(to, fee);
+            }
+          );
         }
       });
     }
@@ -314,190 +323,190 @@ app.controller("ShieldCtrl", [
       populateAddress(data);
     });
 
-    electron.ipcRenderer.on("child-shield-coin", function (event, msgData) {
-      var data = msgData.msg.value;
-      // writeLog(data)
-      $timeout(function () {
-        if (data.result == null) {
-          if (!isShieldAll) {
-            if (!isMultipleShield) {
-              error_msg = data.error.message;
-              writeLog(error_msg);
-              switch (true) {
-                case error_msg.includes(
-                  "Could not find any coinbase funds to shield."
-                ):
-                  msg =
-                    $scope.ctrlTranslations[
-                      "global.errors.NoCoinbaseFundsToShield"
-                    ];
-                  break;
-                default:
-                  msg = error_msg;
-              }
-              spawnMessage(MsgType.ALERT, msg);
-              $scope.detail.btnEnabled = true;
-            } else {
-              if (data.error.code == -6 && $scope.shieldAddresses.length > 0) {
-                $scope.shieldAddresses.splice(0, 1);
-                if ($scope.shieldAddresses.length == 0) {
-                  $scope.detail.btnEnabled = true;
-                  shouldGetAll = true;
-                  var msg =
-                    $scope.ctrlTranslations[
-                      "shieldView.operations.multipleShield"
-                    ];
-                  spawnMessage(MsgType.ALERT, msg, "");
-                } else {
-                  exec_sendCoin(
-                    $scope.shieldAddresses[0],
-                    $scope.detail.privateAddr,
-                    0,
-                    $scope.detail.fee,
-                    SendType.SHIELD
-                  );
-                }
-              }
-            }
-          } else {
-            if (data.error.code == -6 || $scope.detail.remainingvalue < 8) {
-              $scope.detail.btnEnabled = true;
-              shouldGetAll = true;
-              isShieldAll = false;
-              if (!isAutoShield) {
-                var msg =
-                  $scope.ctrlTranslations[
-                    "shieldView.operations.shieldAllDone"
-                  ];
-                spawnMessage(MsgType.ALERT, msg, "");
-              } else {
-                var msg =
-                  $scope.ctrlTranslations[
-                    "shieldView.operations.shieldAllDone"
-                  ];
-                sendBotReplyMsg(msg);
-                writeLog("Auto shield is done");
-              }
-            } else {
-              console.log(data);
-            }
-          }
-        } else {
-          checkTransaction(data.result.opid);
-        }
-      }, 0);
-    });
+    // electron.ipcRenderer.on("child-shield-coin", function (event, msgData) {
+    //   var data = msgData.msg.value;
+    //   // writeLog(data)
+    //   $timeout(function () {
+    //     if (data.result == null) {
+    //       if (!isShieldAll) {
+    //         if (!isMultipleShield) {
+    //           error_msg = data.error.message;
+    //           writeLog(error_msg);
+    //           switch (true) {
+    //             case error_msg.includes(
+    //               "Could not find any coinbase funds to shield."
+    //             ):
+    //               msg =
+    //                 $scope.ctrlTranslations[
+    //                   "global.errors.NoCoinbaseFundsToShield"
+    //                 ];
+    //               break;
+    //             default:
+    //               msg = error_msg;
+    //           }
+    //           spawnMessage(MsgType.ALERT, msg);
+    //           $scope.detail.btnEnabled = true;
+    //         } else {
+    //           if (data.error.code == -6 && $scope.shieldAddresses.length > 0) {
+    //             $scope.shieldAddresses.splice(0, 1);
+    //             if ($scope.shieldAddresses.length == 0) {
+    //               $scope.detail.btnEnabled = true;
+    //               shouldGetAll = true;
+    //               var msg =
+    //                 $scope.ctrlTranslations[
+    //                   "shieldView.operations.multipleShield"
+    //                 ];
+    //               spawnMessage(MsgType.ALERT, msg, "");
+    //             } else {
+    //               exec_sendCoin(
+    //                 $scope.shieldAddresses[0],
+    //                 $scope.detail.privateAddr,
+    //                 0,
+    //                 $scope.detail.fee,
+    //                 SendType.SHIELD
+    //               );
+    //             }
+    //           }
+    //         }
+    //       } else {
+    //         if (data.error.code == -6 || $scope.detail.remainingvalue < 8) {
+    //           $scope.detail.btnEnabled = true;
+    //           shouldGetAll = true;
+    //           isShieldAll = false;
+    //           if (!isAutoShield) {
+    //             var msg =
+    //               $scope.ctrlTranslations[
+    //                 "shieldView.operations.shieldAllDone"
+    //               ];
+    //             spawnMessage(MsgType.ALERT, msg, "");
+    //           } else {
+    //             var msg =
+    //               $scope.ctrlTranslations[
+    //                 "shieldView.operations.shieldAllDone"
+    //               ];
+    //             sendBotReplyMsg(msg);
+    //             writeLog("Auto shield is done");
+    //           }
+    //         } else {
+    //           console.log(data);
+    //         }
+    //       }
+    //     } else {
+    //       checkTransaction(data.result.opid);
+    //     }
+    //   }, 0);
+    // });
 
-    electron.ipcRenderer.on(
-      "child-check-transaction-shield",
-      function (event, msgData) {
-        writeLog(msgData.msg);
-        var data = msgData.msg;
-        $timeout(function () {
-          if (data.result == null) {
-            if (!isShieldAll && !isMultipleShield) {
-              $scope.detail.btnEnabled = true;
-              if (!isAutoShield) {
-                spawnMessage(
-                  MsgType.ALERT,
-                  $scope.ctrlTranslations["sendView.operations.checkTxError"]
-                );
-              } else {
-                var msg =
-                  $scope.ctrlTranslations["sendView.operations.checkTxError"];
-                sendBotReplyMsg(msg);
-                writeLog(msg);
-              }
-            }
-          } else {
-            //send done, check status
-            var element = data.result[0];
-            var status = element.status;
-            writeLog(status);
-            if (status == "executing") {
-              setTimeout(function () {
-                checkTransaction(element.id);
-                //update sending process
-              }, 2000);
-            } else if (status == "success") {
-              if (isShieldAll) {
-                if ($scope.detail.remainingvalue < 8) {
-                  $scope.detail.btnEnabled = true;
-                  shouldGetAll = true;
-                  isShieldAll = false;
-                  if (!isAutoShield) {
-                    var msg =
-                      $scope.ctrlTranslations[
-                        "shieldView.operations.shieldAllDone"
-                      ];
-                    spawnMessage(MsgType.ALERT, msg, "");
-                  } else {
-                    var msg =
-                      $scope.ctrlTranslations[
-                        "shieldView.operations.shieldAllDone"
-                      ];
-                    sendBotReplyMsg(msg);
-                    writeLog("Auto shield is done");
-                  }
-                } else {
-                  $scope.detail.lastBestTime = $scope.detail.bestTime;
-                  continueShield(
-                    "*",
-                    $scope.detail.privateAddr,
-                    String($scope.detail.fee).replace(",", ".")
-                  );
-                }
-              } else {
-                if (isMultipleShield) {
-                  if ($scope.shieldAddresses.length > 0) {
-                    $scope.shieldAddresses.splice(0, 1);
-                    if ($scope.shieldAddresses.length == 0) {
-                      $scope.detail.btnEnabled = true;
-                      shouldGetAll = true;
-                      spawnMessage(
-                        MsgType.ALERT,
-                        $scope.ctrlTranslations[
-                          "shieldView.operations.multipleShield"
-                        ],
-                        ""
-                      );
-                    } else {
-                      $scope.detail.lastBestTime = $scope.detail.bestTime;
-                      continueShield(
-                        $scope.shieldAddresses[0],
-                        $scope.detail.privateAddr,
-                        String($scope.detail.fee).replace(",", ".")
-                      );
-                    }
-                  }
-                } else {
-                  $scope.detail.btnEnabled = true;
-                  shouldGetAll = true;
-                  spawnMessage(
-                    MsgType.ALERT,
-                    $scope.ctrlTranslations["global.success2"],
-                    ""
-                  );
-                }
-              }
-              shouldGetAll = true;
-            } else {
-              if (isShieldAll) {
-                $scope.detail.lastBestTime = $scope.detail.bestTime;
-                continueShield(
-                  "*",
-                  $scope.detail.privateAddr,
-                  String($scope.detail.fee).replace(",", ".")
-                );
-              } else {
-                $scope.detail.btnEnabled = true;
-                spawnMessage(MsgType.ALERT, element);
-              }
-            }
-          }
-        }, 0);
-      }
-    );
+    // electron.ipcRenderer.on(
+    //   "child-check-transaction-shield",
+    //   function (event, msgData) {
+    //     writeLog(msgData.msg);
+    //     var data = msgData.msg;
+    //     $timeout(function () {
+    //       if (data.result == null) {
+    //         if (!isShieldAll && !isMultipleShield) {
+    //           $scope.detail.btnEnabled = true;
+    //           if (!isAutoShield) {
+    //             spawnMessage(
+    //               MsgType.ALERT,
+    //               $scope.ctrlTranslations["sendView.operations.checkTxError"]
+    //             );
+    //           } else {
+    //             var msg =
+    //               $scope.ctrlTranslations["sendView.operations.checkTxError"];
+    //             sendBotReplyMsg(msg);
+    //             writeLog(msg);
+    //           }
+    //         }
+    //       } else {
+    //         //send done, check status
+    //         var element = data.result[0];
+    //         var status = element.status;
+    //         writeLog(status);
+    //         if (status == "executing") {
+    //           setTimeout(function () {
+    //             checkTransaction(element.id);
+    //             //update sending process
+    //           }, 2000);
+    //         } else if (status == "success") {
+    //           if (isShieldAll) {
+    //             if ($scope.detail.remainingvalue < 8) {
+    //               $scope.detail.btnEnabled = true;
+    //               shouldGetAll = true;
+    //               isShieldAll = false;
+    //               if (!isAutoShield) {
+    //                 var msg =
+    //                   $scope.ctrlTranslations[
+    //                     "shieldView.operations.shieldAllDone"
+    //                   ];
+    //                 spawnMessage(MsgType.ALERT, msg, "");
+    //               } else {
+    //                 var msg =
+    //                   $scope.ctrlTranslations[
+    //                     "shieldView.operations.shieldAllDone"
+    //                   ];
+    //                 sendBotReplyMsg(msg);
+    //                 writeLog("Auto shield is done");
+    //               }
+    //             } else {
+    //               $scope.detail.lastBestTime = $scope.detail.bestTime;
+    //               continueShield(
+    //                 "*",
+    //                 $scope.detail.privateAddr,
+    //                 String($scope.detail.fee).replace(",", ".")
+    //               );
+    //             }
+    //           } else {
+    //             if (isMultipleShield) {
+    //               if ($scope.shieldAddresses.length > 0) {
+    //                 $scope.shieldAddresses.splice(0, 1);
+    //                 if ($scope.shieldAddresses.length == 0) {
+    //                   $scope.detail.btnEnabled = true;
+    //                   shouldGetAll = true;
+    //                   spawnMessage(
+    //                     MsgType.ALERT,
+    //                     $scope.ctrlTranslations[
+    //                       "shieldView.operations.multipleShield"
+    //                     ],
+    //                     ""
+    //                   );
+    //                 } else {
+    //                   $scope.detail.lastBestTime = $scope.detail.bestTime;
+    //                   continueShield(
+    //                     $scope.shieldAddresses[0],
+    //                     $scope.detail.privateAddr,
+    //                     String($scope.detail.fee).replace(",", ".")
+    //                   );
+    //                 }
+    //               }
+    //             } else {
+    //               $scope.detail.btnEnabled = true;
+    //               shouldGetAll = true;
+    //               spawnMessage(
+    //                 MsgType.ALERT,
+    //                 $scope.ctrlTranslations["global.success2"],
+    //                 ""
+    //               );
+    //             }
+    //           }
+    //           shouldGetAll = true;
+    //         } else {
+    //           if (isShieldAll) {
+    //             $scope.detail.lastBestTime = $scope.detail.bestTime;
+    //             continueShield(
+    //               "*",
+    //               $scope.detail.privateAddr,
+    //               String($scope.detail.fee).replace(",", ".")
+    //             );
+    //           } else {
+    //             $scope.detail.btnEnabled = true;
+    //             spawnMessage(MsgType.ALERT, element);
+    //           }
+    //         }
+    //       }
+    //     }, 0);
+    //   }
+    // );
 
     electron.ipcRenderer.on(
       "child-execute-multiple-shield",

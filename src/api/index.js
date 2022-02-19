@@ -25,7 +25,6 @@ var isSynced = false;
 var child;
 var childDaemon;
 var feeData;
-var z_shieldcoinbaseData;
 var validateaddressData;
 var masternodelistData;
 var masternodeoutputsData;
@@ -865,7 +864,6 @@ function sendManyCoin(from, to, fee, callback) {
 }
 
 function shieldCoin(from, to, fee, callback) {
-  z_shieldcoinbaseData = undefined;
   var arg = ["z_shieldcoinbase", from, to, parseFloat(fee), 300];
   // writeLog(arg)
   startCli(arg, callback);
