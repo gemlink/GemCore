@@ -1142,13 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "getmasternodeoutputs") {
-        masternodeoutputsData = data.value;
-        electron.ipcRenderer.send(
-          "main-masternode-outputs",
-          masternodeoutputsData
-        );
-      } else if (data.key == "createmasternodekey") {
+      if (data.key == "createmasternodekey") {
         masternodegenkeyData = data.value;
         electron.ipcRenderer.send(
           "main-masternode-genkey",

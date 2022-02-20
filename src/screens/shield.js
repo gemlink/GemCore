@@ -126,51 +126,6 @@ app.controller("ShieldCtrl", [
       }, 0);
     }
 
-    function multipleShield(addr) {
-      if (!isShielding && isSynced) {
-        isShielding = true;
-        $scope.detail.privateAddr = addr;
-        $scope.detail.btnEnabled = false;
-
-        shieldCoin(
-          $scope.shieldAddresses[0],
-          $scope.detail.privateAddr,
-          $scope.detail.fee,
-          function (shieldData) {
-            if (!shieldData.value.result.error) {
-              // continue shield
-              multipleShield(addr);
-            } else {
-              $timeout(function () {
-                // splice done address, try with the next one
-                if (shieldData.value.result.error.code == -6) {
-                  $scope.shieldAddresses.splice(0, 1);
-                  if ($scope.shieldAddresses.length > 0) {
-                    multipleShield(addr);
-                  } else {
-                    // shield done
-                    $scope.detail.btnEnabled = false;
-                  }
-                } else {
-                  $scope.detail.btnEnabled = true;
-                  var msg =
-                    $scope.ctrlTranslations[
-                      "shieldView.operations.multipleShield"
-                    ];
-                  spawnMessage(MsgType.ALERT, msg, "");
-                }
-              });
-            }
-          }
-        );
-      } else if (!isSynced) {
-        spawnMessage(
-          MsgType.ALERT,
-          $scope.ctrlTranslations["shieldView.operations.walletNotSynced"]
-        );
-      }
-    }
-
     $scope.selectPubAddress = function (addr) {
       $scope.detail.publicAddr = addr;
     };
@@ -185,6 +140,7 @@ app.controller("ShieldCtrl", [
         $scope.detail.btnEnabled = true;
       });
     }
+
     $scope.shieldClick = function () {
       isShielding = true;
       if ($scope.detail.publicAddr == undefined) {
@@ -282,9 +238,9 @@ app.controller("ShieldCtrl", [
     function shieldAll(to, fee) {
       shieldCoin("*", to, fee, function (shieldData) {
         if (shieldData.value.error) {
-            shieldDone(
-              $scope.ctrlTranslations["shieldView.operations.shieldAllDone"]
-            );
+          shieldDone(
+            $scope.ctrlTranslations["shieldView.operations.shieldAllDone"]
+          );
         } else {
           checkTransaction(
             shieldData.value.result.opid,
@@ -311,209 +267,73 @@ app.controller("ShieldCtrl", [
       }
     };
 
+    function multipleShield(addr) {
+      if (!isShielding && isSynced) {
+        isShielding = true;
+        $scope.detail.privateAddr = addr;
+        $scope.detail.btnEnabled = false;
+
+        shieldCoin(
+          $scope.shieldAddresses[0],
+          $scope.detail.privateAddr,
+          $scope.detail.fee,
+          function (shieldData) {
+            if (!shieldData.value.error) {
+              // check transaction
+              var opid = shieldData.value.result.opid;
+              checkTransaction(opid, function (checkTxData) {
+                multipleShield(addr);
+              });
+            } else {
+              // splice done address, try with the next one
+              if (shieldData.value.code == -6) {
+                $scope.shieldAddresses.splice(0, 1);
+                if ($scope.shieldAddresses.length > 0) {
+                  multipleShield(addr);
+                } else {
+                  // shield done
+                  shieldDone(
+                    $scope.ctrlTranslations[
+                      "shieldView.operations.multipleShield"
+                    ]
+                  );
+                }
+              } else {
+                shieldDone(
+                  $scope.ctrlTranslations[
+                    "shieldView.operations.multipleShield"
+                  ]
+                );
+              }
+            }
+          }
+        );
+      } else if (!isSynced) {
+        spawnMessage(
+          MsgType.ALERT,
+          $scope.ctrlTranslations["shieldView.operations.walletNotSynced"]
+        );
+      }
+    }
+
     $scope.faq = function () {
       shell.openExternal(
         "https://docs.gemlink.org/wallets/gemcore-wallet/frequently-asked-questions"
       );
     };
 
-    electron.ipcRenderer.on("child-update-shield", function (event, msgData) {
+    electron.ipcRenderer.on("child-update-shield-address", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data)
       populateAddress(data);
     });
-
-    // electron.ipcRenderer.on("child-shield-coin", function (event, msgData) {
-    //   var data = msgData.msg.value;
-    //   // writeLog(data)
-    //   $timeout(function () {
-    //     if (data.result == null) {
-    //       if (!isShieldAll) {
-    //         if (!isMultipleShield) {
-    //           error_msg = data.error.message;
-    //           writeLog(error_msg);
-    //           switch (true) {
-    //             case error_msg.includes(
-    //               "Could not find any coinbase funds to shield."
-    //             ):
-    //               msg =
-    //                 $scope.ctrlTranslations[
-    //                   "global.errors.NoCoinbaseFundsToShield"
-    //                 ];
-    //               break;
-    //             default:
-    //               msg = error_msg;
-    //           }
-    //           spawnMessage(MsgType.ALERT, msg);
-    //           $scope.detail.btnEnabled = true;
-    //         } else {
-    //           if (data.error.code == -6 && $scope.shieldAddresses.length > 0) {
-    //             $scope.shieldAddresses.splice(0, 1);
-    //             if ($scope.shieldAddresses.length == 0) {
-    //               $scope.detail.btnEnabled = true;
-    //               shouldGetAll = true;
-    //               var msg =
-    //                 $scope.ctrlTranslations[
-    //                   "shieldView.operations.multipleShield"
-    //                 ];
-    //               spawnMessage(MsgType.ALERT, msg, "");
-    //             } else {
-    //               exec_sendCoin(
-    //                 $scope.shieldAddresses[0],
-    //                 $scope.detail.privateAddr,
-    //                 0,
-    //                 $scope.detail.fee,
-    //                 SendType.SHIELD
-    //               );
-    //             }
-    //           }
-    //         }
-    //       } else {
-    //         if (data.error.code == -6 || $scope.detail.remainingvalue < 8) {
-    //           $scope.detail.btnEnabled = true;
-    //           shouldGetAll = true;
-    //           isShieldAll = false;
-    //           if (!isAutoShield) {
-    //             var msg =
-    //               $scope.ctrlTranslations[
-    //                 "shieldView.operations.shieldAllDone"
-    //               ];
-    //             spawnMessage(MsgType.ALERT, msg, "");
-    //           } else {
-    //             var msg =
-    //               $scope.ctrlTranslations[
-    //                 "shieldView.operations.shieldAllDone"
-    //               ];
-    //             sendBotReplyMsg(msg);
-    //             writeLog("Auto shield is done");
-    //           }
-    //         } else {
-    //           console.log(data);
-    //         }
-    //       }
-    //     } else {
-    //       checkTransaction(data.result.opid);
-    //     }
-    //   }, 0);
-    // });
-
-    // electron.ipcRenderer.on(
-    //   "child-check-transaction-shield",
-    //   function (event, msgData) {
-    //     writeLog(msgData.msg);
-    //     var data = msgData.msg;
-    //     $timeout(function () {
-    //       if (data.result == null) {
-    //         if (!isShieldAll && !isMultipleShield) {
-    //           $scope.detail.btnEnabled = true;
-    //           if (!isAutoShield) {
-    //             spawnMessage(
-    //               MsgType.ALERT,
-    //               $scope.ctrlTranslations["sendView.operations.checkTxError"]
-    //             );
-    //           } else {
-    //             var msg =
-    //               $scope.ctrlTranslations["sendView.operations.checkTxError"];
-    //             sendBotReplyMsg(msg);
-    //             writeLog(msg);
-    //           }
-    //         }
-    //       } else {
-    //         //send done, check status
-    //         var element = data.result[0];
-    //         var status = element.status;
-    //         writeLog(status);
-    //         if (status == "executing") {
-    //           setTimeout(function () {
-    //             checkTransaction(element.id);
-    //             //update sending process
-    //           }, 2000);
-    //         } else if (status == "success") {
-    //           if (isShieldAll) {
-    //             if ($scope.detail.remainingvalue < 8) {
-    //               $scope.detail.btnEnabled = true;
-    //               shouldGetAll = true;
-    //               isShieldAll = false;
-    //               if (!isAutoShield) {
-    //                 var msg =
-    //                   $scope.ctrlTranslations[
-    //                     "shieldView.operations.shieldAllDone"
-    //                   ];
-    //                 spawnMessage(MsgType.ALERT, msg, "");
-    //               } else {
-    //                 var msg =
-    //                   $scope.ctrlTranslations[
-    //                     "shieldView.operations.shieldAllDone"
-    //                   ];
-    //                 sendBotReplyMsg(msg);
-    //                 writeLog("Auto shield is done");
-    //               }
-    //             } else {
-    //               $scope.detail.lastBestTime = $scope.detail.bestTime;
-    //               continueShield(
-    //                 "*",
-    //                 $scope.detail.privateAddr,
-    //                 String($scope.detail.fee).replace(",", ".")
-    //               );
-    //             }
-    //           } else {
-    //             if (isMultipleShield) {
-    //               if ($scope.shieldAddresses.length > 0) {
-    //                 $scope.shieldAddresses.splice(0, 1);
-    //                 if ($scope.shieldAddresses.length == 0) {
-    //                   $scope.detail.btnEnabled = true;
-    //                   shouldGetAll = true;
-    //                   spawnMessage(
-    //                     MsgType.ALERT,
-    //                     $scope.ctrlTranslations[
-    //                       "shieldView.operations.multipleShield"
-    //                     ],
-    //                     ""
-    //                   );
-    //                 } else {
-    //                   $scope.detail.lastBestTime = $scope.detail.bestTime;
-    //                   continueShield(
-    //                     $scope.shieldAddresses[0],
-    //                     $scope.detail.privateAddr,
-    //                     String($scope.detail.fee).replace(",", ".")
-    //                   );
-    //                 }
-    //               }
-    //             } else {
-    //               $scope.detail.btnEnabled = true;
-    //               shouldGetAll = true;
-    //               spawnMessage(
-    //                 MsgType.ALERT,
-    //                 $scope.ctrlTranslations["global.success2"],
-    //                 ""
-    //               );
-    //             }
-    //           }
-    //           shouldGetAll = true;
-    //         } else {
-    //           if (isShieldAll) {
-    //             $scope.detail.lastBestTime = $scope.detail.bestTime;
-    //             continueShield(
-    //               "*",
-    //               $scope.detail.privateAddr,
-    //               String($scope.detail.fee).replace(",", ".")
-    //             );
-    //           } else {
-    //             $scope.detail.btnEnabled = true;
-    //             spawnMessage(MsgType.ALERT, element);
-    //           }
-    //         }
-    //       }
-    //     }, 0);
-    //   }
-    // );
 
     electron.ipcRenderer.on(
       "child-execute-multiple-shield",
       function (event, msgData) {
         writeLog(msgData.msg);
         $scope.shieldAddresses = msgData.msg.shieldAddress;
-        multipleShield(msgData.msg.privateAddr);
+        multipleShield($scope.shieldAddresses);
         //update sending process
       }
     );

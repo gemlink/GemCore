@@ -810,7 +810,7 @@ app.controller("SettingsCtrl", [
       }, 0);
     });
 
-    electron.ipcRenderer.on("child-update-shield", function (event, msgData) {
+    electron.ipcRenderer.on("child-update-shield-address", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data)
       if ($scope.detail.currentCoin == currentCoin) {

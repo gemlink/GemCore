@@ -201,7 +201,7 @@ app.controller("OverviewCtrl", [
                 electron.ipcRenderer.send("main-update-send", addr);
 
                 //update send coin from, shield coin from
-                electron.ipcRenderer.send("main-update-shield", addr);
+                electron.ipcRenderer.send("main-update-shield-address", addr);
               }
 
               electron.ipcRenderer.send(
@@ -478,7 +478,7 @@ app.controller("OverviewCtrl", [
         electron.ipcRenderer.send("main-update-send", addr);
 
         //@TODO update send coin from, shield coin from
-        electron.ipcRenderer.send("main-update-shield", addr);
+        electron.ipcRenderer.send("main-update-shield-address", addr);
       }
 
       // if(shouldGetTransaction)

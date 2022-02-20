@@ -216,6 +216,7 @@
               <thead>
                 <tr>
                   <th style="width: 3%">#</th>
+                  <th style="width: 3%">Select</th>
                   <th style="width: 36%">
                     {{'masternodesView.operations.privateKey' | translate}}
                   </th>
@@ -230,6 +231,18 @@
               <tbody>
                 <tr ng-repeat="data in detail.mnData">
                   <td>{{data.no}}</td>
+                  <td>
+                    <span class="checkbox-custom checkbox-primary">
+                      <input
+                        class="selectable-item"
+                        type="checkbox"
+                        id="{{'row-' + addr.no}}"
+                        ng-model="detail.selected[data.privkey]"
+                        ng-change="select(data)"
+                      />
+                      <label></label>
+                    </span>
+                  </td>
                   <td>{{data.privkey}}</td>
                   <td>{{data.txhash}}</td>
                   <td>{{data.outidx}}</td>

@@ -507,8 +507,8 @@ ipc.on("main-update-send", function (event, arg) {
   event.sender.send("child-update-send", { msg: arg });
 });
 
-ipc.on("main-update-shield", function (event, arg) {
-  event.sender.send("child-update-shield", { msg: arg });
+ipc.on("main-update-shield-address", function (event, arg) {
+  event.sender.send("child-update-shield-address", { msg: arg });
 });
 
 ipc.on("main-update-transactions", function (event, arg) {
@@ -525,10 +525,6 @@ ipc.on("main-masternode-list", function (event, arg) {
 
 ipc.on("main-loading-screen", function (event, arg) {
   event.sender.send("child-loading-screen", { msg: arg });
-});
-
-ipc.on("main-summary-data", function (event, arg) {
-  event.sender.send("child-summary-data", { msg: arg });
 });
 
 ipc.on("main-execute-timer", function (event, arg) {

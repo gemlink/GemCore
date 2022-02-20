@@ -17,7 +17,6 @@ app.controller("MasternodesConfigCtrl", [
 
     $scope.detail.showNewMasternodeData = false;
     $scope.detail.btnDisabled = false;
-    isGetPrivKey = false;
 
     $scope.ctrlTranslations = {};
 
@@ -70,6 +69,26 @@ app.controller("MasternodesConfigCtrl", [
         }
       }, 0);
     }
+
+    $scope.select = function (data) {
+      console.log("Selected", data);
+      console.log($scope.detail.selected);
+      if ($scope.detail.selected[data.privkey] == true) {
+        var keys = Object.keys($scope.detail.selected);
+        keys.forEach((element) => {
+          if (element != data.privkey) $scope.detail.selected[element] = false;
+          else {
+            $scope.detail.privkey = data.privkey;
+            $scope.detail.transactionID = data.outidx;
+            $scope.detail.index = data.no;
+          }
+        });
+      } else {
+        $scope.detail.privkey = undefined;
+        $scope.detail.transactionID = undefined;
+        $scope.detail.index = undefined;
+      }
+    };
 
     function editMasternodeConfig(
       name,
@@ -148,33 +167,80 @@ app.controller("MasternodesConfigCtrl", [
       }
     }
 
-    electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
+    function finishCreateMNInfo(msg) {
       $timeout(function () {
-        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
-          $scope.detail.p2pport = msgData.msg[2].p2pport;
-        }
+        $scope.detail.btnDisabled = false;
+        spawnMessage(MsgType.ALERT, msg);
       }, 0);
-    });
+    }
+
+    function createMNInfo(callback) {
+      if ($scope.detail.outputs.length > 0) {
+        var temp = {};
+        var info = $scope.detail.outputs.splice(0, 1)[0];
+        temp["txhash"] = info.txhash;
+        temp["outidx"] = info.outputidx;
+        temp["no"] = $scope.detail.mnData.length + 1;
+        getMNPrivKey(function (data) {
+          temp["privkey"] = data.value.result;
+          $scope.detail.mnData.push(temp);
+          if ($scope.detail.outputs.length > 0) {
+            createMNInfo(callback);
+          } else {
+            callback();
+          }
+        });
+      } else {
+        callback();
+      }
+    }
 
     $scope.generate = function () {
       $scope.detail.showNewMasternodeData = false;
       $scope.detail.btnDisabled = true;
-      isGetPrivKey = false;
-      getMNOutputs();
+      getMNOutputs(function (outputsData) {
+        var data = outputsData.value.result;
+        $scope.detail.outputs = [];
+        $scope.detail.mnData = [];
+        data.forEach(function (element) {
+          var index = localMNs.findIndex(function (e) {
+            return e.txhash == element.txhash;
+          });
+          if (index == -1) {
+            $scope.detail.outputs.push(element);
+          }
+        });
+
+        if ($scope.detail.outputs.length == 0) {
+          finishCreateMNInfo(
+            $scope.ctrlTranslations["mnsconfigView.operations.noOutput"]
+          );
+        } else {
+          createMNInfo(function () {
+            $scope.detail.showNewMasternodeData = true;
+            $scope.detail.btnDisabled = false;
+          });
+        }
+      });
     };
 
     $scope.restartAction = function () {
       //stop wallet
       isRestarting = true;
-      stopWallet(function(){
+      stopWallet(function () {
         var arg = [];
         electron.ipcRenderer.send("main-reload", arg);
-      })
+      });
     };
 
     $scope.getPrivKey = function () {
-      isGetPrivKey = true;
-      getMNPrivKey();
+      getMNPrivKey(function (data) {
+        spawnMessage(
+          MsgType.ALERT,
+          data.value.result,
+          $scope.ctrlTranslations["mnsconfigView.MnKey"]
+        );
+      });
     };
 
     $scope.setupMasternode = function () {
@@ -235,68 +301,12 @@ app.controller("MasternodesConfigCtrl", [
       );
     };
 
-    electron.ipcRenderer.on(
-      "child-masternode-outputs",
-      function (event, msgData) {
-        var data = msgData.msg.result;
-
-        writeLog(JSON.stringify(localMNs));
-
-        $timeout(function () {
-          $scope.detail.outputs = [];
-          $scope.detail.mnData = [];
-          data.forEach(function (element) {
-            var index = localMNs.findIndex(function (e) {
-              return e.txhash == element.txhash;
-            });
-            if (index == -1) {
-              $scope.detail.outputs.push(element);
-            }
-          });
-
-          if ($scope.detail.outputs.length == 0) {
-            $scope.detail.btnDisabled = false;
-            spawnMessage(
-              MsgType.ALERT,
-              $scope.ctrlTranslations["mnsconfigView.operations.noOutput"]
-            );
-          } else {
-            getMNPrivKey();
-          }
-        }, 0);
-      }
-    );
-
-    electron.ipcRenderer.on(
-      "child-masternode-genkey",
-      function (event, msgData) {
-        var data = msgData.msg;
-        writeLog(data);
-        $timeout(function () {
-          if (isGetPrivKey) {
-            spawnMessage(
-              MsgType.ALERT,
-              data.result,
-              $scope.ctrlTranslations["mnsconfigView.MnKey"]
-            );
-          } else {
-            var temp = {};
-            temp["privkey"] = data.result;
-            temp["txhash"] = $scope.detail.outputs[0].txhash;
-            temp["outidx"] = $scope.detail.outputs[0].outputidx;
-            temp["no"] = $scope.detail.mnData.length + 1;
-
-            $scope.detail.mnData.push(temp);
-            $scope.detail.outputs.splice(0, 1);
-            if ($scope.detail.outputs.length > 0) {
-              getMNPrivKey();
-            } else {
-              $scope.detail.showNewMasternodeData = true;
-              $scope.detail.btnDisabled = false;
-            }
-          }
-        }, 0);
-      }
-    );
+    electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
+      $timeout(function () {
+        if (msgData.msg[2] != null && msgData.msg[2] != undefined) {
+          $scope.detail.p2pport = msgData.msg[2].p2pport;
+        }
+      }, 0);
+    });
   },
 ]);

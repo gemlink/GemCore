@@ -27,7 +27,6 @@ var childDaemon;
 var feeData;
 var validateaddressData;
 var masternodelistData;
-var masternodeoutputsData;
 var masternodegenkeyData;
 var importprivkeyData;
 var dumpprivkeyData;
@@ -945,7 +944,6 @@ function getMNPrivKey(callback) {
 }
 
 function getMNOutputs(callback) {
-  masternodeoutputsData = undefined;
   var arg = ["getmasternodeoutputs"];
   // writeLog(arg)
   startCli(arg, callback);
