@@ -73,6 +73,17 @@ app.controller("MasternodesCtrl", [
       return this.length === 0 || !this.trim();
     };
 
+    function getMNData(timeout) {
+      setTimeout(function () {
+        getMasternodeList(function (data) {
+          console.log("MNData", data);
+          populateLocalMN();
+          populateNetworkMN(data.value);
+        });
+      }, timeout);
+      setTimeout(getProposal, timeout);
+    }
+
     function populateLocalMN() {
       writeLog("populateLocalMN");
       var data = getMasternodes();
@@ -168,10 +179,9 @@ app.controller("MasternodesCtrl", [
       }
 
       if ($scope.networkMNs.length == 0) {
-        setTimeout(getMasternodeList, 5000);
-        setTimeout(getProposal, 5000);
+        getMNData(5000);
       }
-      //get masternode list after 60 sec
+      //get masternode list after 30 sec
       else {
         $scope.localMNs.forEach(function (element) {
           var index = $scope.networkMNs.findIndex(function (e) {
@@ -215,8 +225,7 @@ app.controller("MasternodesCtrl", [
           $scope.detail.masternodeText = "";
         }
         electron.ipcRenderer.send("main-localmn-status", $scope.localMNs);
-        setTimeout(getMasternodeList, 60000);
-        setTimeout(getProposal, 60000);
+        getMNData(30000);
       }
     }
 
@@ -585,22 +594,111 @@ app.controller("MasternodesCtrl", [
       );
     };
 
-    $scope.startMasternode = function () {
-      writeLog("startMasternode");
-      var txhash = undefined;
-      var index;
-      $scope.selectedList.some(function (element) {
-        if (element.status == true) {
-          txhash = element.txhash;
-          index = element.outidx;
-          return;
+    function startOneNode(mn, callback) {
+      startMasternode(mn.alias, function (startMNData) {
+        if (startMNData.value.result.detail[0].result == "successful") {
+          startAlias(mn.alias, function (startAliasData) {
+            var data = startAliasData.value;
+            if (data.result) {
+              if (data.result.result != "Successfully started alias") {
+                var err = {};
+                err[mn.alias] = data.result.result;
+                callback(err);
+              } else {
+                var ok = {};
+                ok[mn.alias] = "global.results.SuccesfullyStartedAlias";
+                callback(err);
+              }
+            } else if (data.error) {
+              var err = {};
+              err[mn.alias] = data.error.message;
+              callback(err);
+            }
+          });
+        } else {
+          var err = {};
+          err[mn.alias] = startMNData.value.result.detail[0].error;
+          callback(err);
         }
       });
+    }
 
-      var index = $scope.localMNs.findIndex(function (element) {
-        return element.txhash == txhash && element.outidx == index;
+    function start(indexSelected, indexLocal, result, callback) {
+      startOneNode($scope.localMNs[indexLocal], function (startOneResult) {
+        result.push(startOneResult);
+        while (
+          indexSelected < $scope.selectedList.length &&
+          $scope.selectedList[indexSelected].status == false
+        ) {
+          indexSelected++;
+        }
+        if (indexSelected == $scope.selectedList.length) {
+          callback(result);
+        } else {
+          indexLocal = $scope.localMNs.findIndex(function (element) {
+            return (
+              element.txhash == $scope.selectedList[indexSelected].txhash &&
+              element.outidx == $scope.selectedList[indexSelected].index
+            );
+          });
+          start(indexSelected, indexLocal, result, callback);
+        }
       });
-      startMasternode($scope.localMNs[index].alias);
+    }
+
+    $scope.startMasternode = function () {
+      writeLog("startMasternode");
+      var result = [];
+      var index = 0;
+
+      while (
+        index < $scope.selectedList.length &&
+        $scope.selectedList[index].status == false
+      ) {
+        index++;
+      }
+      if (index == $scope.selectedList.length) {
+        // show result
+        spawnMessage(
+          MsgType.ALERT,
+          "You haven't choice any masternode",
+          $scope.ctrlTranslations["global.fail1"] + "!"
+        );
+      }
+      var indexLocal = $scope.localMNs.findIndex(function (element) {
+        return (
+          element.txhash == $scope.selectedList[index].txhash &&
+          element.outidx == $scope.selectedList[index].index
+        );
+      });
+
+      console.log("Start mn", $scope.selectedList);
+
+      start(index, indexLocal, result, function (data) {
+        writeLog("Start result", data);
+        spawnMessage(
+          MsgType.ALERT,
+          data,
+          $scope.ctrlTranslations["global.alert"] + "!"
+        );
+      });
+      // startMasternode($scope.localMNs[index].alias, function (startMNData) {
+      //   var data = startMNData.value.result;
+      //   writeLog(data);
+      //   if (data.detail[0].result == "successful") {
+      //     var e = $scope.selectedList[0];
+      //     var index = localMNs.findIndex(function (element) {
+      //       return element.txhash == e.txhash && element.outidx == e.outidx;
+      //     });
+      //     startAlias($scope.localMNs[index].alias);
+      //   } else {
+      //     spawnMessage(
+      //       MsgType.ALERT,
+      //       data.detail[0].error,
+      //       $scope.ctrlTranslations["global.fail1"] + "!"
+      //     );
+      //   }
+      // });
     };
 
     $scope.clearCache = function () {
@@ -629,64 +727,36 @@ app.controller("MasternodesCtrl", [
       }, 0);
     });
 
-    electron.ipcRenderer.on("child-masternode-list", function (event, msgData) {
-      var data = msgData.msg;
-      populateLocalMN();
-      populateNetworkMN(data);
-    });
-
     electron.ipcRenderer.on("child-execute-timer", function (event, msgData) {
       writeLog("execute masternode list timer");
       if (serverData.masternode) {
-        setTimeout(getMasternodeList, 3000);
-        setTimeout(getProposal, 3000);
+        getMNData(3000);
       }
     });
 
-    electron.ipcRenderer.on(
-      "child-start-masternode",
-      function (event, msgData) {
-        var data = msgData.msg.result;
-        writeLog(data);
-        if (data.detail[0].result == "successful") {
-          var e = $scope.selectedList[0];
-          var index = localMNs.findIndex(function (element) {
-            return element.txhash == e.txhash && element.outidx == e.outidx;
-          });
-          startAlias($scope.localMNs[index].alias);
-        } else {
-          spawnMessage(
-            MsgType.ALERT,
-            data.detail[0].error,
-            $scope.ctrlTranslations["global.fail1"] + "!"
-          );
-        }
-      }
-    );
-
-    electron.ipcRenderer.on("child-start-alias", function (event, msgData) {
-      var data = msgData.msg;
-      if (data.result) {
-        if (data.result.result != "Successfully started alias") {
-          spawnMessage(
-            MsgType.ALERT,
-            data.result.result,
-            $scope.ctrlTranslations["global.fail1"] + "!"
-          );
-        } else {
-          spawnMessage(
-            MsgType.ALERT,
-            $scope.ctrlTranslations["global.results.SuccesfullyStartedAlias"],
-            $scope.ctrlTranslations["global.success1"] + "!"
-          );
-        }
-      } else if (data.error) {
-        spawnMessage(
-          MsgType.ALERT,
-          data.error.message,
-          $scope.ctrlTranslations["global.fail1"] + "!"
-        );
-      }
-    });
+    // electron.ipcRenderer.on("child-start-alias", function (event, msgData) {
+    //   var data = msgData.msg;
+    //   if (data.result) {
+    //     if (data.result.result != "Successfully started alias") {
+    //       spawnMessage(
+    //         MsgType.ALERT,
+    //         data.result.result,
+    //         $scope.ctrlTranslations["global.fail1"] + "!"
+    //       );
+    //     } else {
+    //       spawnMessage(
+    //         MsgType.ALERT,
+    //         $scope.ctrlTranslations["global.results.SuccesfullyStartedAlias"],
+    //         $scope.ctrlTranslations["global.success1"] + "!"
+    //       );
+    //     }
+    //   } else if (data.error) {
+    //     spawnMessage(
+    //       MsgType.ALERT,
+    //       data.error.message,
+    //       $scope.ctrlTranslations["global.fail1"] + "!"
+    //     );
+    //   }
+    // });
   },
 ]);

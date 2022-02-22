@@ -1142,26 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "createmasternodekey") {
-        masternodegenkeyData = data.value;
-        electron.ipcRenderer.send(
-          "main-masternode-genkey",
-          masternodegenkeyData
-        );
-      } else if (data.key == "listmasternodes") {
-        masternodelistData = data.value;
-        electron.ipcRenderer.send("main-masternode-list", masternodelistData);
-      } else if (data.key == "startmasternode") {
-        if (data.arg["1"] == "alias") {
-          startmasternodealiasData = data.value;
-          electron.ipcRenderer.send(
-            "main-start-masternode",
-            startmasternodealiasData
-          );
-        } else if (data.arg["1"] == "many") {
-          startmasternodemanyData = data.value;
-        }
-      } else if (data.key == "dumpprivkey" || data.key == "z_exportkey") {
+      if (data.key == "dumpprivkey" || data.key == "z_exportkey") {
         dumpprivkeyData = data;
         electron.ipcRenderer.send("main-dump-priv-key", dumpprivkeyData);
       } else if (data.key == "importprivkey" || data.key == "z_importkey") {

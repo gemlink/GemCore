@@ -70,6 +70,12 @@ app.controller("MasternodesConfigCtrl", [
       }, 0);
     }
 
+    function cleanData(){
+      $scope.detail.privkey = undefined;
+      $scope.detail.transactionID = undefined;
+      $scope.detail.index = undefined;
+    }
+
     $scope.select = function (data) {
       console.log("Selected", data);
       console.log($scope.detail.selected);
@@ -79,14 +85,12 @@ app.controller("MasternodesConfigCtrl", [
           if (element != data.privkey) $scope.detail.selected[element] = false;
           else {
             $scope.detail.privkey = data.privkey;
-            $scope.detail.transactionID = data.outidx;
-            $scope.detail.index = data.no;
+            $scope.detail.transactionID = data.txhash;
+            $scope.detail.index = data.outidx;
           }
         });
       } else {
-        $scope.detail.privkey = undefined;
-        $scope.detail.transactionID = undefined;
-        $scope.detail.index = undefined;
+        cleanData();
       }
     };
 
@@ -159,7 +163,11 @@ app.controller("MasternodesConfigCtrl", [
           $scope.detail.p2pport ? $scope.detail.p2pport : "16113"
         );
 
-        var idx = $scope.detail.mnData.findIndex(e => e.txhash == txhash && e.no == txindex);
+        $scope.detail.alias = undefined;
+        $scope.detail.ip = undefined;
+        cleanData();
+
+        var idx = $scope.detail.mnData.findIndex(e => e.txhash == txhash && e.outidx == txindex);
         if(idx > -1) {
           $scope.detail.mnData.splice(idx, 1);
         }

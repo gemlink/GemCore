@@ -519,10 +519,6 @@ ipc.on("main-update-transactions-time", function (event, arg) {
   event.sender.send("child-update-transactions-time", { msg: arg });
 });
 
-ipc.on("main-masternode-list", function (event, arg) {
-  event.sender.send("child-masternode-list", { msg: arg });
-});
-
 ipc.on("main-loading-screen", function (event, arg) {
   event.sender.send("child-loading-screen", { msg: arg });
 });
@@ -553,10 +549,6 @@ ipc.on("main-masternode-outputs", function (event, arg) {
 
 ipc.on("main-masternode-genkey", function (event, arg) {
   event.sender.send("child-masternode-genkey", { msg: arg });
-});
-
-ipc.on("main-start-masternode", function (event, arg) {
-  event.sender.send("child-start-masternode", { msg: arg });
 });
 
 ipc.on("main-start-alias", function (event, arg) {
