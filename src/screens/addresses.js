@@ -153,8 +153,7 @@ app.controller("AddressesCtrl", [
     function populateAddress(data) {
       var walletDic = data.from;
       var keys = Object.keys(walletDic);
-      if(keys.length > 0)
-        {
+      if (keys.length > 0) {
         var count = 1;
         var settings = readSettings($scope.detail.currentCoin);
 
@@ -228,7 +227,11 @@ app.controller("AddressesCtrl", [
           });
           $scope.detail.enableButton = true;
           if (!$scope.detail.isEditing) {
-            $scope.detail.book = readAddressBook(false, serverData, currentCoin);
+            $scope.detail.book = readAddressBook(
+              false,
+              serverData,
+              currentCoin
+            );
             $scope.detail.bookKeys = Object.keys($scope.detail.book);
           }
         }, 0);
@@ -428,22 +431,43 @@ app.controller("AddressesCtrl", [
         }
       });
       $scope.detail.enableGetPrivKey = false;
-      privKey();
+      var keys = Object.keys($scope.selectedList);
+      privKey(keys[0], function () {
+        $scope.detail.privatekeys = JSON.stringify($scope.privKeyList, null, 2);
+        $scope.detail.enableGetPrivKey = true;
+        $("#privKeyModal").modal();
+      });
     };
 
     $scope.exportToFile = function () {
       exportPrivateKeys("glinkprivkey");
     };
 
-    function privKey() {
-      var keys = Object.keys($scope.selectedListClone);
-
-      var addr = keys[0];
+    function privKey(addr, callback) {
       delete $scope.selectedListClone[addr];
       if (!addr.startsWith("z")) {
-        exportPrivateKey(addr.split(" ")[0]);
+        exportPrivateKey(addr.split(" ")[0], function (data) {
+          console.log("Export data", data);
+          $scope.privKeyList[addr] = data.value.result;
+          var keys = Object.keys($scope.selectedListClone);
+          if (keys.length > 0) {
+            // continue to get
+            privKey(keys[0], callback);
+          } else {
+            callback();
+          }
+        });
       } else {
-        z_exportPrivateKey(addr.split(" ")[0]);
+        z_exportPrivateKey(addr.split(" ")[0], function (data) {
+          console.log("ZExport data", data);
+          $scope.privKeyList[addr] = data.value.result;
+          var keys = Object.keys($scope.selectedList);
+          if (keys.length > 0) {
+            privKey(keys[0], callback);
+          } else {
+            callback();
+          }
+        });
       }
     }
 
@@ -662,36 +686,6 @@ app.controller("AddressesCtrl", [
           : msgData.msg.value.error.message
       );
     });
-
-    electron.ipcRenderer.on(
-      "child-dump-priv-key",
-      function (event, msgData) {
-        var data = msgData.msg;
-        // writeLog(JSON.stringify(data))
-        $timeout(function () {
-          $scope.privKeyList[data.arg[1]] = data.value.result;
-          var keys = Object.keys($scope.selectedList);
-          var privKeys = Object.keys($scope.privKeyList);
-
-          var selectedCount = countSelected(keys);
-          writeLog(selectedCount);
-          writeLog(privKeys.length);
-          if (selectedCount == privKeys.length) {
-            $scope.detail.privatekeys = JSON.stringify(
-              $scope.privKeyList,
-              null,
-              2
-            );
-            $scope.detail.enableGetPrivKey = true;
-            // $scope.detail.privatekeys = $scope.detail.privatekeys.replace('\r\n','\n').replace('\n', '')
-            $("#privKeyModal").modal();
-          } else {
-            privKey();
-          }
-        });
-      },
-      0
-    );
 
     electron.ipcRenderer.on("child-import-priv-key", function (event, msgData) {
       importKey(msgData);

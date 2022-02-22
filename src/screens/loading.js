@@ -1142,10 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "dumpprivkey" || data.key == "z_exportkey") {
-        dumpprivkeyData = data;
-        electron.ipcRenderer.send("main-dump-priv-key", dumpprivkeyData);
-      } else if (data.key == "importprivkey" || data.key == "z_importkey") {
+      if (data.key == "importprivkey" || data.key == "z_importkey") {
         importprivkeyData = data;
         electron.ipcRenderer.send("main-import-priv-key", importprivkeyData);
       } else if (data.key == "startalias") {

@@ -531,10 +531,6 @@ ipc.on("main-show-screen", function (event, arg) {
   event.sender.send("child-show-screen", { msg: arg });
 });
 
-ipc.on("main-dump-priv-key", function (event, arg) {
-  event.sender.send("child-dump-priv-key", { msg: arg });
-});
-
 ipc.on("main-import-priv-key", function (event, arg) {
   event.sender.send("child-import-priv-key", { msg: arg });
 });

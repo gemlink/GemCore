@@ -29,7 +29,6 @@ var validateaddressData;
 var masternodelistData;
 var masternodegenkeyData;
 var importprivkeyData;
-var dumpprivkeyData;
 var startmasternodeData;
 var getPeerInfoData;
 var getDebugData;
