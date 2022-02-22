@@ -136,14 +136,15 @@ app.controller("OverviewCtrl", [
               // check if balance change, get all in next time
               if (
                 lastBalance != undefined && ((
-                lastBalance.totalCoins != $scope.balances.totalCoins ||
+                lastBalance.totalCoins != allData.totalbalance ||
+                lastBalance.remainingvalue != allData.remainingValue ||
                 lastBalance.transparentCoins !=
-                  $scope.balances.transparentCoins ||
-                lastBalance.privateCoins != $scope.balances.privateCoins ||
+                  allData.transparentbalance ||
+                lastBalance.privateCoins != allData.privatebalance ||
                 lastBalance.unconfirmedCoins !=
-                  $scope.balances.unconfirmedCoins ||
-                lastBalance.lockedCoins != $scope.balances.lockedCoins ||
-                lastBalance.immatureCoins != $scope.balances.immatureCoins) || ($scope.detail.listtransactions.length > 0 && $scope.detail.listtransactions[0].confirmations < 5 && isNewBlock))
+                allData.unconfirmedbalance ||
+                lastBalance.lockedCoins != allData.lockedbalance ||
+                lastBalance.immatureCoins != allData.immaturebalance) || ($scope.detail.listtransactions.length > 0 && $scope.detail.listtransactions[0].confirmations < 5 && isNewBlock))
               ) {
                 shouldGetAll = true;
               }
