@@ -547,10 +547,6 @@ ipc.on("main-masternode-genkey", function (event, arg) {
   event.sender.send("child-masternode-genkey", { msg: arg });
 });
 
-ipc.on("main-start-alias", function (event, arg) {
-  event.sender.send("child-start-alias", { msg: arg });
-});
-
 ipc.on("main-encryptwallet", function (event, arg) {
   event.sender.send("child-encryptwallet", { msg: arg });
 });
@@ -579,10 +575,6 @@ ipc.on("main-update-settings", function (event, arg) {
 
 ipc.on("main-update-price", function (event, arg) {
   event.sender.send("child-update-price", { msg: arg });
-});
-
-ipc.on("main-get-peer-info", function (event, arg) {
-  event.sender.send("child-get-peer-info", { msg: arg });
 });
 
 ipc.on("main-get-debug", function (event, arg) {

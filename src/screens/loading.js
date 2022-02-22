@@ -1142,19 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "importprivkey" || data.key == "z_importkey") {
-        importprivkeyData = data;
-        electron.ipcRenderer.send("main-import-priv-key", importprivkeyData);
-      } else if (data.key == "startalias") {
-        startaliasData = data.value;
-        electron.ipcRenderer.send("main-start-alias", startaliasData);
-      } else if (data.key == "getpeerinfo") {
-        getPeerInfoData = data.value;
-        electron.ipcRenderer.send("main-get-peer-info", getPeerInfoData);
-      } else if (data.key == "getdebug") {
-        getDebugData = data.value;
-        electron.ipcRenderer.send("main-get-debug", getDebugData);
-      } else if (data.key == "getnewaddress" || data.key == "z_getnewaddress") {
+      if (data.key == "getnewaddress" || data.key == "z_getnewaddress") {
         getNewAddressData = data.value;
         electron.ipcRenderer.send("main-get-new-address", getNewAddressData);
       } else if (data.key == "mnbudget") {

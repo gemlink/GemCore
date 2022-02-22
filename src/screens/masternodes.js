@@ -741,30 +741,5 @@ app.controller("MasternodesCtrl", [
         getMNData(3000);
       }
     });
-
-    // electron.ipcRenderer.on("child-start-alias", function (event, msgData) {
-    //   var data = msgData.msg;
-    //   if (data.result) {
-    //     if (data.result.result != "Successfully started alias") {
-    //       spawnMessage(
-    //         MsgType.ALERT,
-    //         data.result.result,
-    //         $scope.ctrlTranslations["global.fail1"] + "!"
-    //       );
-    //     } else {
-    //       spawnMessage(
-    //         MsgType.ALERT,
-    //         $scope.ctrlTranslations["global.results.SuccesfullyStartedAlias"],
-    //         $scope.ctrlTranslations["global.success1"] + "!"
-    //       );
-    //     }
-    //   } else if (data.error) {
-    //     spawnMessage(
-    //       MsgType.ALERT,
-    //       data.error.message,
-    //       $scope.ctrlTranslations["global.fail1"] + "!"
-    //     );
-    //   }
-    // });
   },
 ]);

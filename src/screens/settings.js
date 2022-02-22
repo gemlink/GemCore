@@ -144,7 +144,8 @@ app.controller("SettingsCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
+        $scope.detail.text =
+          typeof text == "string" ? text : JSON.stringify(text, null, 2);
         $scope.detail.btn = btn;
         if (type == MsgType.CONFIRMATION) {
           $("#restartWallet").modal();
@@ -538,7 +539,20 @@ app.controller("SettingsCtrl", [
     }
 
     $scope.getPeers = function () {
-      getPeerInfo();
+      getPeerInfo(function (data) {
+        var data = data.value.result;
+        var peers = "\n";
+        data.forEach(function (element) {
+          peers += "addnode=" + element.addr + "\n";
+        });
+
+        spawnMessage(
+          MsgType.GET_PEERS,
+          peers,
+          "",
+          $scope.ctrlTranslations["settingsView.operations.peersList"]
+        );
+      });
     };
 
     $scope.addPeers = function () {
@@ -664,10 +678,22 @@ app.controller("SettingsCtrl", [
     $scope.startDebugging = function (event) {
       event.preventDefault();
       if (event.keyCode === 13) {
+        if ($scope.detail.debugdata.length > 5000) {
+          $scope.detail.debugdata.splice(0, 4500);
+        }
         $scope.detail.debugdata += $scope.detail.debugcommand + "\n";
-        getDebug($scope.detail.debugcommand);
-        debugList.push($scope.detail.debugcommand);
-        $scope.detail.debugcommand = undefined;
+        getDebug($scope.detail.debugcommand, function (data) {
+          $timeout(function () {
+            if (data.value.result != null) {
+              $scope.detail.debugdata +=
+                (typeof data.value.result === "string"
+                  ? data.value.result
+                  : JSON.stringify(data.value.result, null, 2)) + "\n\n";
+            } else {
+              $scope.detail.debugdata += data.value.error.message + "\n\n";
+            }
+          }, 0);
+        });
       }
     };
 
@@ -717,21 +743,6 @@ app.controller("SettingsCtrl", [
       }
     );
 
-    electron.ipcRenderer.on("child-get-peer-info", function (event, msgData) {
-      var data = msgData.msg.result;
-      var peers = "\n";
-      data.forEach(function (element) {
-        peers += "addnode=" + element.addr + "\n";
-      });
-
-      spawnMessage(
-        MsgType.GET_PEERS,
-        peers,
-        "",
-        $scope.ctrlTranslations["settingsView.operations.peersList"]
-      );
-    });
-
     electron.ipcRenderer.on("child-encryptwallet", function (event, msgData) {
       $timeout(function () {
         var data = msgData.msg;
@@ -769,18 +780,18 @@ app.controller("SettingsCtrl", [
       }, 0);
     });
 
-    electron.ipcRenderer.on("child-get-debug", function (event, msgData) {
-      $timeout(function () {
-        if (msgData.msg.result != null) {
-          $scope.detail.debugdata +=
-            (typeof msgData.msg.result === "string"
-              ? msgData.msg.result
-              : JSON.stringify(msgData.msg.result, null, 2)) + "\n\n";
-        } else {
-          $scope.detail.debugdata += msgData.msg.error.message + "\n\n";
-        }
-      }, 0);
-    });
+    // electron.ipcRenderer.on("child-get-debug", function (event, msgData) {
+    //   $timeout(function () {
+    //     if (msgData.msg.result != null) {
+    //       $scope.detail.debugdata +=
+    //         (typeof msgData.msg.result === "string"
+    //           ? msgData.msg.result
+    //           : JSON.stringify(msgData.msg.result, null, 2)) + "\n\n";
+    //     } else {
+    //       $scope.detail.debugdata += msgData.msg.error.message + "\n\n";
+    //     }
+    //   }, 0);
+    // });
 
     electron.ipcRenderer.on("child-update-price", function (event, msgData) {
       $timeout(function () {
@@ -810,13 +821,16 @@ app.controller("SettingsCtrl", [
       }, 0);
     });
 
-    electron.ipcRenderer.on("child-update-shield-address", function (event, msgData) {
-      var data = msgData.msg;
-      // writeLog(data)
-      if ($scope.detail.currentCoin == currentCoin) {
-        populateAddress(data);
+    electron.ipcRenderer.on(
+      "child-update-shield-address",
+      function (event, msgData) {
+        var data = msgData.msg;
+        // writeLog(data)
+        if ($scope.detail.currentCoin == currentCoin) {
+          populateAddress(data);
+        }
       }
-    });
+    );
 
     var PositionTextAreaToBottom = function () {
       textArea.scrollTop = textArea.scrollHeight;

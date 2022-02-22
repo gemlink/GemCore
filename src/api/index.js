@@ -720,13 +720,19 @@ function newZAddress(sapling, callback) {
 }
 
 function getDebug(request, callback) {
-  writeLog(request);
   var arr = request.split(" ");
-  arr = arr.filter(function (n) {
-    return n != "";
-  });
-  var arg = ["getdebug"];
-  arg = arg.concat(arr);
+  // var idx = request.indexOf("[");
+  // arr = arr.filter(function (n) {
+  //   return n != "";
+  // });
+  var method = arr[0];
+  var params = [];
+  arr.splice(0, 1);
+  if(arr.length > 0){
+    params.push(arr.join(' '));
+  }
+  
+  arg = method.concat(params);
   startCli(arg, callback);
 }
 
