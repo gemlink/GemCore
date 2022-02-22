@@ -369,7 +369,7 @@ app.controller("SplashCtrl", [
             data.title == undefined
               ? $scope.ctrlTranslations["global.alert"] + "!!!"
               : data.title;
-          $scope.detail.text = data.text;
+          $scope.detail.text = data.text == 'string' ? text : JSON.stringify(text, null, 2);
           $scope.detail.btnText =
             data.btnText == undefined
               ? $scope.ctrlTranslations["global.apply"]

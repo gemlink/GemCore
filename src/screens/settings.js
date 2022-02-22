@@ -144,7 +144,7 @@ app.controller("SettingsCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = text;
+        $scope.detail.text = text == 'string' ? text : JSON.stringify(text, null, 2);
         $scope.detail.btn = btn;
         if (type == MsgType.CONFIRMATION) {
           $("#restartWallet").modal();

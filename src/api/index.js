@@ -514,7 +514,7 @@ function getFunctionName(stack) {
   split = split[1].split(" (");
   return split[0];
 }
-function writeLog(input) {
+function writeLog(input, obj) {
   if (isDevMode || betaTest) {
     Error.stackTraceLimit = 10;
 
@@ -542,7 +542,7 @@ function writeLog(input) {
     };
 
     var errback = function (err) {
-      console.log(err.message);
+      console.log(err.message, obj);
     };
 
     var error = new Error(input);

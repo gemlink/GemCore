@@ -22,7 +22,7 @@
           </button>
           <h4 class="modal-title">{{detail.title}}</h4>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="white-space: pre-wrap">
           <p>{{detail.text}}</p>
         </div>
         <div class="modal-footer">
@@ -296,11 +296,10 @@
                 {{'masternodesView.copyConfigBtn' | translate}}</a
               >
               <a
-                ng-class="detail.disableEdit ? 'disabled dropdown-item' : 'dropdown-item'"
+                ng-class="detail.disableStart ? 'disabled dropdown-item' : 'dropdown-item'"
                 href="#"
                 role="menuitem"
-                ng-click="detail.disableEdit ? '' : startMasternode()"
-                ng-disabled="detail.disableStart"
+                ng-click="detail.disableStart ? '' : startMasternode()"
                 ><i class="icon wb-play" aria-hidden="true"></i>
                 {{'masternodesView.startBtn' | translate}}</a
               >

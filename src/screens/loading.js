@@ -140,7 +140,7 @@ app.controller("LoadingCtrl", [
       $timeout(function () {
         var arg = {};
         arg.type = type;
-        arg.text = text;
+        arg.text = text == 'string' ? text : JSON.stringify(text, null, 2);
         arg.btnText = btnText;
         arg.title = title;
         ipc.send("main-show-popup", arg);

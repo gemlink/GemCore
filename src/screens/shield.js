@@ -63,7 +63,7 @@ app.controller("ShieldCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = text;
+        $scope.detail.text = text == 'string' ? text : JSON.stringify(text, null, 2);
         if (type == MsgType.ALERT) {
           $("#modalShieldAlert").modal();
         } else if (type == MsgType.CONFIRMATION) {

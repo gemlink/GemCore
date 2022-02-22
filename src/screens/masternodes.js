@@ -56,7 +56,7 @@ app.controller("MasternodesCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = text;
+        $scope.detail.text = text == 'string' ? text : JSON.stringify(text, null, 2);
         if (type == MsgType.ALERT) {
           $("#modalMasternodesAlert").modal();
         } else if (type == MsgType.CONFIRMATION) {
@@ -248,12 +248,14 @@ app.controller("MasternodesCtrl", [
       var selectedCount = countSelected($scope.selectedList);
       if (selectedCount > 0) {
         $scope.detail.disableActions = false;
+        $scope.detail.disableStart = false;
         if (selectedCount > 1) {
           $scope.detail.disableEdit = true;
         } else {
           $scope.detail.disableEdit = false;
         }
       } else {
+        $scope.detail.disableStart = true;
         $scope.detail.disableActions = true;
       }
     };
@@ -596,8 +598,10 @@ app.controller("MasternodesCtrl", [
 
     function startOneNode(mn, callback) {
       startMasternode(mn.alias, function (startMNData) {
-        if (startMNData.value.result.detail[0].result == "successful") {
+        writeLog("Startmn data", startMNData);
+        if (startMNData.value.result.result == "success") {
           startAlias(mn.alias, function (startAliasData) {
+            writeLog("Start alias data", startAliasData);
             var data = startAliasData.value;
             if (data.result) {
               if (data.result.result != "Successfully started alias") {
@@ -606,8 +610,8 @@ app.controller("MasternodesCtrl", [
                 callback(err);
               } else {
                 var ok = {};
-                ok[mn.alias] = "global.results.SuccesfullyStartedAlias";
-                callback(err);
+                ok[mn.alias] = $scope.ctrlTranslations["global.results.SuccesfullyStartedAlias"];
+                callback(ok);
               }
             } else if (data.error) {
               var err = {};
@@ -617,7 +621,7 @@ app.controller("MasternodesCtrl", [
           });
         } else {
           var err = {};
-          err[mn.alias] = startMNData.value.result.detail[0].error;
+          err[mn.alias] = startMNData.value.result.error;
           callback(err);
         }
       });
@@ -628,9 +632,13 @@ app.controller("MasternodesCtrl", [
         result.push(startOneResult);
         while (
           indexSelected < $scope.selectedList.length &&
-          $scope.selectedList[indexSelected].status == false
-        ) {
-          indexSelected++;
+          $scope.selectedList[indexSelected++].status == false
+        ) { 
+          if($scope.selectedList[indexSelected].status == false) {
+            indexSelected++;
+          } else {
+            break;
+          }
         }
         if (indexSelected == $scope.selectedList.length) {
           callback(result);
@@ -638,7 +646,7 @@ app.controller("MasternodesCtrl", [
           indexLocal = $scope.localMNs.findIndex(function (element) {
             return (
               element.txhash == $scope.selectedList[indexSelected].txhash &&
-              element.outidx == $scope.selectedList[indexSelected].index
+              element.outidx == $scope.selectedList[indexSelected].outidx
             );
           });
           start(indexSelected, indexLocal, result, callback);
@@ -668,7 +676,7 @@ app.controller("MasternodesCtrl", [
       var indexLocal = $scope.localMNs.findIndex(function (element) {
         return (
           element.txhash == $scope.selectedList[index].txhash &&
-          element.outidx == $scope.selectedList[index].index
+          element.outidx == $scope.selectedList[index].outidx
         );
       });
 
