@@ -158,7 +158,8 @@
       "address": "Adres",
       "details": "Details",
       "enabledStatus": "INGESCHAKELD",
-      "expiredStatus": "VERLOPEN"
+      "expiredStatus": "VERLOPEN",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Alias naam",

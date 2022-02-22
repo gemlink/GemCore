@@ -510,7 +510,7 @@ app.controller("MenuBarFooterCtrl", [
     };
 
     electron.ipcRenderer.on("child-update-loading", function (event, msgData) {
-      console.log(msgData);
+      // console.log(msgData);
       var data = msgData.msg;
       $timeout(function () {
         $scope.detail.buildinfo = data.buildinfo;

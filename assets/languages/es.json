@@ -161,7 +161,8 @@
       "address": "Dirección",
       "details": "Detalles",
       "enabledStatus": "Habilitado",
-      "expiredStatus": "EXPIRADO"
+      "expiredStatus": "EXPIRADO",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Nombre del Alias",

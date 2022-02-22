@@ -161,7 +161,8 @@
       "address": "Adresa",
       "details": "Detaily",
       "enabledStatus": "FUNKČNÍ",
-      "expiredStatus": "EXPIRACE"
+      "expiredStatus": "EXPIRACE",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Jméno aliasu",

@@ -84,7 +84,7 @@ app.controller("MasternodesCtrl", [
     }
 
     function populateLocalMN() {
-      writeLog("populateLocalMN");
+      // writeLog("populateLocalMN");
       var data = getMasternodes();
       $scope.localMNs = [];
 

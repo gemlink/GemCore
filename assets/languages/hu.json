@@ -161,7 +161,8 @@
       "address": "Cím",
       "details": "Részletek",
       "enabledStatus": "ENGEDÉLYEZVE",
-      "expiredStatus": "LEJÁRT"
+      "expiredStatus": "LEJÁRT",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Fedőnév",

@@ -833,7 +833,7 @@ app.controller("SplashCtrl", [
 
     electron.ipcRenderer.on("child-app-version", function (event, msgData) {
       $timeout(function () {
-        console.log(msgData);
+        // console.log(msgData);
         $scope.detail.appversion =
           ($scope.ctrlTranslations["global.version"] || "Version") +
           " " +

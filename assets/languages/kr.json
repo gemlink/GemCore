@@ -161,7 +161,8 @@
       "address": "주소",
       "details": "상세",
       "enabledStatus": "가동중",
-      "expiredStatus": "만료된"
+      "expiredStatus": "만료된",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "별칭",

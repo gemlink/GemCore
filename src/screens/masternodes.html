@@ -386,11 +386,14 @@
                   <td>
                     <span
                       ng-class="mn.stt == 'ENABLED' ? 'badge badge-success' : mn.stt == 'EXPIRED' ?
-                  'badge badge-warning' : 'badge badge-danger'"
+                  'badge badge-danger' : 'badge badge-warning'"
                       >{{mn.stt === 'ENABLED' ?
                       ('masternodesView.table.enabledStatus' | translate) :
-                      ('masternodesView.table.expiredStatus' |
-                      translate)}}</span
+                      (mn.stt === 'EXPIRED' ?
+                      ('masternodesView.table.expiredStatus' | translate) :
+                      (mn.stt === 'PRE_ENABLED' ?
+                      ('masternodesView.table.preEnabledStatus' | translate) :
+                      mn.stt)) }}</span
                     >
                   </td>
                   <td>{{mn.alias}}</td>
@@ -455,12 +458,15 @@
                   <td>{{mn.rank}}</td>
                   <td>
                     <span
-                      ng-class="mn.status == 'ENABLED' ? 'badge badge-success' : mn.status == 'EXPIRED' ?
-                  'badge badge-warning' : 'badge badge-danger'"
+                      ng-class="mn.status == 'ENABLED' ? 'badge badge-success' : mn.status == 'EXPIRED' ? 'badge badge-danger' :
+                  'badge badge-warning'"
                       >{{mn.status === 'ENABLED' ?
                       ('masternodesView.table.enabledStatus' | translate) :
-                      ('masternodesView.table.expiredStatus' |
-                      translate)}}</span
+                      (mn.status === 'EXPIRED' ?
+                      ('masternodesView.table.expiredStatus' | translate) :
+                      (mn.status === 'PRE_ENABLED' ?
+                      ('masternodesView.table.preEnabledStatus' | translate) :
+                      mn.status)) }}</span
                     >
                   </td>
                   <td>{{mn.version}}</td>

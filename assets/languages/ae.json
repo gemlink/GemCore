@@ -161,7 +161,8 @@
       "address": "عنوان",
       "details": "تفاصيل",
       "enabledStatus": "تمكين",
-      "expiredStatus": "منتهية الصلاحية"
+      "expiredStatus": "منتهية الصلاحية",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "الاسم المستعار",

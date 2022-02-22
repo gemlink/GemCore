@@ -161,7 +161,8 @@
       "address": "Адрес",
       "details": "Детали",
       "enabledStatus": "ВКЛЮЧЕНА",
-      "expiredStatus": "ПРОСРОЧЕНА"
+      "expiredStatus": "ПРОСРОЧЕНА",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Алиас",

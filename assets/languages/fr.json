@@ -161,7 +161,8 @@
       "address": "Addresse",
       "details": "Details",
       "enabledStatus": "ACTIVé",
-      "expiredStatus": "EXPIRé"
+      "expiredStatus": "EXPIRé",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Nom",

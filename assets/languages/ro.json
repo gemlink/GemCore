@@ -161,7 +161,8 @@
       "address": "Addresă",
       "details": "Detailii",
       "enabledStatus": "ACTIVAT",
-      "expiredStatus": "EXPIRAT"
+      "expiredStatus": "EXPIRAT",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Denumire",

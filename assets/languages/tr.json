@@ -158,7 +158,8 @@
       "address": "Adres",
       "details": "Ayrıntılar",
       "enabledStatus": "ETKİN",
-      "expiredStatus": "SÜRESİ DOLDU"
+      "expiredStatus": "SÜRESİ DOLDU",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Alias adı",

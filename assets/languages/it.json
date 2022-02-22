@@ -161,7 +161,8 @@
       "address": "Indirizzo",
       "details": "Dettagli",
       "enabledStatus": "ATTIVO",
-      "expiredStatus": "SCADUTO"
+      "expiredStatus": "SCADUTO",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Soprannome",

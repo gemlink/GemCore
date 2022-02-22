@@ -158,7 +158,8 @@
       "address": "地址",
       "details": "详细信息",
       "enabledStatus": "已启用",
-      "expiredStatus": "已到期"
+      "expiredStatus": "已到期",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "昵称",

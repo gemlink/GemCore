@@ -161,7 +161,8 @@
       "address": "Adres",
       "details": "Detale",
       "enabledStatus": "DZIAŁA",
-      "expiredStatus": "WYGASŁ"
+      "expiredStatus": "WYGASŁ",
+      "preEnabledStatus": "PRE_ENABLED"
     },
     "operations": {
       "aliasName": "Nazwa Aliasu",
