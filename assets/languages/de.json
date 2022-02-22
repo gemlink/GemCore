@@ -400,6 +400,7 @@
     "shutdown3": "bis dieses Fenster verschwindet."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Erfolgreich",
     "success1": "ERFOLG",
     "success2": "Erfolg",

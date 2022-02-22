@@ -400,6 +400,7 @@
     "shutdown3": "dokud se toto okno nevypne."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Hotovo",
     "success1": "HOTOVO",
     "success2": "Hotovo",

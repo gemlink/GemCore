@@ -112,6 +112,7 @@ app.controller("OverviewCtrl", [
             dataType = GetAllDataType.ALL;
             shouldGetAll = false;
           }
+          var buildinfo = networkheightData.value.result.buildinfo;
           // get balance only
           getAllData(dataType, txTime, function (allDataGet) {
             var allData = allDataGet.value.result;
@@ -127,6 +128,7 @@ app.controller("OverviewCtrl", [
             loadingData["block"] = block;
             loadingData["isencrypted"] = allData.isencrypted;
             loadingData["islocked"] = allData.islocked;
+            loadingData["buildinfo"] = buildinfo;
             electron.ipcRenderer.send("main-update-loading", loadingData);
 
 
@@ -454,6 +456,7 @@ app.controller("OverviewCtrl", [
       loadingData["besttime"] = rawData.besttime;
       loadingData["connections"] = rawData.connectionCount;
       loadingData["block"] = rawData.blocks;
+      loadingData["buildinfo"] = rawData.buildinfo;
       electron.ipcRenderer.send("main-update-loading", loadingData);
       electron.ipcRenderer.send(
         "main-update-locked-coin",
@@ -609,6 +612,7 @@ app.controller("OverviewCtrl", [
           if (lastBlock != data.value.result.blocks) {
             lastBlock = data.value.result.blocks;
             $scope.rawData.connectionCount = data.value.result.connections;
+            $scope.rawData.buildinfo = data.value.result.buildinfo;
             $scope.dataChange.getinfo = true;
           } else {
             $scope.dataChange.getinfo = false;

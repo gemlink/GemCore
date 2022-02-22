@@ -400,6 +400,7 @@
     "shutdown3": "حتى تختفي هذه النافذة."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "نجح",
     "success1": "نجاح",
     "success2": "نجاح",

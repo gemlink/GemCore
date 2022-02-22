@@ -472,7 +472,7 @@ app.controller("MenuBarFooterCtrl", [
       ADDRESSBOOK: 13,
       VOTING: 14,
     };
-
+    $scope.detail = {};
     $scope.ctrlTranslations = {};
 
     $rootScope.$on(
@@ -485,7 +485,7 @@ app.controller("MenuBarFooterCtrl", [
 
     $scope.getControllerTranslations = function () {
       translationsAvailable().then(() => {
-        $translate(["global.version"]).then((o) => {
+        $translate(["global.version", "global.buildinfo"]).then((o) => {
           $scope.ctrlTranslations = o;
         });
       });
@@ -506,8 +506,16 @@ app.controller("MenuBarFooterCtrl", [
     };
 
     $scope.aboutClick = function () {
-      alert($scope.ctrlTranslations["global.version"] + ": " + appVersion);
+      alert($scope.ctrlTranslations["global.version"] + ": " + appVersion + ", " + $scope.ctrlTranslations["global.buildinfo"] + ": " + $scope.detail.buildinfo);
     };
+
+    electron.ipcRenderer.on("child-update-loading", function (event, msgData) {
+      console.log(msgData);
+      var data = msgData.msg;
+      $timeout(function () {
+        $scope.detail.buildinfo = data.buildinfo;
+      }, 0);
+    });
   },
 ]);
 

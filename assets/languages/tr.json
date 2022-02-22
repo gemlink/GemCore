@@ -396,6 +396,7 @@
     "shutdown3": "bu pencere kaybolana kadar."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Başarılı",
     "success1": "BAŞARI",
     "success2": "Başarı",

@@ -400,6 +400,7 @@
     "shutdown3": "dopóki to okno nie zniknie."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Udało się",
     "success1": "SUKCES",
     "success2": "Sukces",

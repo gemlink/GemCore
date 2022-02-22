@@ -396,6 +396,7 @@
     "shutdown3": "直到此窗口消失"
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "成功",
     "success1": "成功",
     "success2": "成功",

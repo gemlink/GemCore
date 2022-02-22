@@ -396,6 +396,7 @@
     "shutdown3": "Totdat dit venster verdwijnt."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Successvol",
     "success1": "SUCCESS",
     "success2": "Success",

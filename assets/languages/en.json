@@ -412,6 +412,7 @@
     "shutdown3": "until this window disappears."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Succeeded",
     "success1": "SUCCESS",
     "success2": "Success",

@@ -400,6 +400,7 @@
     "shutdown3": "până când această fereastră nu dispare."
   },
   "global": {
+    "buildinfo": "Build info",
     "success": "Realizat",
     "success1": "SUCCES",
     "success2": "Succes",
