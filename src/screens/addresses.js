@@ -108,7 +108,8 @@ app.controller("AddressesCtrl", [
       var arg = [ScreenType.ADDRESSES];
       $timeout(function () {
         $scope.detail.title = title;
-        $scope.detail.alertText = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
+        $scope.detail.alertText =
+          typeof text == "string" ? text : JSON.stringify(text, null, 2);
         $(id).modal();
       }, 0);
     }
@@ -379,7 +380,7 @@ app.controller("AddressesCtrl", [
     };
 
     $scope.createAddress = function (event) {
-      console.log($scope.detail.addressName);
+      // console.log($scope.detail.addressName);
       if (event != undefined) {
         event.preventDefault();
         if (event.keyCode === 13) {
@@ -411,14 +412,25 @@ app.controller("AddressesCtrl", [
       }
       newName = $scope.detail.addressName;
       $scope.detail.addressName = "";
+      $scope.detail.enableButton = false;
       if (isPrivate == false) {
-        newAddress();
-        shouldGetAll = true;
-        $scope.detail.enableButton = false;
+        newAddress(function (newData) {
+          $scope.detail.enableButton = true;
+          showAlert(
+            "#modalAddressNoti",
+            $scope.ctrlTranslations["addressesView.newAddressButton"],
+            newData.value.result
+          );
+        });
       } else {
-        newZAddress(isSapling);
-        shouldGetAll = true;
-        $scope.detail.enableButton = false;
+        newZAddress(function (newData) {
+          $scope.detail.enableButton = true;
+          showAlert(
+            "#modalAddressNoti",
+            $scope.ctrlTranslations["addressesView.newAddressButton"],
+            newData.value.result
+          );
+        });
       }
     };
 
@@ -440,7 +452,16 @@ app.controller("AddressesCtrl", [
     };
 
     $scope.exportToFile = function () {
-      exportPrivateKeys("glinkprivkey");
+      exportPrivateKeys("glinkprivkey", function (data) {
+        showAlert(
+          "#modalAddressNoti",
+          $scope.ctrlTranslations["global.done"],
+          data.value.result
+            ? $scope.ctrlTranslations["addressesView.exportMessage"] +
+                data.value.result
+            : data.value.error.message
+        );
+      });
     };
 
     function privKey(addr, callback) {
@@ -537,18 +558,17 @@ app.controller("AddressesCtrl", [
       }
     };
 
-
     function importKey() {
       var priv1 = $scope.importList[0];
       $scope.importList.splice(0, 1);
       // writeLog($scope.importList.length);
       if (priv1.startsWith("K") || priv1.startsWith("L")) {
-        importPrivateKey(priv1, function(data){
+        importPrivateKey(priv1, function (data) {
           $scope.importData[priv1] = data.value.result;
           continueImport();
         });
       } else {
-        z_importPrivateKey(priv1, function(data){
+        z_importPrivateKey(priv1, function (data) {
           $scope.importData[priv1] = data.value.result;
           continueImport();
         });
@@ -652,32 +672,6 @@ app.controller("AddressesCtrl", [
       // writeLog(JSON.stringify(data))
       populateAddress(addrData, $scope.detail.hideAddress);
     });
-
-    electron.ipcRenderer.on("child-get-new-address", function (event, msgData) {
-      var rtn = addAddressBook(
-        newName,
-        msgData.msg.result,
-        serverData,
-        currentCoin
-      );
-      showAlert(
-        "#modalAddressNoti",
-        $scope.ctrlTranslations["addressesView.newAddressButton"],
-        msgData.msg.result
-      );
-    });
-
-    electron.ipcRenderer.on("child-exportwallet", function (event, msgData) {
-      showAlert(
-        "#modalAddressNoti",
-        $scope.ctrlTranslations["global.done"],
-        msgData.msg.value.result
-          ? $scope.ctrlTranslations["addressesView.exportMessage"] +
-              msgData.msg.value.result
-          : msgData.msg.value.error.message
-      );
-    });
-
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       $timeout(function () {

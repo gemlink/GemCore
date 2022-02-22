@@ -33,8 +33,6 @@ var startmasternodeData;
 var getPeerInfoData;
 var getDebugData;
 var getNewAddressData;
-var mnbudgetShowData;
-var mnbudgetVoteData;
 var encryptData;
 var changePassData;
 var lockData;
@@ -701,20 +699,13 @@ function getAddressBalance(address, callback) {
 }
 
 function newAddress(callback) {
-  getNewAddressData = undefined;
   var arg = ["getnewaddress"];
   // writeLog(arg)
   startCli(arg, callback);
 }
 
-function newZAddress(sapling, callback) {
-  getNewAddressData = undefined;
+function newZAddress(callback) {
   var arg = ["z_getnewaddress"];
-  if (sapling != undefined) {
-    arg.push("sapling");
-  } else {
-    arg.push("sprout");
-  }
   // writeLog(arg)
   startCli(arg, callback);
 }

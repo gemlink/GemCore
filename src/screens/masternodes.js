@@ -81,7 +81,6 @@ app.controller("MasternodesCtrl", [
           populateNetworkMN(data.value);
         });
       }, timeout);
-      setTimeout(getProposal, timeout);
     }
 
     function populateLocalMN() {

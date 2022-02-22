@@ -1142,20 +1142,7 @@ app.controller("LoadingCtrl", [
     electron.ipcRenderer.on("child-process-data", function (event, msgData) {
       var data = msgData.msg;
       // writeLog(data.key)
-      if (data.key == "getnewaddress" || data.key == "z_getnewaddress") {
-        getNewAddressData = data.value;
-        electron.ipcRenderer.send("main-get-new-address", getNewAddressData);
-      } else if (data.key == "mnbudget") {
-        if (data.arg["1"] == "show") {
-          mnbudgetShowData = data.value;
-          electron.ipcRenderer.send("main-mnbudget-show", mnbudgetShowData);
-        }
-      } else if (data.key == "mnbudgetvote") {
-        mnbudgetVoteData = data.value;
-        electron.ipcRenderer.send("main-mnbudget-vote", mnbudgetVoteData);
-      } else if (data.key == "z_exportwallet") {
-        ipc.send("main-exportwallet", data);
-      } else if (data.key == "encryptwallet") {
+if (data.key == "encryptwallet") {
         encryptData = data.value;
         ipc.send("main-encryptwallet", encryptData);
       } else if (data.key == "walletpassphrasechange") {

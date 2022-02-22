@@ -82,8 +82,20 @@ app.controller("VotingCtrl", [
       } else {
         choice = "no";
       }
-      voteProposal("many", proposal, choice);
+      voteProposal("many", proposal, choice, function(data){
+        $scope.detail.votingResult = JSON.stringify(data.value.result, null, 2);
+        spawnMessage(MsgType.ALERT);
+      });
     };
+
+    function getVotingData(timeout) {
+      setTimeout(function () {
+        getProposal(function(data){
+          $scope.detail.mnbudgetVote = data.value.result;
+          getVotingData(30000);
+        })
+      }, timeout);
+    }
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       $timeout(function () {
@@ -105,18 +117,10 @@ app.controller("VotingCtrl", [
       });
     });
 
-    electron.ipcRenderer.on("child-mnbudget-show", function (event, msgData) {
-      $timeout(function () {
-        $scope.detail.mnbudgetVote = msgData.msg.result;
-        // $scope.detail.mnbudgetVote = JSON.parse(sample);
-      }, 0);
-    });
-
-    electron.ipcRenderer.on("child-mnbudget-vote", function (event, msgData) {
-      $timeout(function () {
-        $scope.detail.votingResult = JSON.stringify(msgData.msg, null, 2);
-        spawnMessage(MsgType.ALERT);
-      }, 500);
+    electron.ipcRenderer.on("child-execute-timer", function (event, msgData) {
+      if (serverData.masternode) {
+        getVotingData(3000);
+      }
     });
   },
 ]);

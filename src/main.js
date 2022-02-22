@@ -621,10 +621,6 @@ ipc.on("main-z-validate-address-zcash", function (event, arg) {
   event.sender.send("child-z-validate-address-zcash", { msg: arg });
 });
 
-ipc.on("main-get-new-address", function (event, arg) {
-  event.sender.send("child-get-new-address", { msg: arg });
-});
-
 ipc.on("main-z-get-balance-zcash", function (event, arg) {
   event.sender.send("child-z-get-balance-zcash", { msg: arg });
 });
@@ -656,20 +652,12 @@ ipc.on("main-execute-send-coin", function (event, arg) {
   event.sender.send("child-execute-send-coin", { msg: arg });
 });
 
-ipc.on("main-mnbudget-show", function (event, arg) {
-  event.sender.send("child-mnbudget-show", { msg: arg });
-});
-
 ipc.on("main-mnbudget-vote", function (event, arg) {
   event.sender.send("child-mnbudget-vote", { msg: arg });
 });
 
 ipc.on("main-localmn-status", function (event, arg) {
   event.sender.send("child-localmn-status", { msg: arg });
-});
-
-ipc.on("main-exportwallet", function (event, arg) {
-  event.sender.send("child-exportwallet", { msg: arg });
 });
 
 ipc.on("main-unlock-modal", function (event, arg) {
