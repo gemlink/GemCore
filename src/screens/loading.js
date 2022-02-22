@@ -1139,28 +1139,6 @@ app.controller("LoadingCtrl", [
       spawnMessage(MsgType.LOADING_DAEMON, msgData.msg[0]);
     });
 
-    electron.ipcRenderer.on("child-process-data", function (event, msgData) {
-      var data = msgData.msg;
-      // writeLog(data.key)
-if (data.key == "encryptwallet") {
-        encryptData = data.value;
-        ipc.send("main-encryptwallet", encryptData);
-      } else if (data.key == "walletpassphrasechange") {
-        changePassData = data.value;
-        ipc.send("main-walletpassphrasechange", changePassData);
-      } else if (data.key == "walletlock") {
-        lockData = data.value;
-        ipc.send("main-walletlock", lockData);
-      } else if (data.key == "walletpassphrase") {
-        unlockData = data.value;
-        ipc.send("main-walletpassphrase", unlockData);
-      } else if (data.key == "stop") {
-        //do nothing
-      } else {
-        writeLog("not supported " + data.key);
-      }
-    });
-
     electron.ipcRenderer.on(
       "child-update-data-loading",
       function (event, msgData) {

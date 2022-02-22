@@ -280,7 +280,9 @@ app.controller("NavBarCtrl", [
         $scope.detail.islocked = true;
         $scope.detail.lockstate = $scope.ctrlTranslations["navbar.locked"];
         // call lock rpc call
-        lockWallet();
+        lockWallet(function (data) {
+          console.log("Lock data", data);
+        });
       } else {
         // call unlock modal
         electron.ipcRenderer.send("main-unlock-modal", []);
@@ -415,35 +417,6 @@ app.controller("NavBarCtrl", [
         }
       }, 0);
     });
-
-    electron.ipcRenderer.on(
-      "child-walletpassphrase",
-      function (event, msgData) {
-        $timeout(function () {
-          var data = msgData.msg;
-          console.log("walletpassphrase data", data);
-          if (data.error == null || data.error == undefined) {
-            $scope.detail.islocked = false;
-            $scope.detail.lockstate =
-              $scope.ctrlTranslations["navbar.unlocked"];
-            var count = 300;
-            setInterval(function () {
-              $scope.detail.lockstate =
-                $scope.ctrlTranslations["navbar.unlocked"] +
-                ", " +
-                $scope.ctrlTranslations["navbar.autoLock"] +
-                " " +
-                count-- +
-                "s";
-            }, 1000);
-          } else {
-            var msg = data.error.message;
-            // show error message
-            spawnMessage(MsgType.ALERT, msg);
-          }
-        }, 0);
-      }
-    );
 
     $scope.changeLanguage(getLanguage());
   },
@@ -604,7 +577,8 @@ app.controller("ModalCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);;
+        $scope.detail.text =
+          typeof text == "string" ? text : JSON.stringify(text, null, 2);
         if (type == MsgType.ALERT) {
           $("#modalNavbarAlert").modal();
         } else if (type == MsgType.UNLOCK) {
@@ -616,16 +590,28 @@ app.controller("ModalCtrl", [
     }
 
     $scope.unlock = function () {
-      unlockWallet($scope.detail.unlockPassword);
+      unlockWallet($scope.detail.unlockPassword, function (data) {
+        if (data.value.error == null || data.value.error == undefined) {
+          $scope.detail.islocked = false;
+          $scope.detail.lockstate = $scope.ctrlTranslations["navbar.unlocked"];
+          var count = 300;
+          setInterval(function () {
+            $scope.detail.lockstate =
+              $scope.ctrlTranslations["navbar.unlocked"] +
+              ", " +
+              $scope.ctrlTranslations["navbar.autoLock"] +
+              " " +
+              count-- +
+              "s";
+          }, 1000);
+        } else {
+          var msg = data.value.error.message;
+          // show error message
+          spawnMessage(MsgType.ALERT, msg);
+        }
+      });
       $scope.detail.unlockPassword = "";
     };
-
-    electron.ipcRenderer.on("child-walletlock", function (event, msgData) {
-      $timeout(function () {
-        var data = msgData.msg;
-        console.log("walletlock data", data);
-      }, 0);
-    });
 
     electron.ipcRenderer.on("child-unlock-modal", function (event, msgData) {
       spawnMessage(MsgType.UNLOCK, "", "Unlock wallet");

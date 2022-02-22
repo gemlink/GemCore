@@ -638,8 +638,22 @@ app.controller("SettingsCtrl", [
 
     $scope.encryptWallet = function () {
       console.log("Encrypt wallet", $scope.detail.password);
-      encryptWallet($scope.detail.password, serverData.cointype);
-      $scope.detail.password = "";
+      encryptWallet($scope.detail.password, function (data) {
+        console.log("Encrypt data", data.value);
+        if (data.value.error == null || data.value.error == undefined) {
+          spawnMessage(
+            MsgType.CONFIRMATION2,
+            $scope.ctrlTranslations["settingsView.operations.restartWallet5"],
+            $scope.ctrlTranslations["global.restart"],
+            ""
+          );
+        } else {
+          var msg = data.value.error.message;
+          // show error message
+          spawnMessage(MsgType.ALERT, msg);
+        }
+        $scope.detail.password = "";
+      });
     };
 
     $scope.addPeersAction = function (data) {
@@ -714,19 +728,9 @@ app.controller("SettingsCtrl", [
       changePass(
         $scope.detail.oldPassword,
         $scope.detail.newPassword,
-        serverData.cointype
-      );
-      $scope.detail.oldPassword = "";
-      $scope.detail.newPassword = "";
-    };
-
-    electron.ipcRenderer.on(
-      "child-walletpassphrasechange",
-      function (event, msgData) {
-        $timeout(function () {
-          var data = msgData.msg;
-          console.log("walletpassphrasechange data", data);
-          if (data.error == null || data.error == undefined) {
+        serverData.cointype,
+        function(data){
+          if (data.value.error == null || data.value.error == undefined) {
             // show error message
             spawnMessage(
               MsgType.ALERT,
@@ -735,32 +739,15 @@ app.controller("SettingsCtrl", [
               $scope.ctrlTranslations["global.changePassword"]
             );
           } else {
-            var msg = data.error.message;
+            var msg = data.value.error.message;
             // show error message
             spawnMessage(MsgType.ALERT, msg);
           }
-        }, 0);
-      }
-    );
-
-    electron.ipcRenderer.on("child-encryptwallet", function (event, msgData) {
-      $timeout(function () {
-        var data = msgData.msg;
-        console.log("Encrypt data", data);
-        if (data.error == null || data.error == undefined) {
-          spawnMessage(
-            MsgType.CONFIRMATION2,
-            $scope.ctrlTranslations["settingsView.operations.restartWallet5"],
-            $scope.ctrlTranslations["global.restart"],
-            ""
-          );
-        } else {
-          var msg = data.error.message;
-          // show error message
-          spawnMessage(MsgType.ALERT, msg);
         }
-      }, 0);
-    });
+      );
+      $scope.detail.oldPassword = "";
+      $scope.detail.newPassword = "";
+    };
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       writeLog("populateSettings");

@@ -33,8 +33,6 @@ var startmasternodeData;
 var getPeerInfoData;
 var getDebugData;
 var getNewAddressData;
-var encryptData;
-var changePassData;
 var lockData;
 var unlockData;
 var apiStatus = {};
@@ -842,28 +840,24 @@ function verifyAddress(address, callback) {
 }
 
 function encryptWallet(password, callback) {
-  encryptData = undefined;
   var arg = ["encryptwallet", password];
   // writeLog(arg)
   startCli(arg, callback);
 }
 
 function changePass(phrase, newPhrase, callback) {
-  changePassData = undefined;
   var arg = ["walletpassphrasechange", phrase, newPhrase];
   // writeLog(arg)
   startCli(arg, callback);
 }
 
 function lockWallet(callback) {
-  lockData = undefined;
   var arg = ["walletlock"];
   // writeLog(arg)
   startCli(arg, callback);
 }
 
 function unlockWallet(phrase, time, callback) {
-  unlockData = undefined;
   if (time == undefined) {
     time = 300;
   }
