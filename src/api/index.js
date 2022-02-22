@@ -754,42 +754,13 @@ function z_exportPrivateKey(address, callback) {
   startCli(arg, callback);
 }
 
-function importPrivateKey(key, label, callback) {
+function importPrivateKey(key, callback) {
   var arg = ["importprivkey", key];
-  if (label != undefined) {
-    arg.push(label);
-  }
-  // else
-  // {
-  //   arg.push("")
-  // }
-  // if(fRescan != undefined)
-  // {
-  //   arg.push(fRescan)
-  // }
-  // writeLog(arg)
   startCli(arg, callback);
 }
 
 function z_importPrivateKey(key, callback) {
   var arg = ["z_importkey", key];
-  // if(fRescan != undefined)
-  // {
-  //   arg.push(fRescan)
-  // }
-  // else
-  // {
-  //   arg.push(false)
-  // }
-  // if(rescanBlock != undefined)
-  // {
-  //   arg.push(rescanBlock)
-  // }
-  // else
-  // {
-  //   arg.push(0)
-  // }
-  // writeLog(arg)
   startCli(arg, callback);
 }
 

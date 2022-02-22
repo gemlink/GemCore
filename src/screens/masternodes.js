@@ -56,7 +56,7 @@ app.controller("MasternodesCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = text == 'string' ? text : JSON.stringify(text, null, 2);
+        $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
         if (type == MsgType.ALERT) {
           $("#modalMasternodesAlert").modal();
         } else if (type == MsgType.CONFIRMATION) {

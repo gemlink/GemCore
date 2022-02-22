@@ -11,6 +11,7 @@ app.controller("AddressesCtrl", [
     $scope.importList = [];
     $scope.detail = {};
     $scope.privKeyList = {};
+    $scope.importData = {};
     $scope.detail.current = {};
     $scope.detail.privKeyText = "";
     $scope.detail.enableButton = true;
@@ -102,13 +103,12 @@ app.controller("AddressesCtrl", [
     $scope.getControllerTranslations();
 
     var isImport = false;
-    var isContinueImport = false;
 
     function showAlert(id, title, text) {
       var arg = [ScreenType.ADDRESSES];
       $timeout(function () {
         $scope.detail.title = title;
-        $scope.detail.alertText = text;
+        $scope.detail.alertText = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
         $(id).modal();
       }, 0);
     }
@@ -447,7 +447,7 @@ app.controller("AddressesCtrl", [
       delete $scope.selectedListClone[addr];
       if (!addr.startsWith("z")) {
         exportPrivateKey(addr.split(" ")[0], function (data) {
-          console.log("Export data", data);
+          // console.log("Export data", data);
           $scope.privKeyList[addr] = data.value.result;
           var keys = Object.keys($scope.selectedListClone);
           if (keys.length > 0) {
@@ -459,7 +459,7 @@ app.controller("AddressesCtrl", [
         });
       } else {
         z_exportPrivateKey(addr.split(" ")[0], function (data) {
-          console.log("ZExport data", data);
+          // console.log("ZExport data", data);
           $scope.privKeyList[addr] = data.value.result;
           var keys = Object.keys($scope.selectedList);
           if (keys.length > 0) {
@@ -484,9 +484,6 @@ app.controller("AddressesCtrl", [
       if (isImport) {
         $("#importPrivatekeys").modal();
         isImport = false;
-      } else if (isContinueImport) {
-        setTimeout(continueImport, 1000);
-        isContinueImport = false;
       }
     };
 
@@ -540,46 +537,40 @@ app.controller("AddressesCtrl", [
       }
     };
 
-    function importKey(data) {
-      $timeout(function () {
-        if (data != undefined && data.msg.value.error != null) {
-          var errMsg = "Cannot import " + data.msg.arg[1] + "\n\n";
-          errMsg += data.msg.value.error.message;
-          isContinueImport = true;
-          showAlert(
-            "#modalAddressError",
-            $scope.ctrlTranslations["global.error"],
-            errMsg
-          );
-        } else {
+
+    function importKey() {
+      var priv1 = $scope.importList[0];
+      $scope.importList.splice(0, 1);
+      // writeLog($scope.importList.length);
+      if (priv1.startsWith("K") || priv1.startsWith("L")) {
+        importPrivateKey(priv1, function(data){
+          $scope.importData[priv1] = data.value.result;
           continueImport();
-        }
-      }, 0);
+        });
+      } else {
+        z_importPrivateKey(priv1, function(data){
+          $scope.importData[priv1] = data.value.result;
+          continueImport();
+        });
+      }
     }
 
     function continueImport() {
       if ($scope.importList.length == 0) {
-        shouldGetAll = true;
         $scope.detail.enableImportKey = true;
         showAlert(
           "#modalAddressNoti",
-          "",
-          $scope.ctrlTranslations["global.done"]
+          $scope.ctrlTranslations["global.done"],
+          $scope.importData
         );
         clearTimeout(importingTimer);
         importingTimer = undefined;
         $scope.detail.importPrivKeyText =
           $scope.ctrlTranslations["addressesView.importKeysButton"];
         return;
-      }
-      $scope.detail.enableImportKey = false;
-      var priv1 = $scope.importList[0];
-      $scope.importList.splice(0, 1);
-      writeLog($scope.importList.length);
-      if (priv1.startsWith("K") || priv1.startsWith("L")) {
-        importPrivateKey(priv1, "", $scope.detail.importWithRescan);
       } else {
-        z_importPrivateKey(priv1, $scope.detail.importWithRescan, 0);
+        $scope.detail.enableImportKey = false;
+        importKey();
       }
     }
 
@@ -687,9 +678,6 @@ app.controller("AddressesCtrl", [
       );
     });
 
-    electron.ipcRenderer.on("child-import-priv-key", function (event, msgData) {
-      importKey(msgData);
-    });
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       $timeout(function () {

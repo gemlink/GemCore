@@ -604,7 +604,7 @@ app.controller("ModalCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = text;
+        $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);;
         if (type == MsgType.ALERT) {
           $("#modalNavbarAlert").modal();
         } else if (type == MsgType.UNLOCK) {
