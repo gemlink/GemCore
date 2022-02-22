@@ -526,7 +526,7 @@ function writeLog(input, obj) {
         var split = data.split("/");
 
         data = split[0] + " " + split[split.length - 1] + input;
-        console.log(data);
+        obj ? console.log(data, obj) : console.log(data);
       } else {
         var data = stringifiedStack.split("\n")[1] + ": ";
         var split = data.split("/");
@@ -537,7 +537,7 @@ function writeLog(input, obj) {
     };
 
     var errback = function (err) {
-      console.log(err.message, obj);
+      obj ? console.log(err.message, obj) : console.log(err.message);
     };
 
     var error = new Error(input);
@@ -866,10 +866,9 @@ function unlockWallet(phrase, time, callback) {
   startCli(arg, callback);
 }
 
-function verifyZAddress(address, data, callback) {
+function verifyZAddress(address, callback) {
   validateaddressData = undefined;
   var arg = ["z_validateaddress", address];
-  arg.push(data);
   // writeLog(arg)
   startCli(arg, callback);
 }
