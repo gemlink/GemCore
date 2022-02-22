@@ -95,7 +95,7 @@ app.controller("MasternodesConfigCtrl", [
       ip,
       privkey,
       txhash,
-      txid,
+      txindex,
       status,
       oldName,
       isNew
@@ -152,18 +152,24 @@ app.controller("MasternodesConfigCtrl", [
           ip,
           privkey,
           txhash,
-          txid,
+          txindex,
           status,
           "",
           true,
           $scope.detail.p2pport ? $scope.detail.p2pport : "16113"
         );
 
-        spawnMessage(
-          MsgType.CONFIRMATION,
-          $scope.ctrlTranslations["masternodesView.operations.editMnConfirm"],
-          $scope.ctrlTranslations["masternodesView.operations.notice"]
-        );
+        var idx = $scope.detail.mnData.findIndex(e => e.txhash == txhash && e.no == txindex);
+        if(idx > -1) {
+          $scope.detail.mnData.splice(idx, 1);
+        }
+        if($scope.detail.mnData.length == 0) {
+          spawnMessage(
+            MsgType.CONFIRMATION,
+            $scope.ctrlTranslations["masternodesView.operations.editMnConfirm"],
+            $scope.ctrlTranslations["masternodesView.operations.notice"]
+          );
+        }
       }
     }
 
@@ -204,7 +210,7 @@ app.controller("MasternodesConfigCtrl", [
         $scope.detail.mnData = [];
         data.forEach(function (element) {
           var index = localMNs.findIndex(function (e) {
-            return e.txhash == element.txhash;
+            return e.txhash == element.txhash && e.outidx == element.outputidx;
           });
           if (index == -1) {
             $scope.detail.outputs.push(element);

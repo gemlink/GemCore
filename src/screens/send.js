@@ -303,12 +303,12 @@ app.controller("SendCtrl", [
       $scope.detail.isBot = false;
       if (dataToSend["from"] == "public") {
         sendFromPublic(dataToSend, function (dataSendPublic) {
-          // console.log("dataSendPublic", dataSendPublic);
+          writeLog("Send coin data public", dataToSend);
           handleSendData(dataSendPublic);
         });
       } else {
         verifyAddress($scope.detail.recipientAddress, function (verifyData) {
-          // console.log("verifyData", verifyData);
+          writeLog("Send coin data from public address", dataToSend);
           if (verifyData.value.result.isvalid == true) {
             sendCoin(
               dataToSend.from,
@@ -324,7 +324,7 @@ app.controller("SendCtrl", [
             verifyZAddress(
               $scope.detail.recipientAddress,
               function (verifyzData) {
-                // console.log("verifyzData", verifyzData);
+                writeLog("Send coin data from private address", dataToSend);
                 if (verifyzData.value.result.isvalid == true) {
                   sendCoin(
                     dataToSend.from,
