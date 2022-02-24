@@ -46,6 +46,7 @@ app.controller("SendCtrl", [
           "sendView.operations.invalidAddress",
           "sendView.operations.checkTxError",
           "sendView.sendMany",
+          "sendView.publicAddresses",
           "global.errors.InsufficientShieldedFunds1",
           "global.errors.InsufficientShieldedFunds2",
           "global.errors.InsufficientTransparentFunds1",
@@ -70,7 +71,8 @@ app.controller("SendCtrl", [
           title == undefined
             ? $scope.ctrlTranslations["global.alert"] + "!!!"
             : title;
-        $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
+        $scope.detail.text =
+          typeof text == "string" ? text : JSON.stringify(text, null, 2);
         if (type == MsgType.ALERT) {
           $("#modalSendAlert").modal();
         } else if (type == MsgType.SEND_CONFIRMATION) {
@@ -153,37 +155,56 @@ app.controller("SendCtrl", [
       );
     };
 
+    function finishSendPublic(data) {
+      $timeout(function () {
+        if (data.value.error != null) {
+          if ($scope.detail.isBot == false) {
+            spawnMessage(MsgType.ALERT, data.value.error.message);
+          } else {
+            sendBotReplyMsg(data.value.error.message);
+          }
+        } else {
+          $scope.detail.btnDisable = false;
+          var msg = $scope.ctrlTranslations["global.success2"];
+          if ($scope.detail.isBot == false) {
+            spawnMessage(MsgType.ALERT, msg);
+          } else {
+            msg += "\n" + explorer + "tx/" + data.value.result;
+            sendBotReplyMsg(msg);
+          }
+          $scope.detail.amount = undefined;
+          $scope.detail.recipientAddress = undefined;
+          $scope.detail.message = undefined;
+        }
+      });
+    }
+
     function finishSend(checkdata) {
       $timeout(function () {
         $scope.detail.btnDisable = false;
         var data = checkdata.value;
         if (data.result[0] == null) {
-          $timeout(function () {
-            $scope.detail.btnDisable = false;
-            var msg =
-              $scope.ctrlTranslations["sendView.operations.checkTxError"];
-            if ($scope.detail.isBot == false) {
-              spawnMessage(MsgType.ALERT, msg);
-            } else {
-              sendBotReplyMsg(msg);
-            }
-          }, 0);
+          $scope.detail.btnDisable = false;
+          var msg = $scope.ctrlTranslations["sendView.operations.checkTxError"];
+          if ($scope.detail.isBot == false) {
+            spawnMessage(MsgType.ALERT, msg);
+          } else {
+            sendBotReplyMsg(msg);
+          }
         } else {
           var status = data.result[0].status;
           if (status == "success") {
-            $timeout(function () {
-              $scope.detail.btnDisable = false;
-              var msg = $scope.ctrlTranslations["global.success2"];
-              if ($scope.detail.isBot == false) {
-                spawnMessage(MsgType.ALERT, msg);
-              } else {
-                msg += "\n" + explorer + "tx/" + data.result[0].txid;
-                sendBotReplyMsg(msg);
-              }
-              $scope.detail.amount = undefined;
-              $scope.detail.recipientAddress = undefined;
-              $scope.detail.message = undefined;
-            }, 0);
+            $scope.detail.btnDisable = false;
+            var msg = $scope.ctrlTranslations["global.success2"];
+            if ($scope.detail.isBot == false) {
+              spawnMessage(MsgType.ALERT, msg);
+            } else {
+              msg += "\n" + explorer + "tx/" + data.result[0].txid;
+              sendBotReplyMsg(msg);
+            }
+            $scope.detail.amount = undefined;
+            $scope.detail.recipientAddress = undefined;
+            $scope.detail.message = undefined;
           } else {
             $scope.detail.btnDisable = false;
             var error_msg = data.result[0].error.message;
@@ -303,8 +324,8 @@ app.controller("SendCtrl", [
       $scope.detail.isBot = false;
       if (dataToSend["from"] == "public") {
         sendFromPublic(dataToSend, function (dataSendPublic) {
-          writeLog("Send coin data public", dataToSend);
-          handleSendData(dataSendPublic);
+          writeLog("Send coin data public", dataSendPublic);
+          finishSendPublic(dataSendPublic);
         });
       } else {
         verifyAddress($scope.detail.recipientAddress, function (verifyData) {
@@ -471,11 +492,7 @@ app.controller("SendCtrl", [
           $scope.detail.selected == undefined &&
           $scope.publicAddresses.length > 0
         ) {
-          if (!$scope.detail.showPrivateAddress) {
-            $scope.detail.selected = "public";
-          } else {
-            $scope.detail.selected = $scope.publicAddresses[0].value;
-          }
+          $scope.detail.selected = "public";
         }
       }, 0);
     }

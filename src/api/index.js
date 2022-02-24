@@ -157,20 +157,14 @@ $(document).on("click", 'a[href^="https"]', function (event) {
   shell.openExternal(this.href);
 });
 
-function handleFunction(data) {
-  // writeLog('handleFunction')
-  ipc.send("main-update-data", data);
-}
+// function handleFunction(data) {
+//   // writeLog('handleFunction')
+//   ipc.send("main-update-data", data);
+// }
 
 function handleFunctionZcash(data) {
   // writeLog('handleFunction zcash')
-  if (data.key == "getinfo") {
-    ipc.send("main-get-data-zcash", data);
-  } else if (data.key == "getwalletinfo") {
-    ipc.send("main-get-data-zcash", data);
-  } else if (data.key == "z_gettotalbalance") {
-    ipc.send("main-get-data-zcash", data);
-  } else if (data.key == "getblockchaininfo") {
+  if (data.key == "getblockchaininfo") {
     ipc.send("main-get-blockchain-info-zcash", data);
   } else if (data.key == "getblockheader") {
     ipc.send("main-get-block-header-zcash", data);
@@ -647,6 +641,13 @@ function getPeerInfo(callback) {
   // writeLog(arg)
   startCli(arg, callback);
 }
+
+function getinfo(callback) {
+  var arg = ["getinfo"];
+  // writeLog(arg)
+  startCli(arg, callback);
+}
+
 
 function getNetworkHeight(callback) {
   var arg = ["getinfo"];
@@ -2035,12 +2036,8 @@ function curlData(username, password, port, methods, params, callback) {
       rtnData["key"] = temp[0];
       rtnData["arg"] = temp;
       rtnData["value"] = error;
-      if (coinType == "gemlink") {
-        handleFunction(rtnData);
-      } else if (coinType == "zcash") {
+      if (coinType == "zcash") {
         handleFunctionZcash(rtnData);
-      } else {
-        writeLog("curlData not supported");
       }
       if (callback) callback(rtnData);
     } else {
@@ -2052,12 +2049,8 @@ function curlData(username, password, port, methods, params, callback) {
       rtnData["key"] = temp[0];
       rtnData["arg"] = temp;
       rtnData["value"] = data;
-      if (coinType == "gemlink") {
-        handleFunction(rtnData);
-      } else if (coinType == "zcash") {
+      if (coinType == "zcash") {
         handleFunctionZcash(rtnData);
-      } else {
-        writeLog("curlData not supported");
       }
       if (callback) callback(rtnData);
     }

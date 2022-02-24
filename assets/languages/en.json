@@ -272,7 +272,7 @@
       "amount": "Amount",
       "validated": "Validated",
       "details": "Details",
-      "send": "send",
+      "send": "send to",
       "receive": "receive",
       "generate": "generate",
       "immature": "Immature"

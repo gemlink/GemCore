@@ -463,13 +463,13 @@ ipc.on("main-show-popup", function (event, arg) {
   }
 });
 
-ipc.on("main-update-data", function (event, arg) {
-  if (splashWindow) {
-    splashWindow.webContents.send("child-show-popup", { msg: arg });
-  } else {
-    console.log("No splash");
-  }
-});
+// ipc.on("main-update-data", function (event, arg) {
+//   if (splashWindow) {
+//     splashWindow.webContents.send("child-show-popup", { msg: arg });
+//   } else {
+//     console.log("No splash");
+//   }
+// });
 
 ipc.on("main-update-data-splash", function (event, arg) {
   if (splashWindow) {
@@ -491,13 +491,9 @@ ipc.on("main-show-splash", function (event, arg) {
   splashWindow ? splashWindow.show() : console.log("No main");
 });
 
-ipc.on("main-update-data", function (event, arg) {
-  event.sender.send("child-process-data", { msg: arg });
-});
-
-ipc.on("main-get-data-zcash", function (event, arg) {
-  event.sender.send("child-get-data-zcash", { msg: arg });
-});
+// ipc.on("main-update-data", function (event, arg) {
+//   event.sender.send("child-process-data", { msg: arg });
+// });
 
 ipc.on("main-update-address", function (event, arg) {
   event.sender.send("child-update-address", { msg: arg });

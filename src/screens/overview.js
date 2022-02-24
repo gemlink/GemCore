@@ -76,7 +76,8 @@ app.controller("OverviewCtrl", [
         title == undefined
           ? $scope.ctrlTranslations["global.alert"] + "!!!"
           : title;
-      $scope.detail.text = typeof text == 'string' ? text : JSON.stringify(text, null, 2);
+      $scope.detail.text =
+        typeof text == "string" ? text : JSON.stringify(text, null, 2);
       if (type == MsgType.ALERT) {
         $("#modalOverviewAlert").modal();
       }
@@ -98,17 +99,17 @@ app.controller("OverviewCtrl", [
     }
     function getDataTimerFunction() {
       // writeLog("get wallet data");
-      getNetworkHeight(function(networkheightData){
+      getNetworkHeight(function (networkheightData) {
         // console.log("networkheightData", networkheightData);
         var isNewBlock = false;
-        if($scope.detail.bestHeight != networkheightData.value.result.blocks){
+        if ($scope.detail.bestHeight != networkheightData.value.result.blocks) {
           isNewBlock = true;
         }
-        if(!networkheightData.value.error){
+        if (!networkheightData.value.error) {
           var dataType = GetAllDataType.NONE;
           var txTime = parseInt($scope.detail.transactionTime);
           // if is init or balance change
-          if(isInit || shouldGetAll) {
+          if (isInit || shouldGetAll) {
             dataType = GetAllDataType.ALL;
             shouldGetAll = false;
           }
@@ -131,20 +132,20 @@ app.controller("OverviewCtrl", [
             loadingData["buildinfo"] = buildinfo;
             electron.ipcRenderer.send("main-update-loading", loadingData);
 
-
             $timeout(function () {
               // check if balance change, get all in next time
               if (
-                lastBalance != undefined && ((
-                lastBalance.totalCoins != allData.totalbalance ||
-                lastBalance.remainingvalue != allData.remainingValue ||
-                lastBalance.transparentCoins !=
-                  allData.transparentbalance ||
-                lastBalance.privateCoins != allData.privatebalance ||
-                lastBalance.unconfirmedCoins !=
-                allData.unconfirmedbalance ||
-                lastBalance.lockedCoins != allData.lockedbalance ||
-                lastBalance.immatureCoins != allData.immaturebalance) || ($scope.detail.listtransactions.length > 0 && $scope.detail.listtransactions[0].confirmations < 5 && isNewBlock))
+                lastBalance != undefined &&
+                (lastBalance.totalCoins != allData.totalbalance ||
+                  lastBalance.remainingvalue != allData.remainingValue ||
+                  lastBalance.transparentCoins != allData.transparentbalance ||
+                  lastBalance.privateCoins != allData.privatebalance ||
+                  lastBalance.unconfirmedCoins != allData.unconfirmedbalance ||
+                  lastBalance.lockedCoins != allData.lockedbalance ||
+                  lastBalance.immatureCoins != allData.immaturebalance ||
+                  ($scope.detail.listtransactions.length > 0 &&
+                    $scope.detail.listtransactions[0].confirmations < 5 &&
+                    isNewBlock))
               ) {
                 shouldGetAll = true;
               }
@@ -179,7 +180,10 @@ app.controller("OverviewCtrl", [
               lastBalance = $scope.balances;
 
               // update transactions
-              if(allData.listtransactions && allData.listtransactions.length > 0){
+              if (
+                allData.listtransactions &&
+                allData.listtransactions.length > 0
+              ) {
                 $scope.detail.listtransactions = allData.listtransactions;
                 $scope.detail.listtransactions.reverse();
                 var data = {};
@@ -191,7 +195,7 @@ app.controller("OverviewCtrl", [
               walletDic = allData.addressbalance[0];
               var dicKeys = Object.keys(walletDic);
               // update wallet balance
-              if(dicKeys && dicKeys.length > 0){
+              if (dicKeys && dicKeys.length > 0) {
                 walletDic = updateWalletDic(walletDic);
                 var addr = {};
                 addr["from"] = walletDic;
@@ -218,7 +222,11 @@ app.controller("OverviewCtrl", [
             }, 0);
 
             if (isInit) {
-              $scope.detail.addressBook = readAddressBook(true, serverData, currentCoin);
+              $scope.detail.addressBook = readAddressBook(
+                true,
+                serverData,
+                currentCoin
+              );
               var arg = [ScreenType.OVERVIEW, true];
               $timeout(function () {
                 ipc.send("main-close-splashscreen", null);
@@ -240,9 +248,62 @@ app.controller("OverviewCtrl", [
       $scope.dataChange.getinfo = undefined;
       $scope.dataChange.getwalletinfo = undefined;
       $scope.dataChange.z_gettotalbalance = undefined;
-      getNetworkHeight(serverData.cointype);
-      getWalletInfo(serverData.cointype);
-      zGetTotalBalance(serverData.cointype);
+      getinfo(function (getinfoData) {
+        lastBlock = getinfoData.value.result.blocks;
+        $scope.rawData.connectionCount = getinfoData.value.result.connections;
+        $scope.rawData.buildinfo = getinfoData.value.result.buildinfo;
+        getWalletInfo(function (walletinfoData) {
+          if (
+            lastBalance == undefined ||
+            lastBalance.balance != walletinfoData.value.result.balance ||
+            lastBalance.unconfirmed_balance !=
+              walletinfoData.value.result.unconfirmed_balance ||
+            lastBalance.immature_balance !=
+              walletinfoData.value.result.immature_balance
+          ) {
+            lastBalance = walletinfoData.value.result;
+            $scope.rawData.unconfirmedbalance =
+              walletinfoData.value.result.unconfirmed_balance;
+            $scope.rawData.immaturebalance =
+              walletinfoData.value.result.immature_balance;
+          }
+          zGetTotalBalance(function (zData) {
+            if (
+              lastTotalBalance == undefined ||
+              lastTotalBalance.transparent != zData.value.result.transparent ||
+              lastTotalBalance.private != zData.value.result.private
+            ) {
+              lastTotalBalance = zData.value.result;
+              $scope.rawData.totalbalance = zData.value.result.total;
+              $scope.rawData.privatebalance = zData.value.result.private;
+              $scope.rawData.transparentbalance =
+                zData.value.result.transparent;
+            }
+
+            if (
+              ($scope.dataChange.z_gettotalbalance != undefined &&
+                $scope.dataChange.getwalletinfo != undefined &&
+                $scope.dataChange.getinfo != undefined &&
+                ($scope.dataChange.z_gettotalbalance ||
+                  $scope.dataChange.getwalletinfo ||
+                  $scope.dataChange.getinfo)) ||
+              shouldGetAll
+            ) {
+              $scope.dataChange.getinfo = undefined;
+              $scope.dataChange.getwalletinfo = undefined;
+              $scope.dataChange.z_gettotalbalance = undefined;
+              getWalletData();
+            } else if (
+              $scope.dataChange.z_gettotalbalance == false &&
+              $scope.dataChange.getwalletinfo == false &&
+              $scope.dataChange.getinfo == false
+            ) {
+              writeLog("set time out 2");
+              setTimeout(getDataTimerFunctionZcash, 10000);
+            }
+          });
+        });
+      });
     }
 
     function getWalletData() {
@@ -383,6 +444,7 @@ app.controller("OverviewCtrl", [
               value: Math.abs($scope.detail.dataChart.totalOut),
             },
           ];
+
           donut.setData(donutData);
           donut.select(0);
         }
@@ -547,11 +609,18 @@ app.controller("OverviewCtrl", [
       url ? shell.openExternal(url) : "";
     };
 
-    electron.ipcRenderer.on("child-update-addressbook", function (event, msgData) {
-      $timeout(function () {
-        $scope.detail.addressBook = readAddressBook(true, serverData, currentCoin);
-      });
-    });
+    electron.ipcRenderer.on(
+      "child-update-addressbook",
+      function (event, msgData) {
+        $timeout(function () {
+          $scope.detail.addressBook = readAddressBook(
+            true,
+            serverData,
+            currentCoin
+          );
+        });
+      }
+    );
 
     electron.ipcRenderer.on("child-update-settings", function (event, msgData) {
       $timeout(function () {
@@ -604,75 +673,6 @@ app.controller("OverviewCtrl", [
       }, 0);
     });
 
-    electron.ipcRenderer.on("child-get-data-zcash", function (event, msgData) {
-      // writeLog('child-get-data-zcash')
-      $timeout(function () {
-        var data = msgData.msg;
-        console.log(data);
-        if (data.key == "getinfo") {
-          if (lastBlock != data.value.result.blocks) {
-            lastBlock = data.value.result.blocks;
-            $scope.rawData.connectionCount = data.value.result.connections;
-            $scope.rawData.buildinfo = data.value.result.buildinfo;
-            $scope.dataChange.getinfo = true;
-          } else {
-            $scope.dataChange.getinfo = false;
-          }
-        } else if (data.key == "getwalletinfo") {
-          if (
-            lastBalance == undefined ||
-            lastBalance.balance != data.value.result.balance ||
-            lastBalance.unconfirmed_balance !=
-              data.value.result.unconfirmed_balance ||
-            lastBalance.immature_balance != data.value.result.immature_balance
-          ) {
-            lastBalance = data.value.result;
-            $scope.rawData.unconfirmedbalance =
-              data.value.result.unconfirmed_balance;
-            $scope.rawData.immaturebalance = data.value.result.immature_balance;
-            $scope.dataChange.getwalletinfo = true;
-          } else {
-            $scope.dataChange.getwalletinfo = false;
-          }
-        } else if (data.key == "z_gettotalbalance") {
-          if (
-            lastTotalBalance == undefined ||
-            lastTotalBalance.transparent != data.value.result.transparent ||
-            lastTotalBalance.private != data.value.result.private
-          ) {
-            lastTotalBalance = data.value.result;
-            $scope.rawData.totalbalance = data.value.result.total;
-            $scope.rawData.privatebalance = data.value.result.private;
-            $scope.rawData.transparentbalance = data.value.result.transparent;
-            $scope.dataChange.z_gettotalbalance = true;
-          } else {
-            $scope.dataChange.z_gettotalbalance = false;
-          }
-        }
-        if (
-          ($scope.dataChange.z_gettotalbalance != undefined &&
-            $scope.dataChange.getwalletinfo != undefined &&
-            $scope.dataChange.getinfo != undefined &&
-            ($scope.dataChange.z_gettotalbalance ||
-              $scope.dataChange.getwalletinfo ||
-              $scope.dataChange.getinfo)) ||
-          shouldGetAll
-        ) {
-          $scope.dataChange.getinfo = undefined;
-          $scope.dataChange.getwalletinfo = undefined;
-          $scope.dataChange.z_gettotalbalance = undefined;
-          getWalletData();
-        } else if (
-          $scope.dataChange.z_gettotalbalance == false &&
-          $scope.dataChange.getwalletinfo == false &&
-          $scope.dataChange.getinfo == false
-        ) {
-          writeLog("set time out 2");
-          setTimeout(getDataTimerFunctionZcash, 10000);
-        }
-      }, 0);
-    });
-
     electron.ipcRenderer.on(
       "child-get-blockchain-info-zcash",
       function (event, msgData) {
@@ -684,6 +684,7 @@ app.controller("OverviewCtrl", [
       }
     );
 
+    // get header -> list transaction - list received by address - list-address-groupings - z-list-address-zcash - alidate-address-zcash - z-get-balance-zcash
     electron.ipcRenderer.on(
       "child-get-block-header-zcash",
       function (event, msgData) {

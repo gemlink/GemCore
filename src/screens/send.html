@@ -142,7 +142,6 @@
                 <label class="form-control-label" for="inputBasicFirstName"
                   >{{'sendView.fromAddress' | translate}}</label
                 >
-                <!--for enabling private address-->
                 <select
                   class="form-control"
                   data-plugin="select2"
@@ -150,9 +149,11 @@
                   ng-model="detail.selected"
                   ng-click="selectAddress(detail.selected)"
                   ng-disabled="detail.btnDisable"
-                  ng-show="detail.showPrivateAddress"
                 >
                   <optgroup label="Normal address">
+                    <option value="public">
+                      {{'sendView.publicAddresses' | translate}}
+                    </option>
                     <option
                       ng-repeat="publicAddress in publicAddresses"
                       value="{{publicAddress.value}}"
@@ -168,26 +169,6 @@
                       {{ privateAddress.text }}
                     </option>
                   </optgroup>
-                </select>
-                <!--for disabling private address-->
-                <select
-                  class="form-control"
-                  data-plugin="select2"
-                  title="{{detail.selected}}"
-                  ng-model="detail.selected"
-                  ng-click="selectAddress(detail.selected)"
-                  ng-disabled="detail.btnDisable"
-                  ng-show="!detail.showPrivateAddress"
-                >
-                  <option value="public">
-                    {{'sendView.publicAddresses' | translate}}
-                  </option>
-                  <option
-                    ng-repeat="publicAddress in publicAddresses"
-                    value="{{publicAddress.value}}"
-                  >
-                    {{ publicAddress.text }}
-                  </option>
                 </select>
               </div>
               <div class="form-group col-md-5">

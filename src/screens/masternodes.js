@@ -426,12 +426,6 @@ app.controller("MasternodesCtrl", [
         var data = [];
         data.push("rpcuser=" + makeRandom(40));
         data.push("rpcpassword=" + makeRandom(40));
-        data.push("addnode=dnsseed1.gemlink.org");
-        data.push("addnode=dnsseed2.gemlink.org");
-        data.push("addnode=dnsseed3.gemlink.org");
-        data.push("addnode=explorer.gemlink.org");
-        data.push("addnode=insight.gemlink.org");
-        data.push("addnode=insight.gemlink.org");
         var index = $scope.selectedList.findIndex(function (e) {
           return e.status == true;
         });
