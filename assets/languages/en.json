@@ -226,6 +226,7 @@
     "fee": "Fee",
     "send": "Send",
     "sendMany": "Send many",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "You are going to send",
     "sendConfirmation2": "to",
     "sendConfirmation3": "with fee",

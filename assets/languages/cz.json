@@ -223,6 +223,7 @@
     "fee": "Poplatek",
     "send": "Odeslat",
     "sendMany": "Odeslat více",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Chystáte se odeslat",
     "sendConfirmation2": "na",
     "sendConfirmation3": "s poplatkem",

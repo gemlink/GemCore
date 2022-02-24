@@ -223,6 +223,7 @@
     "fee": "요금",
     "send": "보내기",
     "sendMany": "일괄 송금",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "이제 당신은",
     "sendConfirmation2": "를",
     "sendConfirmation3": "에게 송금할 예정입니다. 요금은 다음과 같습니다.",

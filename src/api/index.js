@@ -813,17 +813,21 @@ function sendCoinPublic(to, amount, callback) {
   startCli(arg, callback);
 }
 
-function sendManyCoin(from, to, fee, callback) {
-  var sendInfo = '"' + from + '" ' + '"[';
+function sendManyCoin(to, fee, callback) {
+  to = to.replace("\r\n", "\n").replace(",", ".").split("\n");
+  var toData = [];
 
   to.forEach(function (item) {
-    var split = item.split(",");
-    sendInfo += '{"address":"' + split[0] + '","amount":' + split[1] + "},";
+    var split = item.split(/[\s\|]+/).filter(function(e){
+      return e != ""
+    });
+    var temp = {};
+    temp["address"] = split[0];
+    temp["amount"] = parseFloat(split[1]);
+    toData.push(temp);
   });
-  sendInfo = sendInfo.substring(0, sendInfo.Length - 1);
-  sendInfo += ']"';
 
-  var arg = ["z_sendmany", sendInfo, "1", fee];
+  var arg = ["z_sendmany", "ANY_TADDR", toData, 1, parseFloat(fee)];
   // writeLog(arg)
   startCli(arg, callback);
 }

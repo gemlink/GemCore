@@ -223,6 +223,7 @@
     "fee": "Tasse transazione",
     "send": "Invia",
     "sendMany": "Manda molti",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Stai mandando",
     "sendConfirmation2": "a",
     "sendConfirmation3": "con fee",

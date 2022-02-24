@@ -219,6 +219,7 @@
     "fee": "Kosten",
     "send": "Verstuur",
     "sendMany": "Stuur veel",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Je gaat sturen",
     "sendConfirmation2": "naar",
     "sendConfirmation3": "met vergoeding",

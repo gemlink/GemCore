@@ -219,6 +219,7 @@
     "fee": "费用",
     "send": "发送",
     "sendMany": "发送较多的",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "你将要发送",
     "sendConfirmation2": "至",
     "sendConfirmation3": "费用",

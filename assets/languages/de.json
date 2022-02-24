@@ -223,6 +223,7 @@
     "fee": "Gebühr",
     "send": "Senden",
     "sendMany": "Senden",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Sie verschicken gerade",
     "sendConfirmation2": "an",
     "sendConfirmation3": "mit Gebühr",

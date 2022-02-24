@@ -223,6 +223,7 @@
     "fee": "Prowizja",
     "send": "Wyślij",
     "sendMany": "Wyślij do wielu",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Masz zamiar wysłać",
     "sendConfirmation2": "do",
     "sendConfirmation3": "z prowizją",

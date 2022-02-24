@@ -223,6 +223,7 @@
     "fee": "رسوم",
     "send": "إرسال",
     "sendMany": "ارسل الكثير",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "انت سترسل",
     "sendConfirmation2": "إلى",
     "sendConfirmation3": "مع الرسوم",

@@ -219,6 +219,7 @@
     "fee": "Ücret",
     "send": "Yolla",
     "sendMany": "Çok gönder",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Gönderiliyor",
     "sendConfirmation2": "buraya",
     "sendConfirmation3": "ücretli",

@@ -223,6 +223,7 @@
     "fee": "Díj",
     "send": "Küld",
     "sendMany": "Nagy mennyiség küldése",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Küldés folyamatban",
     "sendConfirmation2": "oda/neki",
     "sendConfirmation3": "illetékkel",

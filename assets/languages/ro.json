@@ -223,6 +223,7 @@
     "fee": "Comision",
     "send": "Trimite",
     "sendMany": "Trimite multe",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Vei trimite",
     "sendConfirmation2": "la",
     "sendConfirmation3": "având comisionul",

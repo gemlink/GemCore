@@ -223,6 +223,7 @@
     "fee": "Costo",
     "send": "Enviar",
     "sendMany": "Enviar muchos",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Vas a enviar",
     "sendConfirmation2": "a",
     "sendConfirmation3": "con pago",

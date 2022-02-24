@@ -223,6 +223,7 @@
     "fee": "Комиссия",
     "send": "Отправить",
     "sendMany": "Отправить",
+    "sendManyNotice": "Sendmany will auto select all unlocked coins from transparent addresses",
     "sendConfirmation1": "Вы собираетесь отправить",
     "sendConfirmation2": "на",
     "sendConfirmation3": "с комиссией",
