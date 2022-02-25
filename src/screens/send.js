@@ -346,7 +346,13 @@ app.controller("SendCtrl", [
 
     function sendFromPublic(dataToSend, callback) {
       settxfee(String(dataToSend.fee).replace(",", "."), function () {
-        sendCoinPublic(dataToSend.to, dataToSend.amount, callback);
+        sendCoinPublic(dataToSend.to, dataToSend.amount, function(data){
+          if(data.value.error){
+            handleSendData(data);
+          } else {
+            callback(data);
+          }
+        });
       });
     }
 
@@ -372,10 +378,17 @@ app.controller("SendCtrl", [
       dataToSend["fee"] = $scope.detail.fee;
       $scope.detail.isBot = false;
       if (dataToSend["from"] == "public") {
-        sendFromPublic(dataToSend, function (dataSendPublic) {
-          writeLog("Send coin data public", dataSendPublic);
-          finishSendPublic(dataSendPublic);
-        });
+        verifyAddress($scope.detail.recipientAddress, function (verifyData) {
+          if (verifyData.value.result.isvalid == true) {
+            sendFromPublic(dataToSend, function (dataSendPublic) {
+              writeLog("Send coin data public", dataSendPublic);
+              finishSendPublic(dataSendPublic);
+            });
+          } else if (verifyData.value.result.isvalid == false) {
+            spawnMessage(MsgType.ALERT, "Cannot send to private address for this feature");
+            $scope.detail.btnDisable = false;
+          }
+        })
       } else {
         verifyAddress($scope.detail.recipientAddress, function (verifyData) {
           writeLog("Send coin data from public address", dataToSend);
