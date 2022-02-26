@@ -416,6 +416,8 @@ app.controller("AddressesCtrl", [
       if (isPrivate == false) {
         newAddress(function (newData) {
           $scope.detail.enableButton = true;
+          $scope.createAction(newName, newData.value.result);
+          shouldGetAll = true;
           showAlert(
             "#modalAddressNoti",
             $scope.ctrlTranslations["addressesView.newAddressButton"],
@@ -425,6 +427,8 @@ app.controller("AddressesCtrl", [
       } else {
         newZAddress(function (newData) {
           $scope.detail.enableButton = true;
+          $scope.createAction(newName, newData.value.result);
+          shouldGetAll = true;
           showAlert(
             "#modalAddressNoti",
             $scope.ctrlTranslations["addressesView.newAddressButton"],
