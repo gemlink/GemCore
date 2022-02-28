@@ -312,7 +312,7 @@ function getWalletHome(isGetConfig, coin) {
 }
 
 function getLanguageDir() {
-  if (isDevMode) {
+  if (!isDevMode) {
     return path.join(__dirname, "..", "..", "assets", "languages");
   } else {
     return path.join(getWalletHome(true), "language");
@@ -494,6 +494,8 @@ function startCli(arg, callback) {
       arg,
       callback
     );
+  } else {
+    callback();
   }
 }
 
@@ -603,7 +605,7 @@ function checkDaemon(callback) {
 
 function stopWallet(callback) {
   stopDaemon(function (data) {
-    if (!!data.value.errno) {
+    if (!data || !!data.value.errno) {
       // wallet is closed
       callback();
     } else {
